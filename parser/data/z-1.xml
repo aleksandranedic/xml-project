@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zahtev_za_priznanje_ziga xmlns="http://www.ftn.uns.ac.rs/jaxb/zig"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.ftn.uns.ac.rs/jaxb/zig zig_schema.xsd">
+    <informacije_o_ustanovi>
+        <naziv>Zavod za intelektualnu svojinu</naziv>
+        <adresa>
+            <ulica>Knjeginje Ljubice</ulica>
+            <broj>5</broj>
+            <postanski_broj>11000</postanski_broj>
+            <grad>Beograd</grad>
+        </adresa>
+    </informacije_o_ustanovi>
+    <popunjava_podnosioc>
+        <podnosilac xsi:type="TFizicko_lice">
+            <adresa>
+                <ulica>Balzakova</ulica>
+                <broj>18</broj>
+                <postanski_broj>21000</postanski_broj>
+                <grad>Novi Sad</grad>
+                <drzava>Srbija</drzava>
+            </adresa>
+            <telefon>0652587456</telefon>
+            <email>sonjas@gmail.com</email>
+            <faks>584-985-521</faks>
+            <ime>Sonja</ime>
+            <prezime>Sonjic</prezime>
+        </podnosilac>
+        <podnosilac xsi:type="TFizicko_lice">
+            <adresa>
+                <ulica>Balzakova</ulica>
+                <broj>18</broj>
+                <postanski_broj>21000</postanski_broj>
+                <grad>Novi Sad</grad>
+                <drzava>Srbija</drzava>
+            </adresa>
+            <telefon>0698541255</telefon>
+            <email>lukal@gmail.com</email>
+            <faks>963-852-741</faks>
+            <ime>Luka</ime>
+            <prezime>Lukic</prezime>
+        </podnosilac>
+        <punomocnik xsi:type="TFizicko_lice">
+            <adresa>
+                <ulica>Strazilovska</ulica>
+                <broj>23</broj>
+                <postanski_broj>21000</postanski_broj>
+                <grad>Novi Sad</grad>
+                <drzava>Srbija</drzava>
+            </adresa>
+            <telefon>0632548972</telefon>
+            <email>miram@gmail.com</email>
+            <faks>123-456-789</faks>
+            <ime>Mira</ime>
+            <prezime>Miric</prezime>
+        </punomocnik>
+        <zajednicki_predstavnik xsi:type="TPoslovno_lice">
+            <adresa>
+                <ulica>Narodnog fronta</ulica>
+                <broj>12</broj>
+                <postanski_broj>21000</postanski_broj>
+                <grad>Novi Sad</grad>
+                <drzava>Srbija</drzava>
+            </adresa>
+            <telefon>0625152015</telefon>
+            <email>beladona@gmail.com</email>
+            <faks>171-515-695</faks>
+            <poslovno_ime>Beladona</poslovno_ime>
+        </zajednicki_predstavnik>
+        <zig>
+            <vrsta>
+                <tip_a>               
+                    <individualni_zig/>
+                </tip_a>
+                <tip_b>
+                    <graficki_znak/>
+                </tip_b>
+            </vrsta>
+            <naznacenje_boje> Narandzasta, plava</naznacenje_boje>
+            <transliteracija_znak > Latinica</transliteracija_znak>
+            <prevod_znaka >Cirilica</prevod_znaka>
+            <opis_znaka>Krug sa nazivom firme u sredini</opis_znaka>
+            <izgled_znaka> C/User/x/home/logo.jpg</izgled_znaka>
+        </zig>
+        <dodatne_informacije>
+            <klasa_robe_i_uslaga>42</klasa_robe_i_uslaga>
+            <zatrazeno_pravo_prvensta_i_osnov > Zatrazeno </zatrazeno_pravo_prvensta_i_osnov>
+        </dodatne_informacije>
+        <placene_takse>
+            <osnovna_taksa>1000</osnovna_taksa>
+            <za_klasa>
+                <naziv_klase> 5 </naziv_klase>
+                <suma>1500</suma>
+            </za_klasa>
+            <za_graficko_resenje>500</za_graficko_resenje>
+            <ukupno>3000</ukupno>
+        </placene_takse>  
+    </popunjava_podnosioc>
+    <popunjava_zavod>
+        <prilozi_uz_zahtev>
+            <primerak_znaka/>
+            <dokaz_o_uplati_takse/>
+            <dokaz_o_pravu_prvenstva/>
+        </prilozi_uz_zahtev>
+        <broj_prijave_ziga>Z-27</broj_prijave_ziga>
+        <datum_podnosenja>2022-07-07</datum_podnosenja>
+    </popunjava_zavod>
+</zahtev_za_priznanje_ziga>
