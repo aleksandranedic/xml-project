@@ -20,7 +20,7 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="popunjava_podnosioc">
+                <xs:element name="popunjava_podnosilac">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element maxOccurs="5" name="podnosilac" type="zig:TLice"/>
@@ -168,10 +168,10 @@
                                     </xs:all>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="broj_prijave_ziga" default="Z-">
+                            <xs:element name="broj_prijave_ziga">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
-                                        <xs:pattern value="Z-[a-zA-Z0-9]*"/>
+                                        <xs:pattern value="Z-[0-9]{5}/[0-9]{2}"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
@@ -192,7 +192,7 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element name="broj" type="xs:positiveInteger"/>
+                <xs:element name="broj" type="xs:string"/>
                 <xs:element name="postanski_broj">
                     <xs:simpleType>
                         <xs:restriction base="xs:positiveInteger">

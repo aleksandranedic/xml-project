@@ -11,7 +11,7 @@
             <grad>Beograd</grad>
         </adresa>
     </informacije_o_ustanovi>
-    <popunjava_podnosioc>
+    <popunjava_podnosilac>
         <podnosilac xsi:type="TFizicko_lice">
             <adresa>
                 <ulica>Balzakova</ulica>
@@ -95,14 +95,14 @@
             <za_graficko_resenje>500</za_graficko_resenje>
             <ukupno>3000</ukupno>
         </placene_takse>  
-    </popunjava_podnosioc>
+    </popunjava_podnosilac>
     <popunjava_zavod>
         <prilozi_uz_zahtev>
             <primerak_znaka/>
             <dokaz_o_uplati_takse/>
             <dokaz_o_pravu_prvenstva/>
         </prilozi_uz_zahtev>
-        <broj_prijave_ziga>Z-27</broj_prijave_ziga>
+        <broj_prijave_ziga>Z-27190/22</broj_prijave_ziga>
         <datum_podnosenja>2022-07-07</datum_podnosenja>
     </popunjava_zavod>
 </zahtev_za_priznanje_ziga>

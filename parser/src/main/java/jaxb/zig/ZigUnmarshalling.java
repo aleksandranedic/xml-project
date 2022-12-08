@@ -59,11 +59,11 @@ public class ZigUnmarshalling {
 		System.out.println("\t-Naziv: " + zahtev.getInformacijeOUstanovi().getNaziv());
 		System.out.println("\t-Adresa: " + getAdresa(zahtev.getInformacijeOUstanovi().getAdresa()));
 
-		printPopunjavaPodnosioc(zahtev.getPopunjavaPodnosioc());
+		printPopunjavaPodnosilac(zahtev.getPopunjavaPodnosilac());
 		printPopunjavaZahtev(zahtev.getPopunjavaZavod());
 	}
 
-	private void printPopunjavaPodnosioc(ZahtevZaPriznanjeZiga.PopunjavaPodnosioc popunjavaPodnosioc) {
+	private void printPopunjavaPodnosilac(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac popunjavaPodnosioc) {
 		System.out.println("POPUNJAVA PODNOSILAC: ");
 		int i = 1;
 		for(TLice podnosilac: popunjavaPodnosioc.getPodnosilac()) {
@@ -120,7 +120,7 @@ public class ZigUnmarshalling {
 		return info;
 	}
 
-	private String getZig(ZahtevZaPriznanjeZiga.PopunjavaPodnosioc.Zig zig) {
+	private String getZig(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig zig) {
 		String info = "";
 		info += "\t-Tip A: " + getTipA(zig.getVrsta().getTipA());
 		info += "\n\t-Tip B: " + getTipB(zig.getVrsta().getTipB());
@@ -131,7 +131,7 @@ public class ZigUnmarshalling {
 		return info;
 	}
 
-	private String getTipA(ZahtevZaPriznanjeZiga.PopunjavaPodnosioc.Zig.Vrsta.TipA tipA) {
+	private String getTipA(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig.Vrsta.TipA tipA) {
 		if (tipA.getIndividualniZig() != null)
 			return "Individualni zig";
 		else if (tipA.getKolektivniZig() != null)
@@ -139,7 +139,7 @@ public class ZigUnmarshalling {
 		return "Zig garancije";
 	}
 
-	private String getTipB(ZahtevZaPriznanjeZiga.PopunjavaPodnosioc.Zig.Vrsta.TipB tipB) {
+	private String getTipB(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig.Vrsta.TipB tipB) {
 		if (tipB.getGrafickiZnak() != null)
 			return "Graficki znak";
 		else if (tipB.getKombinovaniZnak() != null)
@@ -151,11 +151,11 @@ public class ZigUnmarshalling {
 		return "Verbalni znak";
 	}
 
-	private String getDodatneInformacije(ZahtevZaPriznanjeZiga.PopunjavaPodnosioc.DodatneInformacije info) {
+	private String getDodatneInformacije(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije info) {
 		return "\t-Klasa robe i usluga: " + info.getKlasaRobeIUslaga() + "\n\t-Zatrazeno pravo prvensta i osnov: " + info.getZatrazenoPravoPrvenstaIOsnov();
 	}
 
-	private String getPlceneTakse(ZahtevZaPriznanjeZiga.PopunjavaPodnosioc.PlaceneTakse placeneTakse) {
+	private String getPlceneTakse(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.PlaceneTakse placeneTakse) {
 		String info = "";
 		info += "\t-Osnovna taksa: " + placeneTakse.getOsnovnaTaksa();
 		info += "\n\t-Za " + placeneTakse.getZaKlasa().getNazivKlase() + "klasa: " + placeneTakse.getZaKlasa().getSuma();
