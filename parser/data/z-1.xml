@@ -83,7 +83,10 @@
             <izgled_znaka> C/User/x/home/logo.jpg</izgled_znaka>
         </zig>
         <dodatne_informacije>
-            <klasa_robe_i_uslaga>42</klasa_robe_i_uslaga>
+            <klasa_robe_i_uslaga>
+                <klasa>12</klasa>
+                <klasa>45</klasa>
+            </klasa_robe_i_uslaga>
             <zatrazeno_pravo_prvensta_i_osnov > Zatrazeno </zatrazeno_pravo_prvensta_i_osnov>
         </dodatne_informacije>
         <placene_takse>

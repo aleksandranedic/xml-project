@@ -112,11 +112,17 @@
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="klasa_robe_i_uslaga">
-                                            <xs:simpleType>
-                                                <xs:restriction base="xs:positiveInteger">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element maxOccurs="45" name="klasa">
+                                                  <xs:simpleType>
+                                                  <xs:restriction base="xs:positiveInteger">
                                                   <xs:maxInclusive value="45"/>
-                                                </xs:restriction>
-                                            </xs:simpleType>
+                                                  </xs:restriction>
+                                                  </xs:simpleType>
+                                                  </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
                                         </xs:element>
                                         <xs:element name="zatrazeno_pravo_prvensta_i_osnov"
                                             type="xs:string"/>
@@ -226,7 +232,7 @@
             <xs:element name="telefon">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
-                        <xs:pattern value="06[0-9]{7,8}"/>
+                        <xs:pattern value="(\+381|0)6[0-9]{7,8}"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>

@@ -152,9 +152,16 @@ public class ZigUnmarshalling {
 	}
 
 	private String getDodatneInformacije(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije info) {
-		return "\t-Klasa robe i usluga: " + info.getKlasaRobeIUslaga() + "\n\t-Zatrazeno pravo prvensta i osnov: " + info.getZatrazenoPravoPrvenstaIOsnov();
+		return "\t-Klasa robe i usluga: " + getKlasa(info.getKlasaRobeIUslaga()) + "\n\t-Zatrazeno pravo prvensta i osnov: " + info.getZatrazenoPravoPrvenstaIOsnov();
 	}
 
+	private String getKlasa(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije.KlasaRobeIUslaga klasaRobeIUslaga) {
+		String info = "";
+		for (Integer klasa : klasaRobeIUslaga.getKlasa()) {
+			info = info.concat(klasa + ", ");
+		}
+		return info.substring(0, info.length() - 2);
+	}
 	private String getPlceneTakse(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.PlaceneTakse placeneTakse) {
 		String info = "";
 		info += "\t-Osnovna taksa: " + placeneTakse.getOsnovnaTaksa();
