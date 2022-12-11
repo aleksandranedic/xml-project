@@ -1,0 +1,96 @@
+<aut:Zahtev_za_intelektualnu_svojinu xmlns:aut="http://www.ftn.uns.ac.rs/jaxb/autor"
+                                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                     xsi:schemaLocation="http://www.ftn.uns.ac.rs/jaxb/autor a-1.xsd">
+  <aut:Popunjava_podnosilac>
+
+    <aut:Podnosilac xsi:type="aut:TFizicko_lice">
+
+      <aut:Adresa>
+        <aut:Ulica>Bulevar Kralja Petra</aut:Ulica>
+        <aut:Broj>201</aut:Broj>
+        <aut:Postanski_broj>21000</aut:Postanski_broj>
+        <aut:Grad>Novi Sad</aut:Grad>
+        <aut:Drzava>Republika Srbija</aut:Drzava>
+      </aut:Adresa>
+
+      <aut:Kontakt>
+        <aut:Telefon>0600000000</aut:Telefon>
+        <aut:E_posta>marko@gmail.com</aut:E_posta>
+        <aut:Faks>123-00000-000</aut:Faks>
+      </aut:Kontakt>
+
+      <aut:Ime>Marko</aut:Ime>
+      <aut:Prezime>Jovanovic</aut:Prezime>
+      <aut:Drzavljanstvo>Srpsko</aut:Drzavljanstvo>
+
+    </aut:Podnosilac>
+
+
+    <aut:Punomocnik xsi:type="aut:TFizicko_lice">
+      <aut:Adresa>
+        <aut:Ulica>Bulevar Kralja Petra</aut:Ulica>
+        <aut:Broj>201</aut:Broj>
+        <aut:Postanski_broj>21000</aut:Postanski_broj>
+        <aut:Grad>Novi Sad</aut:Grad>
+        <aut:Drzava>Republika Srbija</aut:Drzava>
+      </aut:Adresa>
+
+      <aut:Kontakt>
+        <aut:Telefon>0600000000</aut:Telefon>
+        <aut:E_posta>marko@gmail.com</aut:E_posta>
+        <aut:Faks>123-00000-000</aut:Faks>
+      </aut:Kontakt>
+
+      <aut:Ime>Marko</aut:Ime>
+      <aut:Prezime>Jovanovic</aut:Prezime>
+      <aut:Drzavljanstvo>Srpsko</aut:Drzavljanstvo>
+    </aut:Punomocnik>
+
+    <!--Zero or more repetitions:-->
+    <aut:Podaci_o_autoru>
+      <!--You have a CHOICE of the next 2 items at this level-->
+      <aut:Anoniman/>
+    </aut:Podaci_o_autoru>
+
+    <aut:AutorskoDelo>
+
+      <aut:Naslov>Novo delo</aut:Naslov>
+
+      <aut:Podaci_o_naslovu_autorskog_dela>
+        <aut:Naslov_autorskog_dela>Naslov novog dela</aut:Naslov_autorskog_dela>
+        <aut:Ime_autora>Marko Jovanovic</aut:Ime_autora>
+      </aut:Podaci_o_naslovu_autorskog_dela>
+
+      <aut:Vrsta>Vrsta</aut:Vrsta>
+      <aut:Forma>Forma</aut:Forma>
+      <aut:Stvoreno_u_radnom_odnosu>true</aut:Stvoreno_u_radnom_odnosu>
+      <aut:Nacin_koriscenja>Koristi se u svrhe</aut:Nacin_koriscenja>
+    </aut:AutorskoDelo>
+
+  </aut:Popunjava_podnosilac>
+
+  <aut:Popunjava_zavod>
+    <aut:Broj_prijave>A-1233</aut:Broj_prijave>
+    <aut:Datum_podnosenja>2004-02-14</aut:Datum_podnosenja>
+    <aut:Prilozi_uz_zahtev>
+
+      <aut:Opis_autorskog_dela>
+        <aut:Opis_sadrzaja_autorskog_dela>Opisano je delo</aut:Opis_sadrzaja_autorskog_dela>
+        <aut:Naziv_autorskog_dela>Naziv dela</aut:Naziv_autorskog_dela>
+      </aut:Opis_autorskog_dela>
+      <aut:Primer_autorskog_dela/>
+    </aut:Prilozi_uz_zahtev>
+
+  </aut:Popunjava_zavod>
+
+  <aut:Informacija_o_ustanovi>
+    <aut:Adresa>
+      <aut:Ulica>Knjeginje Ljubice</aut:Ulica>
+      <aut:Broj>5</aut:Broj>
+      <aut:Postanski_broj>11000</aut:Postanski_broj>
+      <aut:Grad>Beograd</aut:Grad>
+      <aut:Drzava>Republika Srbija</aut:Drzava>
+    </aut:Adresa>
+    <aut:Naziv>Zavod za intelektualnu svojinu</aut:Naziv>
+  </aut:Informacija_o_ustanovi>
+</aut:Zahtev_za_intelektualnu_svojinu>
