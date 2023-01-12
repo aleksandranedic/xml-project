@@ -64,18 +64,17 @@
                                         <fo:block>Faks</fo:block>
                                     </fo:table-cell>
                                 </fo:table-row>
-                                <xsl:for-each select="//zig:popunjava_podnosilac/zig:podnosilac">
                                     <fo:table-row border="1px solid darkgrey">
                                         <fo:table-cell padding-left="5px" display-align="center" font-weight="bold">
                                             <xsl:choose>
-                                                <xsl:when test="zig:poslovno_ime">
+                                                <xsl:when test="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime">
                                                     <fo:block>
-                                                        <xsl:value-of select="zig:poslovno_ime"/>
+                                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime"/>
                                                     </fo:block>
                                                 </xsl:when>
                                                 <xsl:otherwise>
                                                     <fo:block>
-                                                        <xsl:value-of select="zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="zig:prezime"/>
+                                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="zig:prezime"/>
                                                     </fo:block>
                                                 </xsl:otherwise>
                                             </xsl:choose>
@@ -84,41 +83,40 @@
                                         <fo:table-cell padding-right="8px" padding-bottom="4px" display-align="center">
                                             <fo:block font-weight="bold">
                                                 <fo:inline>
-                                                    <xsl:value-of select="zig:adresa/zig:ulica"/>
+                                                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:ulica"/>
                                                 </fo:inline>
                                                 <xsl:text> </xsl:text>
                                                 <fo:inline>
-                                                    <xsl:value-of select="zig:adresa/zig:broj"/>
+                                                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:broj"/>
                                                 </fo:inline>,
                                                 <fo:inline>
-                                                    <xsl:value-of select="zig:adresa/zig:postanski_broj"/>
+                                                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:postanski_broj"/>
                                                 </fo:inline>
                                                 <xsl:text> </xsl:text>
                                                 <fo:inline>
-                                                    <xsl:value-of select="zig:adresa/zig:grad"/>
+                                                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:grad"/>
                                                 </fo:inline>
                                             </fo:block>
                                         </fo:table-cell>
 
                                         <fo:table-cell display-align="center">
                                             <fo:block font-weight="bold">
-                                                <xsl:value-of select="zig:telefon"/>
+                                                <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:telefon"/>
                                             </fo:block>
                                         </fo:table-cell>
 
                                         <fo:table-cell display-align="center">
                                             <fo:block font-weight="bold">
-                                                <xsl:value-of select="zig:email"/>
+                                                <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:email"/>
                                             </fo:block>
                                         </fo:table-cell>
 
                                         <fo:table-cell display-align="center">
                                             <fo:block font-weight="bold">
-                                                <xsl:value-of select="zig:faks"/>
+                                                <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:faks"/>
                                             </fo:block>
                                         </fo:table-cell>
                                     </fo:table-row>
-                                </xsl:for-each>
                             </fo:table-body>
                         </fo:table>
                     </fo:block>
@@ -209,95 +207,6 @@
                             </fo:table-body>
                         </fo:table>
                     </fo:block>
-
-                    <xsl:if test="//zig:popunjava_podnosilac/zig:zajednicki_predstavnik">
-                        <fo:block margin-top="30px">
-                            <fo:block text-align="center" font-family="sans-serif" font-size="15px" font-weight="bold">
-                                Zajednicki predstavnik
-                            </fo:block>
-                            <fo:table font-family="serif" border="1px" margin-top="10px">
-                                <fo:table-column column-width="20%"/>
-                                <fo:table-column column-width="25%"/>
-                                <fo:table-column column-width="15%"/>
-                                <fo:table-column column-width="25%"/>
-                                <fo:table-column column-width="15%"/>
-                                <fo:table-body>
-                                    <fo:table-row border="1px solid darkgrey">
-                                        <fo:table-cell background-color="#4caf50" font-family="sans-serif" color="white" padding="5px" font-weight="bold">
-                                            <fo:block>Ime</fo:block>
-                                        </fo:table-cell>
-                                        <fo:table-cell background-color="#4caf50" font-family="sans-serif" color="white" padding="5px" font-weight="bold">
-                                            <fo:block>Adresa</fo:block>
-                                        </fo:table-cell>
-                                        <fo:table-cell background-color="#4caf50" font-family="sans-serif" color="white" padding="5px" font-weight="bold">
-                                            <fo:block>Telefon</fo:block>
-                                        </fo:table-cell>
-                                        <fo:table-cell background-color="#4caf50" font-family="sans-serif" color="white" padding="5px" font-weight="bold">
-                                            <fo:block>Email</fo:block>
-                                        </fo:table-cell>
-                                        <fo:table-cell background-color="#4caf50" font-family="sans-serif" color="white" padding="5px" font-weight="bold">
-                                            <fo:block>Faks</fo:block>
-                                        </fo:table-cell>
-                                    </fo:table-row>
-                                    <xsl:for-each select="//zig:popunjava_podnosilac/zig:zajednicki_predstavnik">
-                                        <fo:table-row border="1px solid darkgrey">
-                                            <fo:table-cell padding-left="5px" display-align="center" font-weight="bold">
-                                                <xsl:choose>
-                                                    <xsl:when test="zig:poslovno_ime">
-                                                        <fo:block>
-                                                            <xsl:value-of select="zig:poslovno_ime"/>
-                                                        </fo:block>
-                                                    </xsl:when>
-                                                    <xsl:otherwise>
-                                                        <fo:block>
-                                                            <xsl:value-of select="zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="zig:prezime"/>
-                                                        </fo:block>
-                                                    </xsl:otherwise>
-                                                </xsl:choose>
-                                            </fo:table-cell>
-
-                                            <fo:table-cell padding-right="8px" padding-bottom="4px" display-align="center">
-                                                <fo:block font-weight="bold">
-                                                    <fo:inline>
-                                                        <xsl:value-of select="zig:adresa/zig:ulica"/>
-                                                    </fo:inline>
-                                                    <xsl:text> </xsl:text>
-                                                    <fo:inline>
-                                                        <xsl:value-of select="zig:adresa/zig:broj"/>
-                                                    </fo:inline>,
-                                                    <fo:inline>
-                                                        <xsl:value-of select="zig:adresa/zig:postanski_broj"/>
-                                                    </fo:inline>
-                                                    <xsl:text> </xsl:text>
-                                                    <fo:inline>
-                                                        <xsl:value-of select="zig:adresa/zig:grad"/>
-                                                    </fo:inline>
-                                                </fo:block>
-                                            </fo:table-cell>
-
-                                            <fo:table-cell display-align="center">
-                                                <fo:block font-weight="bold">
-                                                    <xsl:value-of select="zig:telefon"/>
-                                                </fo:block>
-                                            </fo:table-cell>
-
-                                            <fo:table-cell display-align="center">
-                                                <fo:block font-weight="bold">
-                                                    <xsl:value-of select="zig:email"/>
-                                                </fo:block>
-                                            </fo:table-cell>
-
-                                            <fo:table-cell display-align="center">
-                                                <fo:block font-weight="bold">
-                                                    <xsl:value-of select="zig:faks"/>
-                                                </fo:block>
-                                            </fo:table-cell>
-                                        </fo:table-row>
-                                    </xsl:for-each>
-                                </fo:table-body>
-                            </fo:table>
-                        </fo:block>
-                    </xsl:if>
 
                     <fo:block margin-top="30px" text-align="center" font-family="sans-serif" font-size="15px" font-weight="bold">
                         Informacije o zigu
