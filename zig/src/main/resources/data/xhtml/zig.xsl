@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:zig="http://www.ftn.uns.ac.rs/jaxb/zig"
-                xmlns:fo="http://www.w3.org/1999/XSL/Format" version="2.0">
+                version="2.0">
 
     <xsl:template match="/">
         <html>
@@ -155,12 +155,12 @@
                                 <tr class="border">
                                     <td class="cell">
                                         <xsl:choose>
-                                            <xsl:when test="zig:poslovno_ime">
-                                                <xsl:value-of select="zig:poslovno_ime"/>
+                                            <xsl:when test="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime">
+                                                <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime"/>
                                             </xsl:when>
                                             <xsl:otherwise>
                                                 <div class="inline">
-                                                    <xsl:value-of select="zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="zig:prezime"/>
+                                                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:prezime"/>
                                                 </div>
                                             </xsl:otherwise>
                                         </xsl:choose>
@@ -169,7 +169,7 @@
                                     <td class="address-cell inline">
                                         <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:ulica"/>
                                         <xsl:text> </xsl:text>
-                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:broj"/>
+                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:broj"/>,
                                         <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:postanski_broj"/>
                                         <xsl:text> </xsl:text>
                                         <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:grad"/>
@@ -234,7 +234,7 @@
                                     <td class="address-cell inline">
                                         <xsl:value-of select="zig:adresa/zig:ulica"/>
                                         <xsl:text> </xsl:text>
-                                        <xsl:value-of select="zig:adresa/zig:broj"/>
+                                        <xsl:value-of select="zig:adresa/zig:broj"/>,
                                         <xsl:value-of select="zig:adresa/zig:postanski_broj"/>
                                         <xsl:text> </xsl:text>
                                         <xsl:value-of select="zig:adresa/zig:grad"/>

@@ -16,18 +16,12 @@ public class PrettyPrint {
     private static void printPopunjavaPodnosilac(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac popunjavaPodnosioc) {
         System.out.println("POPUNJAVA PODNOSILAC: ");
         int i = 1;
-        for(TLice podnosilac: popunjavaPodnosioc.getPodnosilac()) {
-            System.out.println("Podnosilac " + i + ":");
-            System.out.println(getLice(podnosilac));
-            i++;
-        }
+        TLice podnosilac = popunjavaPodnosioc.getPodnosilac();
+        System.out.println("Podnosilac " + i + ":");
+        System.out.println(getLice(podnosilac));
+
         System.out.println("Punomocnik:");
         System.out.println(getLice(popunjavaPodnosioc.getPunomocnik()));
-
-        if (popunjavaPodnosioc.getZajednickiPredstavnik() != null) {
-            System.out.println("Zajednicki predstavnik:");
-            System.out.println(getLice(popunjavaPodnosioc.getZajednickiPredstavnik()));
-        }
 
         System.out.println("Zig:");
         System.out.println(getZig(popunjavaPodnosioc.getZig()));
