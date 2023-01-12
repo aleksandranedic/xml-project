@@ -3,6 +3,7 @@ package ftn.xml.zig.repository;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.utils.AuthenticationUtilities;
 import ftn.xml.zig.utils.PrettyPrint;
+import org.apache.bcel.generic.RETURN;
 import org.springframework.stereotype.Repository;
 import org.exist.xmldb.EXistResource;
 import org.xmldb.api.DatabaseManager;
@@ -28,7 +29,7 @@ public class ZigRepository {
     ZigRepository() throws IOException {
         this.conn = AuthenticationUtilities.loadProperties();
     }
-    public void retrieve(String documentId) throws Exception {
+    public ZahtevZaPriznanjeZiga retrieve(String documentId) throws Exception {
         createConnection();
         Collection col = null;
         XMLResource res = null;
@@ -38,12 +39,14 @@ public class ZigRepository {
             res = (XMLResource)col.getResource(documentId);
             if(res == null) {
                 System.out.println("[WARNING] Document '" + documentId + "' can not be found!");
+                return null;
             } else {
                 JAXBContext context = JAXBContext.newInstance("ftn.xml.zig.model");
                 Unmarshaller unmarshaller = context.createUnmarshaller();
                 ZahtevZaPriznanjeZiga zahtev = (ZahtevZaPriznanjeZiga) unmarshaller.unmarshal(res.getContentAsDOM());
                 System.out.println("[INFO] Showing the document as JAXB instance: ");
                 PrettyPrint.printZahtev(zahtev);
+                return zahtev;
             }
         } finally {
             closeConnection(col, res);

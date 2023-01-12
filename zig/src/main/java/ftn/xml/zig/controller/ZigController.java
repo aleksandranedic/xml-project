@@ -1,4 +1,5 @@
 package ftn.xml.zig.controller;
+import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.service.ZigService;
 import org.apache.fop.apps.MimeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class ZigController {
         service.unmarshalling();
     }
     @GetMapping(value = "marshal")
-    public void marshal() {
-        service.marshalling();
+    public void marshal(@RequestBody() ZahtevZaPriznanjeZiga zahtev) {
+        service.marshalling(zahtev);
     }
     @GetMapping(value = "pdf")
     public void toPdf() {
@@ -33,6 +34,10 @@ public class ZigController {
     @GetMapping(value = "xhtml")
     public void toXHTML() {
         service.toXHTML();
+    }
+    @GetMapping(value = "rdf")
+    public void createRdf() {
+        service.createRdf();
     }
     @GetMapping(path = "{documentId}")
     public boolean findRequest(@PathVariable("documentId") String documentId) {
@@ -45,12 +50,12 @@ public class ZigController {
         return true;
     }
 
-    @PutMapping(value = ":id")
+    @PutMapping(value = "{id}")
     public boolean updateRequest(@RequestParam() int id) {
         return true;
     }
 
-    @DeleteMapping(value = ":id")
+    @DeleteMapping(value = "{id}")
     public boolean deleteRequest(@RequestParam() int id) {
         return true;
     }

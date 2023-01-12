@@ -74,7 +74,7 @@
                                                 </xsl:when>
                                                 <xsl:otherwise>
                                                     <fo:block>
-                                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="zig:prezime"/>
+                                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:prezime"/>
                                                     </fo:block>
                                                 </xsl:otherwise>
                                             </xsl:choose>
