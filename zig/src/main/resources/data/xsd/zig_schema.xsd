@@ -23,9 +23,8 @@
                 <xs:element name="popunjava_podnosilac">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element maxOccurs="5" name="podnosilac" type="zig:TLice"/>
+                            <xs:element maxOccurs="1" name="podnosilac" type="zig:TLice"/>
                             <xs:element name="punomocnik" type="zig:TLice"/>
-                            <xs:element minOccurs="0" name="zajednicki_predstavnik" type="zig:TLice"/>
                             <xs:element name="zig">
                                 <xs:complexType>
                                     <xs:sequence>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:zig="http://www.ftn.uns.ac.rs/jaxb/zig"
-                xmlns:fo="http://www.w3.org/1999/XSL/Format" version="2.0">
+                version="2.0">
 
     <xsl:template match="/">
         <html>
@@ -152,43 +152,41 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <xsl:for-each select="//zig:popunjava_podnosilac/zig:podnosilac">
                                 <tr class="border">
                                     <td class="cell">
                                         <xsl:choose>
-                                            <xsl:when test="zig:poslovno_ime">
-                                                <xsl:value-of select="zig:poslovno_ime"/>
+                                            <xsl:when test="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime">
+                                                <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime"/>
                                             </xsl:when>
                                             <xsl:otherwise>
                                                 <div class="inline">
-                                                    <xsl:value-of select="zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="zig:prezime"/>
+                                                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:prezime"/>
                                                 </div>
                                             </xsl:otherwise>
                                         </xsl:choose>
                                     </td>
 
                                     <td class="address-cell inline">
-                                        <xsl:value-of select="zig:adresa/zig:ulica"/>
+                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:ulica"/>
                                         <xsl:text> </xsl:text>
-                                        <xsl:value-of select="zig:adresa/zig:broj"/>
-                                        <xsl:value-of select="zig:adresa/zig:postanski_broj"/>
+                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:broj"/>,
+                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:postanski_broj"/>
                                         <xsl:text> </xsl:text>
-                                        <xsl:value-of select="zig:adresa/zig:grad"/>
+                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:grad"/>
                                     </td>
 
                                     <td>
-                                        <xsl:value-of select="zig:telefon"/>
+                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:telefon"/>
                                     </td>
 
                                     <td>
-                                        <xsl:value-of select="zig:email"/>
+                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:email"/>
                                     </td>
 
                                     <td>
-                                        <xsl:value-of select="zig:faks"/>
+                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:faks"/>
                                     </td>
                                 </tr>
-                            </xsl:for-each>
                         </tbody>
                     </table>
                 </div>
@@ -236,7 +234,7 @@
                                     <td class="address-cell inline">
                                         <xsl:value-of select="zig:adresa/zig:ulica"/>
                                         <xsl:text> </xsl:text>
-                                        <xsl:value-of select="zig:adresa/zig:broj"/>
+                                        <xsl:value-of select="zig:adresa/zig:broj"/>,
                                         <xsl:value-of select="zig:adresa/zig:postanski_broj"/>
                                         <xsl:text> </xsl:text>
                                         <xsl:value-of select="zig:adresa/zig:grad"/>
@@ -258,74 +256,6 @@
                             </tbody>
                         </table>
                     </div>
-
-                <xsl:if test="//zig:popunjava_podnosilac/zig:zajednicki_predstavnik">
-                    <div class="block">
-                        <div class="title">
-                            Zajednicki predstavnik
-                        </div>
-                        <table>
-                            <thead>
-                                <tr class="border">
-                                    <th class="green-cell">
-                                        Ime
-                                    </th>
-                                    <th class="green-cell">
-                                        Adresa
-                                    </th>
-                                    <th class="green-cell">
-                                        Telefon
-                                    </th>
-                                    <th class="green-cell">
-                                        Email
-                                    </th>
-                                    <th class="green-cell">
-                                        Faks
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <xsl:for-each select="//zig:popunjava_podnosilac/zig:zajednicki_predstavnik">
-                                    <tr class="border">
-                                        <td class="cell">
-                                            <xsl:choose>
-                                                <xsl:when test="zig:poslovno_ime">
-                                                    <xsl:value-of select="zig:poslovno_ime"/>
-                                                </xsl:when>
-                                                <xsl:otherwise>
-                                                    <div class="inline">
-                                                        <xsl:value-of select="zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="zig:prezime"/>
-                                                    </div>
-                                                </xsl:otherwise>
-                                            </xsl:choose>
-                                        </td>
-
-                                        <td class="address-cell inline">
-                                            <xsl:value-of select="zig:adresa/zig:ulica"/>
-                                            <xsl:text> </xsl:text>
-                                            <xsl:value-of select="zig:adresa/zig:broj"/>
-                                            <xsl:value-of select="zig:adresa/zig:postanski_broj"/>
-                                            <xsl:text> </xsl:text>
-                                            <xsl:value-of select="zig:adresa/zig:grad"/>
-                                        </td>
-
-                                        <td>
-                                            <xsl:value-of select="zig:telefon"/>
-                                        </td>
-
-                                        <td>
-                                            <xsl:value-of select="zig:email"/>
-                                        </td>
-
-                                        <td>
-                                            <xsl:value-of select="zig:faks"/>
-                                        </td>
-                                    </tr>
-                                </xsl:for-each>
-                            </tbody>
-                        </table>
-                    </div>
-                </xsl:if>
 
                 <div class="block">
                     <div class="title">
