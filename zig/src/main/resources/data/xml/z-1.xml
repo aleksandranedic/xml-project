@@ -27,20 +27,6 @@
             <ime>Sonja</ime>
             <prezime>Sonjic</prezime>
         </podnosilac>
-        <podnosilac xsi:type="TFizicko_lice">
-            <adresa>
-                <ulica>Balzakova</ulica>
-                <broj>18</broj>
-                <postanski_broj>21000</postanski_broj>
-                <grad>Novi Sad</grad>
-                <drzava>Srbija</drzava>
-            </adresa>
-            <telefon>0698541255</telefon>
-            <email>lukal@gmail.com</email>
-            <faks>963-852-741</faks>
-            <ime>Luka</ime>
-            <prezime>Lukic</prezime>
-        </podnosilac>
         <punomocnik xsi:type="TFizicko_lice">
             <adresa>
                 <ulica>Strazilovska</ulica>
@@ -55,19 +41,6 @@
             <ime>Mira</ime>
             <prezime>Miric</prezime>
         </punomocnik>
-        <zajednicki_predstavnik xsi:type="TPoslovno_lice">
-            <adresa>
-                <ulica>Narodnog fronta</ulica>
-                <broj>12</broj>
-                <postanski_broj>21000</postanski_broj>
-                <grad>Novi Sad</grad>
-                <drzava>Srbija</drzava>
-            </adresa>
-            <telefon>0625152015</telefon>
-            <email>beladona@gmail.com</email>
-            <faks>171-515-695</faks>
-            <poslovno_ime>Beladona</poslovno_ime>
-        </zajednicki_predstavnik>
         <zig>
             <vrsta>
                 <tip_a>               

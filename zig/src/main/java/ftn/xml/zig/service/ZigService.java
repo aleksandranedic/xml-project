@@ -1,6 +1,7 @@
 package ftn.xml.zig.service;
 
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
+import ftn.xml.zig.repository.RdfRepository;
 import ftn.xml.zig.repository.ZigRepository;
 import ftn.xml.zig.utils.PrettyPrint;
 import ftn.xml.zig.utils.SchemaValidationEventHandler;
@@ -18,15 +19,10 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.*;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.OutputStream;
+import java.io.*;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -46,6 +42,8 @@ public class ZigService {
 
     @Autowired
     private ZigRepository zigRepository;
+    @Autowired
+    private RdfRepository rdfRepository;
 
     private FopFactory fopFactory;
     private TransformerFactory transformerFactory;
@@ -68,12 +66,13 @@ public class ZigService {
         transformerFactory = new TransformerFactoryImpl();
     }
 
-    public void getZahtev(String documentId) {
+    public ZahtevZaPriznanjeZiga getZahtev(String documentId) {
         try {
-            zigRepository.retrieve(documentId);
+            return zigRepository.retrieve(documentId);
         } catch (Exception e) {
             System.out.println(e);
         }
+        return null;
     }
     public void unmarshalling() {
         try {
@@ -170,21 +169,36 @@ public class ZigService {
             return document;
     }
 
-    public void marshalling() {
+    public OutputStream marshalling(ZahtevZaPriznanjeZiga zahtev) {
         try {
             System.out.println("[INFO] Zig: JAXB unmarshalling/marshalling.\n");
             JAXBContext context = JAXBContext.newInstance("ftn.xml.zig.model");
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            ZahtevZaPriznanjeZiga zahtev = (ZahtevZaPriznanjeZiga) unmarshaller.unmarshal(new File("./src/main/resources/data/xml/z-1.xml"));
+            //Unmarshaller unmarshaller = context.createUnmarshaller();
+            //ZahtevZaPriznanjeZiga zahtev = (ZahtevZaPriznanjeZiga) unmarshaller.unmarshal(new File("./src/main/resources/data/xml/z-1.xml"));
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             OutputStream os = new ByteArrayOutputStream();
             marshaller.marshal(zahtev, os);
-            zigRepository.store("2.xml", os);
+            //zigRepository.store("2.xml", os);
+            return os;
         } catch (JAXBException e) {
             e.printStackTrace();
         } catch (Exception e) {
             System.out.println(e);
+        }
+        return new ByteArrayOutputStream();
+    }
+
+    public void createRdf() {
+        try {
+            ZahtevZaPriznanjeZiga zahtev = getZahtev("1.xml");
+            ByteArrayOutputStream  zahtev_xml_out = (ByteArrayOutputStream) marshalling(zahtev);
+            InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
+            ByteArrayOutputStream zahtev_output = new ByteArrayOutputStream();
+            rdfRepository.extractMetadata(zahtev_input, zahtev_output);
+            rdfRepository.writeRdf(zahtev_output.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
