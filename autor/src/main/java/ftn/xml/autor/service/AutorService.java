@@ -2,6 +2,7 @@ package ftn.xml.autor.service;
 
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.repository.AutorRepository;
+import ftn.xml.autor.repository.RdfAutorRepository;
 import ftn.xml.autor.utils.PrettyPrint;
 import ftn.xml.autor.utils.SchemaValidationEventHandler;
 import net.sf.saxon.TransformerFactoryImpl;
@@ -33,6 +34,9 @@ import java.io.*;
 public class AutorService {
     @Autowired
     private AutorRepository autorRepository;
+
+    @Autowired
+    private RdfAutorRepository rdfAutorRepository;
     private FopFactory fopFactory;
     private TransformerFactory transformerFactory;
     private static DocumentBuilderFactory documentFactory;
@@ -54,12 +58,13 @@ public class AutorService {
         transformerFactory = new TransformerFactoryImpl();
     }
 
-    public void getZahtev(String documentId) {
+    public ZahtevZaIntelektualnuSvojinu getZahtev(String documentId) {
         try {
-            autorRepository.retrieve(documentId);
+            return  autorRepository.retrieve(documentId);
         } catch (Exception e) {
             System.out.println(e);
         }
+        return null;
     }
 
     public void unmarshalling() {
@@ -154,6 +159,26 @@ public class AutorService {
         return document;
     }
 
+    public OutputStream marshalling(ZahtevZaIntelektualnuSvojinu zahtev) {
+        try {
+            System.out.println("[INFO] Zig: JAXB unmarshalling/marshalling.\n");
+            JAXBContext context = JAXBContext.newInstance("ftn.xml.autor.model");
+//            Unmarshaller unmarshaller = context.createUnmarshaller();
+//            ZahtevZaIntelektualnuSvojinu zahtev = (ZahtevZaIntelektualnuSvojinu) unmarshaller.unmarshal(new File("./src/main/resources/data/xml/a-1.xml"));
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            OutputStream os = new ByteArrayOutputStream();
+            marshaller.marshal(zahtev, os);
+            autorRepository.store("2.xml", os);
+            return os;
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
     public void marshalling() {
         try {
             System.out.println("[INFO] Zig: JAXB unmarshalling/marshalling.\n");
@@ -165,10 +190,24 @@ public class AutorService {
             OutputStream os = new ByteArrayOutputStream();
             marshaller.marshal(zahtev, os);
             autorRepository.store("2.xml", os);
+//            return os;
         } catch (JAXBException e) {
             e.printStackTrace();
         } catch (Exception e) {
             System.out.println(e);
+        }
+    }
+
+    public void createRdf() {
+        try {
+            ZahtevZaIntelektualnuSvojinu zahtev = getZahtev("2.xml");
+            ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshalling(zahtev);
+            InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
+            ByteArrayOutputStream zahtev_output = new ByteArrayOutputStream();
+            rdfAutorRepository.extractMetadata(zahtev_input, zahtev_output);
+            rdfAutorRepository.writeRdf(zahtev_output.toString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

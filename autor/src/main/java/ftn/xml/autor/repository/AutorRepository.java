@@ -27,7 +27,7 @@ public class AutorRepository {
         this.conn = AuthenticationUtilities.loadProperties();
     }
 
-    public void retrieve(String documentId) throws Exception {
+    public ZahtevZaIntelektualnuSvojinu retrieve(String documentId) throws Exception {
         createConnection();
         Collection col = null;
         XMLResource res = null;
@@ -43,10 +43,12 @@ public class AutorRepository {
                 ZahtevZaIntelektualnuSvojinu zahtev = (ZahtevZaIntelektualnuSvojinu) unmarshaller.unmarshal(res.getContentAsDOM());
                 System.out.println("[INFO] Showing the document as JAXB instance: ");
                 PrettyPrint.printZahtev(zahtev);
+                return zahtev;
             }
         } finally {
             closeConnection(col, res);
         }
+        return null;
     }
 
     public void store(String documentId, OutputStream os) throws Exception {

@@ -1,5 +1,6 @@
 package ftn.xml.autor.controller;
 
+import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,10 @@ public class AutorController {
     @GetMapping(value = "xhtml")
     public void toXHTML() {
         autorService.toXHTML();
+    }
+    @GetMapping(value = "rdf")
+    public void createRdf() {
+        autorService.createRdf();
     }
 
     @GetMapping(path = "{documentId}")

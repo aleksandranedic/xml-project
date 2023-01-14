@@ -82,7 +82,7 @@
                     font-weight:bold;
                     }
                     .cell {
-                    padding-left:5px
+                    padding-left:5px;
                     font-weight:bold
                     }
                     .address-cell {
@@ -332,6 +332,9 @@
                                         Adresa
                                     </th>
                                     <th class="green-cell">
+                                        Drzavljanstvo
+                                    </th>
+                                    <th class="green-cell">
                                         Telefon
                                     </th>
                                     <th class="green-cell">
@@ -343,29 +346,12 @@
                                     <th class="green-cell">
                                         Godina smrti
                                     </th>
-                                    <th class="green-cell">
-                                        Znak autora
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <xsl:for-each select="//aut:Popunjava_podnosilac/aut:Autori/*">
                                     <xsl:choose>
-                                        <xsl:when test="aut:Anoniman">
-                                            <tr class="border">
-                                                <td class="cell">
-                                                    <div class="inline">
-                                                        Anonimni autor
-                                                    </div>
-                                                </td>
-                                                <td>/</td>
-                                                <td>/</td>
-                                                <td>/</td>
-                                                <td>/</td>
-                                                <td>/</td>
-                                            </tr>
-                                        </xsl:when>
-                                        <xsl:otherwise>
+                                        <xsl:when test="aut:Autor">
                                             <tr class="border">
                                                 <td class="cell">
                                                     <div class="inline">
@@ -389,6 +375,9 @@
                                                 <td>
                                                     <xsl:value-of select="aut:Drzavljanstvo"/>
                                                 </td>
+                                                <td>
+                                                    <xsl:value-of select="aut:Kontakt/aut:Telefon"/>
+                                                </td>
 
                                                 <td>
                                                     <xsl:value-of select="aut:Kontakt/aut:E_posta"/>
@@ -399,15 +388,32 @@
                                                 </td>
 
                                                 <td>
-                                                    <xsl:if test="aut:Godina_smrti">
-                                                        <xsl:value-of select="aut:Godina_smrti"/>
-                                                    </xsl:if>
-                                                    <xsl:otherwise>
-                                                        /
-                                                    </xsl:otherwise>
+                                                    <xsl:choose>
+                                                        <xsl:when test="aut:Godina_smrti">
+                                                            <xsl:value-of select="aut:Godina_smrti"/>
+                                                        </xsl:when>
+                                                        <xsl:otherwise>
+                                                            /
+                                                        </xsl:otherwise>
+                                                    </xsl:choose>
                                                 </td>
-
                                             </tr>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+
+                                            <tr class="border">
+                                                <td class="cell">
+                                                    <div class="inline">
+                                                        Anonimni autor
+                                                    </div>
+                                                </td>
+                                                <td>/</td>
+                                                <td>/</td>
+                                                <td>/</td>
+                                                <td>/</td>
+                                                <td>/</td>
+                                            </tr>
+
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:for-each>
@@ -468,20 +474,22 @@
                                         </td>
                                     </tr>
                                 </xsl:if>
-                                <xsl:if test="//aut:AutorskoDelo/aut:Stvoreno_u_radnom_odnosu">
-                                    <tr>
-                                        <td class="border-top two-cols">
-                                            Stvoreno u radnom odnosu
-                                        </td>
-                                    </tr>
-                                </xsl:if>
-                                <xsl:otherwise>
-                                    <tr>
-                                        <td class="border-top two-cols">
-                                            Nije stvoreno u radnom odnosu
-                                        </td>
-                                    </tr>
-                                </xsl:otherwise>
+                                <xsl:choose>
+                                    <xsl:when test="//aut:AutorskoDelo/aut:Stvoreno_u_radnom_odnosu">
+                                        <tr>
+                                            <td class="border-top two-cols">
+                                                Stvoreno u radnom odnosu
+                                            </td>
+                                        </tr>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <tr>
+                                            <td class="border-top two-cols">
+                                                Nije stvoreno u radnom odnosu
+                                            </td>
+                                        </tr>
+                                    </xsl:otherwise>
+                                </xsl:choose>
                                 <tr>
                                     <td class="border-top two-cols">
                                         Nacin koriscenja
