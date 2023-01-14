@@ -22,7 +22,7 @@ public class AutorController {
         autorService.unmarshalling();
     }
 
-    @GetMapping(value = "marshal")
+    @GetMapping(value = "save")
     public void marshal() {
         autorService.marshalling();
     }
