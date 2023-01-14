@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Zahtev_za_intelektualnu_svojinu xmlns="http://www.ftn.uns.ac.rs/jaxb/autor"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.ftn.uns.ac.rs/jaxb/autor ../xsd/autor.xsd">
+    <Popunjava_podnosilac>
+        <Podnosilac xsi:type="TFizicko_lice">
+            <Adresa>
+                <Ulica>Bulevar Kralja Petra</Ulica>
+                <Broj>201</Broj>
+                <Postanski_broj>11000</Postanski_broj>
+                <Grad>Beograd</Grad>
+                <Drzava>Republika Srbija</Drzava>
+            </Adresa>
+            <Kontakt>
+                <Telefon>0600000000</Telefon>
+                <E_posta>marko@gmail.com</E_posta>
+                <Faks>123-00000-000</Faks>
+            </Kontakt>
+            <Ime>Marko</Ime>
+            <Prezime>Markovic</Prezime>
+            <Drzavljanstvo>srpsko</Drzavljanstvo>
+        </Podnosilac>
+        <Autori>
+            <Anoniman/>
+        </Autori>
+        <AutorskoDelo>
+            <Naslov>Naslov dela 1</Naslov>
+            <Vrsta>vrsta 1</Vrsta>
+            <Forma>forma 1</Forma>
+            <Podaci_o_naslovu_autorskog_dela>
+                <Naslov_autorskog_dela>naslov autorskog dela 2</Naslov_autorskog_dela>
+                <Ime_autora>ime autora 2</Ime_autora>
+            </Podaci_o_naslovu_autorskog_dela>
+            <Stvoreno_u_radnom_odnosu/>
+            <Nacin_koriscenja>nacin koriscenja 1</Nacin_koriscenja>
+        </AutorskoDelo>
+    </Popunjava_podnosilac>
+    <Popunjava_zavod>
+        <Broj_prijave>A-1233</Broj_prijave>
+        <Datum_podnosenja>2004-02-14</Datum_podnosenja>
+        <Prilozi_uz_zahtev>
+            <Opis_autorskog_dela>
+                <Opis_sadrzaja_autorskog_dela>Opisano je delo</Opis_sadrzaja_autorskog_dela>
+                <Naziv_autorskog_dela>naziv dela 3</Naziv_autorskog_dela>
+            </Opis_autorskog_dela>
+            <Primer_autorskog_dela/>
+        </Prilozi_uz_zahtev>
+    </Popunjava_zavod>
+    <Informacija_o_ustanovi>
+        <Adresa>
+            <Ulica>Knjeginje Ljubice</Ulica>
+            <Broj>5</Broj>
+            <Postanski_broj>11000</Postanski_broj>
+            <Grad>Beograd</Grad>
+            <Drzava>Republika Srbija</Drzava>
+        </Adresa>
+        <Naziv>Zavod za intelektualnu svojinu</Naziv>
+    </Informacija_o_ustanovi>
+</Zahtev_za_intelektualnu_svojinu>
