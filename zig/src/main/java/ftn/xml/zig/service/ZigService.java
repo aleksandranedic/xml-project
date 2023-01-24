@@ -189,6 +189,24 @@ public class ZigService {
         return new ByteArrayOutputStream();
     }
 
+    public void storeZahtev() {
+        try {
+            System.out.println("[INFO] Zig: JAXB unmarshalling/marshalling.\n");
+            JAXBContext context = JAXBContext.newInstance("ftn.xml.zig.model");
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            ZahtevZaPriznanjeZiga zahtev = (ZahtevZaPriznanjeZiga) unmarshaller.unmarshal(new File("./src/main/resources/data/xml/z-1.xml"));
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            OutputStream os = new ByteArrayOutputStream();
+            marshaller.marshal(zahtev, os);
+            zigRepository.store("2.xml", os);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
     public void createRdf() {
         try {
             ZahtevZaPriznanjeZiga zahtev = getZahtev("1.xml");

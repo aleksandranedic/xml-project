@@ -23,9 +23,9 @@ public class ZigController {
     public void unmarshal() {
         service.unmarshalling();
     }
-    @GetMapping(value = "marshal")
-    public void marshal(@RequestBody() ZahtevZaPriznanjeZiga zahtev) {
-        service.marshalling(zahtev);
+    @GetMapping(value = "save")
+    public void marshal() {
+        service.storeZahtev();
     }
     @GetMapping(value = "pdf")
     public void toPdf() {
