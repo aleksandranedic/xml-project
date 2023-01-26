@@ -43,7 +43,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             Collection<SimpleGrantedAuthority> authorities = authService.getAuthorityClaimsFromJWT(authorizationHeader);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            System.out.println("User " + username + " is authorized");
             filterChain.doFilter(request, response);
         } catch (Exception exception) {
             response.setHeader("error", exception.getMessage());

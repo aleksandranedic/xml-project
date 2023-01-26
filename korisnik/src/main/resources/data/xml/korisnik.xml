@@ -7,11 +7,4 @@
     <Email>miki@gmail.com</Email>
     <Sifra>sadasdasd</Sifra>
     <Uloga>Sluzbenik</Uloga>
-    <Adresa>
-        <Ulica>dasd</Ulica>
-        <Broj>213</Broj>
-        <Postanski_broj>21000</Postanski_broj>
-        <Grad>Novi Sad</Grad>
-        <Drzava>Srbija</Drzava>
-    </Adresa>
 </Korisnik>

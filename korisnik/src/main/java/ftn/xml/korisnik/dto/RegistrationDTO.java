@@ -13,9 +13,4 @@ public class RegistrationDTO {
     private String uloga;
     private String email;
     private String sifra;
-    private String ulica;
-    private int broj;
-    private int postanskiBroj;
-    private String grad;
-    private String drzava;
 }

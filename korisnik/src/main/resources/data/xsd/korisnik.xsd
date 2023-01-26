@@ -2,44 +2,6 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
     targetNamespace="http://www.ftn.uns.ac.rs/jaxb/korisnik"
     xmlns:korisnik="http://www.ftn.uns.ac.rs/jaxb/korisnik">
-    <xs:element name="Adresa">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="Ulica">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:string">
-                            <xs:minLength value="1"/>
-                            <xs:maxLength value="100"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:element>
-                <xs:element name="Broj" type="xs:positiveInteger"/>
-                <xs:element name="Postanski_broj">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:positiveInteger">
-                            <xs:totalDigits value="5"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:element>
-                <xs:element name="Grad">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:string">
-                            <xs:minLength value="1"/>
-                            <xs:maxLength value="100"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:element>
-                <xs:element name="Drzava">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:string">
-                            <xs:minLength value="1"/>
-                            <xs:maxLength value="100"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
     <xs:element name="Korisnik">
         <xs:complexType>
             <xs:sequence>
@@ -74,7 +36,6 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element ref="korisnik:Adresa"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
