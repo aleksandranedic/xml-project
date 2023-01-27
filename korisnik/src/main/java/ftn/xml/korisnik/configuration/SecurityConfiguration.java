@@ -50,7 +50,7 @@ public class SecurityConfiguration {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/korisnik/register").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/korisnik/login").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/korisnik/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/korisnik/logged/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilterBefore(new CustomAuthorizationFilter(authService), UsernamePasswordAuthenticationFilter.class);
         return http.build();

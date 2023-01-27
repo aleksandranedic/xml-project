@@ -27,13 +27,11 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getServletPath().equals("/api/user/login") || (request.getServletPath().equals("/api/user") && request.getMethod().equals("POST")) || request.getServletPath().startsWith("/api/user/confirm/") || request.getServletPath().startsWith("/images") || request.getServletPath().equals("/api/email/test")) {
+        if (request.getServletPath().startsWith("/korisnik")) {
             filterChain.doFilter(request, response);
         } else {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                authorizeFromHeader(request, response, filterChain, authorizationHeader);
-            }
+            authorizeFromHeader(request, response, filterChain, authorizationHeader);
         }
     }
 
