@@ -45,3 +45,20 @@ footer {
 .carousel-text {
     @apply absolute text-3xl top-[52%] left-[40%] font-semibold
 }
+
+.badge {
+   @apply bg-white text-green-700 text-xs font-medium mr-2 px-2.5 py-0.5 rounded  border-2 border-green-700
+}
+
+.appearance-none:focus {
+    appearance: none;
+    outline: none;
+    border: none;
+    border-bottom: solid black 1px;
+}
+
+.appearance-none-full:focus {
+    appearance: none;
+    outline: none;
+    border: none;
+}

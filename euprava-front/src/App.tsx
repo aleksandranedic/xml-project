@@ -5,6 +5,9 @@ import {useState, useEffect} from 'react'
 import UserContext, { User } from "./store/user-context";
 import DocumentContext, { DocType } from "./store/docuemnt-context";
 import ZigForm from "./components/zig/Form";
+import SearchZig from "./components/zig/SearchZig";
+import SearchAutorska from "./components/autorska/SearchAutorska";
+import SearchPatent from "./components/patent/SearchPatent";
 
 const App: React.FunctionComponent = () => {
     const [user, setUser] = useState<User | null>(JSON.parse(localStorage.getItem('user')!) || null);
@@ -24,6 +27,9 @@ const App: React.FunctionComponent = () => {
 
                     <Routes>
                         <Route path='/' element={<HomePage/>}/>
+                        <Route path='/zahtevi/pretraga/autorska' element={<SearchAutorska/>}/>
+                        <Route path='/zahtevi/pretraga/zig' element={<SearchZig/>}/>
+                        <Route path='/zahtevi/pretraga/patent' element={<SearchPatent/>}/>
                         <Route path='/zahtevi/podnesi/autorska' element={<ZigForm/>}/>
                         <Route path='/zahtevi/podnesi/zig' element={<ZigForm/>}/>
                         <Route path='/zahtevi/podnesi/patent' element={<ZigForm/>}/>
