@@ -46,7 +46,7 @@ const LoggedOutHomePage: React.FunctionComponent<HomePageProps> = ({page, setPag
 
 const LoggedInHomePage: React.FunctionComponent<HomePageProps> = ({page, setPage}) => {
     return (
-        <div className='flex flex-col h-full relative z-0'>
+        <div className='flex flex-col h-full w-full relative z-0'>
             <div className='w-full flex justify-between items-center absolute pb-1 pt-2 px-6 top-0 right-0 z-20 backdrop-blur-sm'>
                 <div className='w-1/2 flex gap-5'>
                 <div className='bg-gray-300 rounded-full p-2'>

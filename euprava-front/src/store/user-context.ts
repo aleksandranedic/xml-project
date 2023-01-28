@@ -1,8 +1,8 @@
 import { createContext, useState } from "react";
 
 export enum Role {
-  CLIENT = "CLIENT",
-  WORKER = "WORKER",
+  CLIENT = "Gradjanin",
+  WORKER = "Sluzbenik",
 }
 
 export interface User {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Korisnik xmlns="http://www.ftn.uns.ac.rs/jaxb/korisnik"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.ftn.uns.ac.rs/jaxb/korisnik file:/D:/Fourth%20Year/XML%26WebServices/korisnik.xsd">
+    <Ime>Miki</Ime>
+    <Prezime>Mikic</Prezime>
+    <Email>miki@gmail.com</Email>
+    <Sifra>sadasdasd</Sifra>
+    <Uloga>Sluzbenik</Uloga>
+</Korisnik>
