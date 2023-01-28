@@ -1,6 +1,8 @@
 package ftn.xml.korisnik.controller;
 
+import ftn.xml.korisnik.dto.LoginDTO;
 import ftn.xml.korisnik.dto.RegistrationDTO;
+import ftn.xml.korisnik.service.AuthService;
 import ftn.xml.korisnik.service.KorisnikService;
 import ftn.xml.korisnik.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @RestController
-@RequestMapping(path = "/korisnik", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+@RequestMapping(path = "/korisnik",produces = MediaType.APPLICATION_XML_VALUE)
 public class KorisnikController {
 
     @Autowired
@@ -20,7 +24,8 @@ public class KorisnikController {
     @Autowired
     private LoginService loginService;
 
-    @PostMapping("/register")
+
+    @PostMapping(path = "/register", consumes = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> registerKorisnik(@RequestBody RegistrationDTO data) {
         try {
             return new ResponseEntity<>(korisnikService.registerUser(data), HttpStatus.OK);
@@ -29,21 +34,20 @@ public class KorisnikController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> loginKorisnik(HttpServletRequest request) {
+    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> loginKorisnik(@RequestBody LoginDTO loginDTO, HttpServletRequest request) {
         try {
-            return ResponseEntity.ok(loginService.login(request));
+            return ResponseEntity.ok(loginService.login(request, loginDTO));
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
     }
 
-    @GetMapping(path = "/logged",consumes = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<?> getLoggedUser(@RequestBody String email) {
+    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<?> getLoggedUser(HttpServletRequest request) {
         try {
-            if (email.equals(""))
-                throw new RuntimeException("Email is blank");
-            return ResponseEntity.ok(korisnikService.getKorisnikByEmail(email));
+            String email = loginService.authService.getUsernameFromJWT(request.getHeader(AUTHORIZATION));
+            return ResponseEntity.ok(korisnikService.getUserDTOByEmail(email));
         } catch (Exception exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }

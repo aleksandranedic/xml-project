@@ -1,5 +1,6 @@
 package ftn.xml.korisnik.configuration;
 
+import ftn.xml.korisnik.dto.RoleType;
 import ftn.xml.korisnik.service.AuthService;
 import ftn.xml.korisnik.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class SecurityConfiguration {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/korisnik/register").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/korisnik/login").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET, "/korisnik/logged/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET, "/korisnik/logged/**").hasAnyAuthority(RoleType.Gradjanin.name(), RoleType.Sluzbenik.name());
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilterBefore(new CustomAuthorizationFilter(authService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
