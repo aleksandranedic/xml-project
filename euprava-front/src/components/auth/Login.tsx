@@ -1,8 +1,8 @@
 import {useContext, useState} from 'react'
-import UserContext, {Role} from '../../store/user-context';
-import {validEmailPassword} from './auth.service';
-import {loginParam} from './types';
-import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import UserContext, { User} from '../../store/user-context';
+import {loginUser, validEmailPassword} from './auth.service';
+import {LoginParam} from './types';
 
 interface LoginProps {
 
@@ -10,47 +10,28 @@ interface LoginProps {
 
 const Login: React.FunctionComponent<LoginProps> = () => {
     const {user, setUser} = useContext(UserContext);
-    const [inputs, setInputs] = useState<loginParam>({email: '', password: ''})
-    const login = (ev: any) => {
+    const [inputs, setInputs] = useState<LoginParam>({email: '', password: ''})
+    const login = async (ev: any) => {
         ev.preventDefault()
         if (validEmailPassword(inputs.email, inputs.password)) {
-            setUser({name: 'Pera', surname: 'Peric', email: inputs.email, role: Role.CLIENT})
-            const LoginDTO = {
+            const loginDTO: LoginParam = {
                 email: inputs.email,
                 password: inputs.password,
             }
-            const xml2js = require('xml2js');
-            const builder = new xml2js.Builder();
-            let xml = builder.buildObject(LoginDTO);
-            axios.post("http://localhost:8443/korisnik/login", xml, {
-                headers: {
-                    "Content-Type": "application/xml"
-                }
-            }).then(value => {
-                const jwt = value.data
-                axios.get("http://localhost:8443/korisnik", {
-                    headers: {
-                        "Authorization": "Bearer " + jwt,
-                        "Content-Type": "application/xml",
-                        "Accept": "application/xml",
-                    }
-                }).then(value => {
-                    console.log(value.data)
-                    const convert = require('xml-js');
-                    console.log(convert.xml2js(value.data, {compact: true, alwaysChildren: true}));
-                    console.log(convert.xml2js(value.data, {compact: true, alwaysChildren: true})['UserDTO']);
-                    console.log(convert.xml2js(value.data, {compact: true, alwaysChildren: true})['UserDTO']['email']);
-                    console.log(convert.xml2js(value.data, {
-                        compact: true,
-                        alwaysChildren: true
-                    })['UserDTO']['email']["_text"]);
-                })
-            })
-
-        }
+            try{
+                const loggedUser: User = await loginUser(loginDTO);             
+                toast.success("Uspesno ste se ulogovali.")
+                setTimeout(() => {
+                    setUser(loggedUser);
+                  }, 1500);
+            } catch (error) {
+                toast.error("Pogresni kredencijali.")
+            }
+        } else toast.warning("Email ima format example@domen.com. Lozinka sadrži minimum 8 karaktera i sastoji se iz brojeva, velikih i malih slova.")
     }
 
     return (
+        <>
         <form onSubmit={e => login(e)}
               className="rounded border flex flex-col gap-8 p-6 items-center h-full w-3/4 text-lg">
             <div className="flex flex-col items-center  w-full">
@@ -67,6 +48,8 @@ const Login: React.FunctionComponent<LoginProps> = () => {
             <input type='submit' className="text-white rounded-3xl px-4 py-2 bg-green-700 w-1/3 mt-6"
                    value='Uloguj se' onClick={e => login(e)}/>
         </form>
+        <ToastContainer position="top-center" draggable={false}/>
+        </>
     );
 }
 
