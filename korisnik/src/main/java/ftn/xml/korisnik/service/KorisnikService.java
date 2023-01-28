@@ -51,6 +51,7 @@ public class KorisnikService {
             korisnikRepository.store(korisnik.getEmail(), os);
             return "Uspesno ste se registrovali";
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Neuspensa registracija");
         }
     }

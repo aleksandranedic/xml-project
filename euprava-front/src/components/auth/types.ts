@@ -1,10 +1,18 @@
 import { Role } from "../../store/user-context";
 
-export type loginParam = { email: string; password: string };
+export type LoginParam = { email: string; password: string };
+
 export type RegisterParam = {
-  name: string;
-  surname: string;
+  ime: string;
+  prezime: string;
   email: string;
-  password: string;
-  role: Role;
+  sifra: string;
+  uloga: Role;
+};
+
+export type RegisterError = {
+  ime: string;
+  prezime: string;
+  email: string;
+  sifra: string;
 };

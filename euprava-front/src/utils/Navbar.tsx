@@ -4,7 +4,7 @@ import {BiArrowToLeft, BiArrowToRight} from "react-icons/bi"
 import {RiMailSendFill} from 'react-icons/ri'
 import {FaUserAlt} from 'react-icons/fa'
 import {IoIosArrowUp, IoIosArrowDown} from 'react-icons/io'
-import UserContext, { Role } from '../../store/user-context';
+import UserContext, { Role } from '../store/user-context';
 import ChooseDoc from './ChooseDoc'
 
 
