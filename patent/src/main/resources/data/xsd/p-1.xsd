@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-           targetNamespace="http://www.ftn.uns.ac.rs/jaxb/patent"
-           xmlns="http://www.ftn.uns.ac.rs/jaxb/patent">
+    targetNamespace="http://www.ftn.uns.ac.rs/jaxb/patent"
+    xmlns="http://www.ftn.uns.ac.rs/jaxb/patent">
 
     <xs:element name="Zahtev_za_priznanje_patenta">
         <xs:complexType>
@@ -23,7 +23,9 @@
                         <xs:sequence>
                             <xs:element name="Broj_prijave">
                                 <xs:simpleType>
-                                    <xs:restriction base="xs:string"/>
+                                    <xs:restriction base="xs:string">
+                                        <xs:pattern value="P-[0-9]{5}"/>
+                                    </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
                             <xs:element name="Datum_prijema">
@@ -165,6 +167,27 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Prilozi_uz_zahtev">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="Prva_prijava" type="xs:string"/>
+                            <xs:element maxOccurs="unbounded" minOccurs="0" name="Ranija_prijava"
+                                type="xs:string"/>
+                            <xs:element minOccurs="0"
+                                name="Izjava_o_osnovu_sticanja_prava_na_podnosenje_prijave"
+                                type="xs:string"/>
+                            <xs:element minOccurs="0"
+                                name="Izjava_pronalazaca_da_ne_zeli_da_bude_naveden"
+                                type="xs:string"/>
+                            <xs:element name="Opis_pronalaska" type="xs:string"/>
+                            <xs:element maxOccurs="unbounded" minOccurs="1"
+                                name="Patentn_zahtevi_za_zastitu_pronalaska" type="xs:string"/>
+                            <xs:element name="Nacrt_na_koji_se_poziva_opis" type="xs:string"/>
+                            <xs:element name="Apstrakt" type="xs:string"/>
+                            <xs:element minOccurs="0" name="Resenje" type="xs:string"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>

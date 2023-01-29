@@ -3,58 +3,58 @@
     targetNamespace="http://www.ftn.uns.ac.rs/jaxb/zig"
     xmlns:zig="http://www.ftn.uns.ac.rs/jaxb/zig">
 
-    <xs:element name="zahtev_za_priznanje_ziga">
+    <xs:element name="Zahtev_za_priznanje_ziga">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="informacije_o_ustanovi">
+                <xs:element name="Informacije_o_ustanovi">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="naziv">
+                            <xs:element name="Naziv">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
                                         <xs:minLength value="1"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
-                            <xs:element ref="zig:adresa"/>
+                            <xs:element ref="zig:Adresa"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="popunjava_podnosilac">
+                <xs:element name="Popunjava_podnosilac">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element maxOccurs="1" name="podnosilac" type="zig:TLice"/>
-                            <xs:element name="punomocnik" type="zig:TLice"/>
-                            <xs:element name="zig">
+                            <xs:element maxOccurs="1" name="Podnosilac" type="zig:TLice"/>
+                            <xs:element name="Punomocnik" type="zig:TLice"/>
+                            <xs:element name="Zig">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="vrsta">
+                                        <xs:element name="Vrsta">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                  <xs:element name="tip_a">
+                                                  <xs:element name="Tip_a">
                                                   <xs:complexType>
                                                   <xs:choice>
-                                                  <xs:element name="individualni_zig"
+                                                  <xs:element name="Individualni_zig"
                                                   type="zig:TEmpty" minOccurs="0"/>
-                                                  <xs:element name="kolektivni_zig"
+                                                  <xs:element name="Kolektivni_zig"
                                                   type="zig:TEmpty" minOccurs="0"/>
-                                                  <xs:element name="zig_garancije" type="zig:TEmpty"
+                                                  <xs:element name="Zig_garancije" type="zig:TEmpty"
                                                   minOccurs="0"/>
                                                   </xs:choice>
                                                   </xs:complexType>
                                                   </xs:element>
-                                                  <xs:element name="tip_b">
+                                                  <xs:element name="Tip_b">
                                                   <xs:complexType>
                                                   <xs:choice>
-                                                  <xs:element name="verbalni_znak" type="zig:TEmpty"
+                                                  <xs:element name="Verbalni_znak" type="zig:TEmpty"
                                                   minOccurs="0"/>
-                                                  <xs:element name="graficki_znak" type="zig:TEmpty"
+                                                  <xs:element name="Graficki_znak" type="zig:TEmpty"
                                                   minOccurs="0"/>
-                                                  <xs:element name="kombinovani_znak"
+                                                  <xs:element name="Kombinovani_znak"
                                                   type="zig:TEmpty" minOccurs="0"/>
-                                                  <xs:element name="trodimenzionalni_znak"
+                                                  <xs:element name="Trodimenzionalni_znak"
                                                   type="zig:TEmpty" minOccurs="0"/>
-                                                  <xs:element name="druga_vrsta" minOccurs="0">
+                                                  <xs:element name="Druga_vrsta" minOccurs="0">
                                                   <xs:simpleType>
                                                   <xs:restriction base="xs:string">
                                                   <xs:minLength value="1"/>
@@ -68,35 +68,35 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="naznacenje_boje">
+                                        <xs:element name="Naznacenje_boje">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
                                                   <xs:minLength value="1"/>
                                                 </xs:restriction>
                                             </xs:simpleType>
                                         </xs:element>
-                                        <xs:element minOccurs="0" name="transliteracija_znak">
+                                        <xs:element minOccurs="0" name="Transliteracija_znak">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
                                                   <xs:minLength value="1"/>
                                                 </xs:restriction>
                                             </xs:simpleType>
                                         </xs:element>
-                                        <xs:element minOccurs="0" name="prevod_znaka">
+                                        <xs:element minOccurs="0" name="Prevod_znaka">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
                                                   <xs:minLength value="1"/>
                                                 </xs:restriction>
                                             </xs:simpleType>
                                         </xs:element>
-                                        <xs:element minOccurs="0" name="opis_znaka">
+                                        <xs:element minOccurs="0" name="Opis_znaka">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
                                                   <xs:minLength value="1"/>
                                                 </xs:restriction>
                                             </xs:simpleType>
                                         </xs:element>
-                                        <xs:element name="izgled_znaka">
+                                        <xs:element name="Izgled_znaka">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
                                                   <xs:pattern value="(.+)/([^/]+)"/>
@@ -107,13 +107,13 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="dodatne_informacije">
+                            <xs:element name="Dodatne_informacije">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="klasa_robe_i_uslaga">
+                                        <xs:element name="Klasa_robe_i_uslaga">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                  <xs:element maxOccurs="45" name="klasa">
+                                                  <xs:element maxOccurs="45" name="Klasa">
                                                   <xs:simpleType>
                                                   <xs:restriction base="xs:positiveInteger">
                                                   <xs:maxInclusive value="45"/>
@@ -123,82 +123,74 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="zatrazeno_pravo_prvensta_i_osnov"
+                                        <xs:element name="Zatrazeno_pravo_prvensta_i_osnov"
                                             type="xs:string"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="placene_takse">
+                            <xs:element name="Placene_takse">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="osnovna_taksa" type="xs:positiveInteger"/>
-                                        <xs:element name="za_klasa">
+                                        <xs:element name="Osnovna_taksa" type="xs:positiveInteger"/>
+                                        <xs:element name="Za_klasa">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                  <xs:element name="naziv_klase" type="xs:string"/>
-                                                  <xs:element name="suma" type="xs:positiveInteger"
+                                                  <xs:element name="Naziv_klase" type="xs:string"/>
+                                                  <xs:element name="Suma" type="xs:positiveInteger"
                                                   />
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="za_graficko_resenje"
+                                        <xs:element name="Za_graficko_resenje"
                                             type="xs:positiveInteger"/>
-                                        <xs:element name="ukupno" type="xs:positiveInteger"/>
+                                        <xs:element name="Ukupno" type="xs:positiveInteger"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="popunjava_zavod">
+                <xs:element name="Broj_prijave_ziga">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:pattern value="Z-[0-9]{5}/[0-9]{2}"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Datum_podnosenja" type="xs:date"/>
+                <xs:element name="Prilozi_uz_zahtev">
                     <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="prilozi_uz_zahtev">
-                                <xs:complexType>
-                                    <xs:all>
-                                        <xs:element name="primerak_znaka" type="zig:TEmpty"
-                                            minOccurs="0"/>
-                                        <xs:element name="spisak_robe_i_usluga" type="zig:TEmpty"
-                                            minOccurs="0"/>
-                                        <xs:element name="punomocje" type="zig:TEmpty" minOccurs="0"/>
-                                        <xs:element name="generalno_punomocje" type="zig:TEmpty"
-                                            minOccurs="0"/>
-                                        <xs:element name="punomocje_naknadno_dostavljeno"
-                                            type="zig:TEmpty" minOccurs="0"/>
-                                        <xs:element name="opsti_akt" type="zig:TEmpty" minOccurs="0"/>
-                                        <xs:element name="dokaz_o_pravu_prvenstva" type="zig:TEmpty"
-                                            minOccurs="0"/>
-                                        <xs:element name="dokaz_o_uplati_takse" type="zig:TEmpty"
-                                            minOccurs="0"/>
-                                    </xs:all>
-                                </xs:complexType>
-                            </xs:element>
-                            <xs:element name="broj_prijave_ziga">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:pattern value="Z-[0-9]{5}/[0-9]{2}"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element>
-                            <xs:element name="datum_podnosenja" type="xs:date"/>
-                        </xs:sequence>
+                        <xs:all>
+                            <xs:element name="Primerak_znaka" type="xs:string" minOccurs="0"/>
+                            <xs:element name="Spisak_robe_i_usluga" type="xs:string" minOccurs="0"/>
+                            <xs:element name="Punomocje" type="xs:string" minOccurs="0"/>
+                            <xs:element name="Generalno_punomocje" type="xs:string" minOccurs="0"/>
+                            <xs:element name="Punomocje_naknadno_dostavljeno" type="xs:string"
+                                minOccurs="0"/>
+                            <xs:element name="Opsti_akt" type="xs:string" minOccurs="0"/>
+                            <xs:element name="Dokaz_o_pravu_prvenstva" type="xs:string"
+                                minOccurs="0"/>
+                            <xs:element name="Dokaz_o_uplati_takse" type="xs:string" minOccurs="0"/>
+                            <xs:element minOccurs="0" name="Resenje" type="xs:string"/>
+                        </xs:all>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="QR_kod" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
-    <xs:element name="adresa">
+    <xs:element name="Adresa">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="ulica">
+                <xs:element name="Ulica">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
                             <xs:minLength value="1"/>
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element name="broj" type="xs:string"/>
-                <xs:element name="postanski_broj">
+                <xs:element name="Broj" type="xs:string"/>
+                <xs:element name="Postanski_broj">
                     <xs:simpleType>
                         <xs:restriction base="xs:positiveInteger">
                             <xs:minInclusive value="11000"/>
@@ -206,7 +198,7 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element name="grad">
+                <xs:element name="Grad">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
                             <xs:minLength value="1"/>
@@ -214,7 +206,7 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>
-                <xs:element minOccurs="0" name="drzava">
+                <xs:element minOccurs="0" name="Drzava">
                     <xs:simpleType>
                         <xs:restriction base="xs:string">
                             <xs:minLength value="1"/>
@@ -227,42 +219,22 @@
     </xs:element>
     <xs:complexType abstract="true" name="TLice">
         <xs:sequence>
-            <xs:element ref="zig:adresa"/>
-            <xs:element name="telefon">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:pattern value="(\+381|0)6[0-9]{7,8}"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
-            <xs:element name="email">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:pattern value="[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
-            <xs:element name="faks">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:minLength value="1"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
+            <xs:element ref="zig:Adresa"/>
+            <xs:element ref="zig:Kontakt"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="TFizicko_lice">
         <xs:complexContent>
             <xs:extension base="zig:TLice">
                 <xs:sequence>
-                    <xs:element name="ime">
+                    <xs:element name="Ime">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
                                 <xs:minLength value="1"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
-                    <xs:element name="prezime">
+                    <xs:element name="Prezime">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
                                 <xs:minLength value="1"/>
@@ -277,10 +249,37 @@
         <xs:complexContent>
             <xs:extension base="zig:TLice">
                 <xs:sequence>
-                    <xs:element name="poslovno_ime" type="xs:string"/>
+                    <xs:element name="Poslovno_ime" type="xs:string"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="TEmpty"/>
+    <xs:element name="Kontakt">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Email">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:pattern value="[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Faks">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="1"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Telefon">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:pattern value="(\+381|0)6[0-9]{7,8}"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>
