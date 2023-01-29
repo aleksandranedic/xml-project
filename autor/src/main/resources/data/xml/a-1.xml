@@ -36,16 +36,14 @@
         </AutorskoDelo>
     </Popunjava_podnosilac>
     <Popunjava_zavod>
-        <Broj_prijave>A-1233</Broj_prijave>
+        <Broj_prijave>A-12353</Broj_prijave>
         <Datum_podnosenja>2004-02-14</Datum_podnosenja>
-        <Prilozi_uz_zahtev>
-            <Opis_autorskog_dela>
-                <Opis_sadrzaja_autorskog_dela>Opisano je delo</Opis_sadrzaja_autorskog_dela>
-                <Naziv_autorskog_dela>naziv dela 3</Naziv_autorskog_dela>
-            </Opis_autorskog_dela>
-            <Primer_autorskog_dela/>
-        </Prilozi_uz_zahtev>
     </Popunjava_zavod>
+    <Prilozi_uz_zahtev>
+        <Opis_autorskog_dela>opis_putanja</Opis_autorskog_dela>
+        <Primer_autorskog_dela>primer_putanja</Primer_autorskog_dela>
+        <Dokaz_o_uplati_takse>dokaz_o_uplati_putanja</Dokaz_o_uplati_takse>
+    </Prilozi_uz_zahtev>
     <Informacija_o_ustanovi>
         <Adresa>
             <Ulica>Knjeginje Ljubice</Ulica>
