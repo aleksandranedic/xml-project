@@ -4,7 +4,7 @@ import {BrowserRouter  as Router, Routes, Route} from "react-router-dom";
 import {useState, useEffect} from 'react'
 import UserContext, { User } from "./store/user-context";
 import DocumentContext, { DocType } from "./store/docuemnt-context";
-import ZigForm from "./components/zig/Form";
+import ZigForm from "./components/zig/ZigForm";
 import SearchZig from "./components/zig/SearchZig";
 import SearchAutorska from "./components/autorska/SearchAutorska";
 import SearchPatent from "./components/patent/SearchPatent";
