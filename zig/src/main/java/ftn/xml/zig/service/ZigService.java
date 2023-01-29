@@ -1,6 +1,5 @@
 package ftn.xml.zig.service;
 
-import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.repository.RdfRepository;
 import ftn.xml.zig.repository.ZigRepository;
 import ftn.xml.zig.utils.PrettyPrint;
@@ -28,7 +27,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;

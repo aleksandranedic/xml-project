@@ -1,6 +1,5 @@
 package ftn.xml.autor.service;
 
-import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.repository.AutorRepository;
 import ftn.xml.autor.repository.RdfAutorRepository;
 import ftn.xml.autor.utils.PrettyPrint;

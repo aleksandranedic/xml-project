@@ -1,6 +1,5 @@
 package ftn.xml.autor.repository;
 
-import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.utils.AuthenticationUtilities;
 import ftn.xml.autor.utils.PrettyPrint;
 import org.exist.xmldb.EXistResource;

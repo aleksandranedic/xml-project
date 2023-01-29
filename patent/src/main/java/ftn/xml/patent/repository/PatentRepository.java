@@ -1,9 +1,7 @@
 package ftn.xml.patent.repository;
 
-import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.utils.AuthenticationUtilities;
 import ftn.xml.patent.utils.PrettyPrint;
-import org.apache.bcel.generic.RETURN;
 import org.springframework.stereotype.Repository;
 import org.exist.xmldb.EXistResource;
 import org.xmldb.api.DatabaseManager;
@@ -12,8 +10,7 @@ import org.xmldb.api.base.Database;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.modules.CollectionManagementService;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+
 import java.io.OutputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;

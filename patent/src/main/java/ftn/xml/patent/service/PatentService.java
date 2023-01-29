@@ -1,6 +1,5 @@
 package ftn.xml.patent.service;
 
-import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.repository.RdfRepository;
 import ftn.xml.patent.utils.PrettyPrint;

@@ -103,24 +103,6 @@
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="TEmpty"/>
-    <xs:complexType name="TOpisDela">
-        <xs:sequence>
-            <xs:element name="Opis_sadrzaja_autorskog_dela">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:minLength value="1"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
-            <xs:element name="Naziv_autorskog_dela">
-                <xs:simpleType>
-                    <xs:restriction base="xs:string">
-                        <xs:minLength value="1"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
-        </xs:sequence>
-    </xs:complexType>
     <xs:element name="Zahtev_za_intelektualnu_svojinu">
         <xs:complexType>
             <xs:sequence>
@@ -147,19 +129,25 @@
                             <xs:element name="Broj_prijave">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
-                                        <xs:pattern value="A-[a-zA-Z0-9]*"/>
+                                        <xs:pattern value="A-[0-9]{5}"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
                             <xs:element name="Datum_podnosenja" type="xs:date"/>
-                            <xs:element name="Prilozi_uz_zahtev">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="Opis_autorskog_dela" type="TOpisDela"/>
-                                        <xs:element name="Primer_autorskog_dela" type="TEmpty"/>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Prilozi_uz_zahtev">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Opis_autorskog_dela" type="xs:string"/>
+                            <xs:element name="Primer_autorskog_dela" type="xs:string"/>
+                            <xs:element name="Dokaz_o_uplati_takse" type="xs:string"/>
+                            <xs:element minOccurs="0"
+                                name="Izjava_o_pravno_osnovu_za_podnosenje_prijave" type="xs:string"/>
+                            <xs:element minOccurs="0" name="Izjava_o_zajednickom_predstavniku"
+                                type="xs:string"/>
+                            <xs:element minOccurs="0" name="Punomocje" type="xs:string"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
