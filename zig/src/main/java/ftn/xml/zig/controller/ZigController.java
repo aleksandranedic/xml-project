@@ -1,7 +1,5 @@
 package ftn.xml.zig.controller;
-import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.service.ZigService;
-import org.apache.fop.apps.MimeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
