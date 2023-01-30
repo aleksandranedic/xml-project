@@ -9,8 +9,7 @@ enum RelationType {
 
 enum Operator {
     EQUALS = '=',
-    LESS = '<',
-    MORE = '>'
+    NON_EQULAS = '!='
 }
 
 enum LogicalOperator {
@@ -101,8 +100,7 @@ const AdvancedSearch: React.FunctionComponent = () => {
                     <td className="w-2/12">
                     <select value={searchParam.operator} onChange={e => setOperator(e.target.value as Operator, index)} className="w-full py-2.5 px-0 bg-transparent border-0 border-b-2 appearance-none focus:!outline-none focus:ring-0 border-gray-dark">
                         <option value="=">=</option>
-                        <option value=">">&gt; </option>
-                        <option value="<">&lt;</option>
+                        <option value="!=">!=</option>
                     </select>
                     </td>
                     <td className="w-5/12">

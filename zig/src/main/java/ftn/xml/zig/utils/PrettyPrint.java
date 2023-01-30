@@ -9,8 +9,10 @@ public class PrettyPrint {
         System.out.println("\t-Naziv: " + zahtev.getInformacijeOUstanovi().getNaziv());
         System.out.println("\t-Adresa: " + getAdresa(zahtev.getInformacijeOUstanovi().getAdresa()));
 
+        System.out.println("Broj prijave ziga: " + zahtev.getBrojPrijaveZiga());
+        System.out.println("Datum podnosenja ziga: " + zahtev.getDatumPodnosenja().toString());
         printPopunjavaPodnosilac(zahtev.getPopunjavaPodnosilac());
-        printPopunjavaZahtev(zahtev.getPopunjavaZavod());
+        printPriloziUzZahtev(zahtev.getPriloziUzZahtev());
     }
 
     private static void printPopunjavaPodnosilac(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac popunjavaPodnosioc) {
@@ -33,11 +35,9 @@ public class PrettyPrint {
         System.out.println(getPlceneTakse(popunjavaPodnosioc.getPlaceneTakse()));
     }
 
-    private static void printPopunjavaZahtev(ZahtevZaPriznanjeZiga.PopunjavaZavod popunjavaZavod) {
-        System.out.println("POPUNJAVA ZAVOD: ");
-        System.out.println(getPriloziUzZahtev(popunjavaZavod.getPriloziUzZahtev()));
-        System.out.println("Broj prijave ziga: " + popunjavaZavod.getBrojPrijaveZiga());
-        System.out.println("Datum podnosenja ziga: " + popunjavaZavod.getDatumPodnosenja().toString());
+    private static void printPriloziUzZahtev(ZahtevZaPriznanjeZiga.PriloziUzZahtev priloziUzZahtev) {
+        System.out.println("PRILOZI UZ ZAHTEV: ");
+        System.out.println(getPriloziUzZahtev(priloziUzZahtev));
     }
 
     private static String getAdresa(Adresa adresa) {
@@ -58,9 +58,9 @@ public class PrettyPrint {
             info += "\t-Poslovno ime: " + poslovnoLice.getPoslovnoIme();
         }
         info += "\n\t-Adresa: " + getAdresa(lice.getAdresa());
-        info += "\n\t-Telefon: " + lice.getTelefon();
-        info += "\n\t-Email: " + lice.getEmail();
-        info += "\n\t-Faks: " + lice.getFaks();
+        info += "\n\t-Telefon: " + lice.getKontakt().getTelefon();
+        info += "\n\t-Email: " + lice.getKontakt().getEmail();
+        info += "\n\t-Faks: " + lice.getKontakt().getFaks();
         return info;
     }
 
@@ -115,7 +115,7 @@ public class PrettyPrint {
         return info;
     }
 
-    private static String getPriloziUzZahtev(ZahtevZaPriznanjeZiga.PopunjavaZavod.PriloziUzZahtev prilozi) {
+    private static String getPriloziUzZahtev(ZahtevZaPriznanjeZiga.PriloziUzZahtev prilozi) {
         System.out.println("Prilozi uz zahtev: ");
         String info = "";
         if (prilozi.getPrimerakZnaka() != null)
