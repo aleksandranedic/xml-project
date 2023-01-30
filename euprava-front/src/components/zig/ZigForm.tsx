@@ -304,7 +304,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                     </table>
                 </div>
 
-                <div id="takse" className="form-block">
+                <div id="prilozi" className="form-block">
                     <h3>Prilozi uz zahtev:</h3>
                     <div className="form-input-container">
                         <div className="flex justify-between w-full items-center">
@@ -317,23 +317,23 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Generalno punomocje:</p>
-                            <input type="file" name='generalno-punomocje' className="!border-none"/>
+                            <input type="file" name='generalno-punomocje-fajl' className="!border-none"/>
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Punomocje naknadno dostavljeno:</p>
-                            <input type="file" name='naknadno-punomocje' className="!border-none"/>
+                            <input type="file" name='naknadno-punomocje-fajl' className="!border-none"/>
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Opsti akt:</p>
-                            <input type="file" name='opsti-akt' className="!border-none"/>
+                            <input type="file" name='opsti-akt-fajl' className="!border-none"/>
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Dokaz o pravu prvenstva:</p>
-                            <input type="file" name='dokaz-o-pravu-prvenstva' className="!border-none"/>
+                            <input type="file" name='dokaz-o-pravu-prvenstva-fajl' className="!border-none"/>
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Dokaz o uplati takse:</p>
-                            <input type="file" name='dokaz-o-uplati-takse' className="!border-none"/>
+                            <input type="file" name='dokaz-o-uplati-takse-fajl' className="!border-none"/>
                         </div>
                     </div>
                 </div>
