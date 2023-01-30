@@ -1,5 +1,7 @@
 package ftn.xml.patent.service;
 
+import ftn.xml.patent.dto.Zahtev;
+import ftn.xml.patent.model.Adresa;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.repository.RdfRepository;
@@ -17,6 +19,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
+import java.math.BigInteger;
 import java.util.List;
 
 @Service
@@ -100,4 +103,6 @@ public class PatentService {
     public void deleteRequest(int brojPrijave) throws Exception {
         repository.remove(brojPrijave + ".xml");
     }
+
+
 }
