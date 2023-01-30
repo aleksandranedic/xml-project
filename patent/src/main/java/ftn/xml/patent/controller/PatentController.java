@@ -1,9 +1,13 @@
 package ftn.xml.patent.controller;
 
+import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.xmldb.api.base.XMLDBException;
 
+import javax.xml.bind.JAXBException;
+import java.util.List;
 @RestController
 @RequestMapping(path = "patent")
 public class PatentController {
@@ -15,49 +19,49 @@ public class PatentController {
         this.service = service;
     }
 
-    @GetMapping(value = "")
-    public boolean findAll() {
-        return true;
+    @GetMapping
+    public List<ZahtevZaPriznanjePatenta> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAll();
     }
     @GetMapping(value = "unmarshal")
-    public void unmarshal() {
-        service.unmarshalling();
+    public void unmarshal() throws JAXBException {
+        service.unmarshall();
     }
-    @GetMapping(value = "save")
-    public void save() {
-        service.save();
-    }
-    @GetMapping(value = "rdf")
-    public void createRdf() {
-        service.createRdf();
-    }
-    @GetMapping(value = "pdf")
-    public void toPdf() {
-        service.toPDF();
-    }
-    @GetMapping(value = "xhtml")
-    public void toXHTML() {
-        service.toXHTML();
-    }
-    @GetMapping(path = "{documentId}")
-    public boolean findRequest(@PathVariable("documentId") String documentId) {
-        this.service.getZahtev(documentId);
+
+    @GetMapping()
+    public boolean findRequest(@RequestParam("broj") String brojPrijave) {
+        this.service.getZahtev(brojPrijave);
         return true;
     }
 
-    @PostMapping(value = "")
-    public boolean createRequest(@RequestBody() int requestDto) {
-        return true;
+    @PostMapping()
+    public String createRequest(ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta) {
+        try {
+            service.save(zahtevZaPriznanjePatenta);
+            return "Uspešno ste predali zahtev.";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @PutMapping(value = "{id}")
-    public boolean updateRequest(@RequestParam() int id) {
-        return true;
+    @PutMapping
+    public String updateRequest(@RequestParam("broj") int brojPrijave, ZahtevZaPriznanjePatenta zahtev) {
+        try {
+            //service.updateRequest(brojPrijave, zahtev);
+            return "Uspešno ste ažurirali zahtev.";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @DeleteMapping(value = "{id}")
-    public boolean deleteRequest(@RequestParam() int id) {
-        return true;
+    @DeleteMapping
+    public String deleteRequest(@RequestParam("broj") int brojPrijave) {
+        try {
+            service.deleteRequest(brojPrijave);
+            return "Uspešno ste obrisali zahtev.";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
