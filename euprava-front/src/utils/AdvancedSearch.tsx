@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IoIosAddCircle, IoIosCloseCircle } from 'react-icons/io'
 
-enum RelationType {
+enum Meta {
     NAZIV = 'Naziv',
     DATUM_PODNOSENJA = 'Datum podnošenja',
     BROJ_PRIJAVE = 'Broj prijave'
@@ -15,18 +15,17 @@ enum Operator {
 enum LogicalOperator {
     I = 'I',
     ILI = 'ILI',
-    NE = 'NE'
 }
 
 interface Params {
     logicalOperator: LogicalOperator,
-    relationType: RelationType,
+    relationType: Meta,
     operator: Operator,
     value: string
 }
 
 const AdvancedSearch: React.FunctionComponent = () => {
-    const initialSearchParam = {logicalOperator: LogicalOperator.I ,relationType: RelationType.NAZIV, operator: Operator.EQUALS, value:''};
+    const initialSearchParam = {logicalOperator: LogicalOperator.I ,relationType: Meta.NAZIV, operator: Operator.EQUALS, value:''};
     const [searchParams, setSearchParams] = useState<Params[]>([initialSearchParam]);
     
     const setLogicalOperator = (value: LogicalOperator, index: number) => {
@@ -38,7 +37,7 @@ const AdvancedSearch: React.FunctionComponent = () => {
         setSearchParams(newParams)
     }
 
-    const setRelationType = (value: RelationType, index: number) => {
+    const setRelationType = (value: Meta, index: number) => {
         let newParams = [...searchParams];
         newParams = newParams.map((param, ind) => {
             if (ind === index) return {...param, relationType: value}
@@ -84,14 +83,13 @@ const AdvancedSearch: React.FunctionComponent = () => {
                         <>
                             <select value={searchParam.logicalOperator} onChange={e => setLogicalOperator(e.target.value as LogicalOperator, index)} className="w-full py-2.5 px-0 bg-transparent border-0 border-b-2 appearance-none focus:!outline-none focus:ring-0 border-gray-dark">
                             <option value="I">I</option>
-                            <option value="ILI">ILI</option>
-                            <option value="NE">NE</option>
+                            <option value="ILI">ILI</option>         
                         </select>
                         </>
                     }                  
                     </td>
                     <td className="w-3/12">
-                    <select value={searchParam.relationType} onChange={e => setRelationType(e.target.value as RelationType, index)} className="w-full py-2.5 px-0 bg-transparent border-0 border-b-2 appearance-none focus:!outline-none focus:ring-0 border-gray-dark">
+                    <select value={searchParam.relationType} onChange={e => setRelationType(e.target.value as Meta, index)} className="w-full py-2.5 px-0 bg-transparent border-0 border-b-2 appearance-none focus:!outline-none focus:ring-0 border-gray-dark">
                         <option value="Naziv">Naziv</option>
                         <option value="Datum podnošenja">Datum podnošenja</option>
                         <option value="Broj prijave">Broj prijave</option>

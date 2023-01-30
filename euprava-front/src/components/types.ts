@@ -15,42 +15,36 @@ export class Lice {
   }
 }
 
-export interface Kontakt {
-  telefon: string;
-  eposta: string;
-  faks: string;
+export class Kontakt {
+  public telefon: string;
+  public eposta: string;
+  public faks: string;
+
+  constructor() {
+    this.telefon = "";
+    this.eposta = "";
+    this.faks = "";
+  }
 }
 
-export interface Adresa {
-  ulica: string;
-  broj: string;
-  postanskiBroj: string;
-  grad: string;
-  drzava: string;
+export class Adresa {
+  public ulica: string;
+  public broj: string;
+  public postanskiBroj: string;
+  public grad: string;
+  public drzava: string;
+
+  constructor() {
+    this.ulica = "";
+    this.broj = "";
+    this.postanskiBroj = "";
+    this.grad = "";
+    this.drzava = "";
+  }
 }
 
 export interface Info {
   ime: string;
   prezime?: string;
   drzavljanstvo?: string;
-}
-
-export class Pronalazac extends Lice {
-  public pronalazacNaveden: boolean;
-  constructor() {
-    super();
-    this.pronalazacNaveden = false;
-  }
-}
-
-export class Punomocnik extends Lice {
-  public zaPrijem: boolean;
-  public zaZastupanje: boolean;
-  public zajednickiPredstavnik: boolean;
-  constructor() {
-    super();
-    this.zaZastupanje = false;
-    this.zaPrijem = false;
-    this.zajednickiPredstavnik = false;
-  }
 }

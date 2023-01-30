@@ -9,6 +9,7 @@ import SearchZig from "./components/zig/SearchZig";
 import SearchAutorska from "./components/autorska/SearchAutorska";
 import SearchPatent from "./components/patent/SearchPatent";
 import PatentForm from "./components/patent/PatentForm";
+import AutorskaForm from "./components/autorska/AutorskaForm";
 
 const App: React.FunctionComponent = () => {
     const [user, setUser] = useState<User | null>(JSON.parse(localStorage.getItem('user')!) || null);
@@ -31,7 +32,7 @@ const App: React.FunctionComponent = () => {
                         <Route path='/zahtevi/pretraga/autorska' element={<SearchAutorska/>}/>
                         <Route path='/zahtevi/pretraga/zig' element={<SearchZig/>}/>
                         <Route path='/zahtevi/pretraga/patent' element={<SearchPatent/>}/>
-                        <Route path='/zahtevi/podnesi/autorska' element={<ZigForm/>}/>
+                        <Route path='/zahtevi/podnesi/autorska' element={<AutorskaForm/>}/>
                         <Route path='/zahtevi/podnesi/zig' element={<ZigForm/>}/>
                         <Route path='/zahtevi/podnesi/patent' element={<PatentForm/>}/>
                     </Routes>
