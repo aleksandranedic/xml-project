@@ -176,6 +176,39 @@
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="QR_kod" type="xs:string"/>
+                <xs:element minOccurs="0" name="Resenje">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element minOccurs="1" name="Datum" type="xs:dateTime"/>
+                            <xs:element name="Status">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="Odobren"/>
+                                        <xs:enumeration value="Odbijen"/>
+                                        <xs:enumeration value=""/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="Ime">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="Prezime">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="Broj_prijave" type="xs:string"/>
+                            <xs:element name="Referenca_na_zahtev" type="xs:string"/>
+                            <xs:element minOccurs="0" name="Obrazlozenje" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
