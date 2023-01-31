@@ -1,6 +1,6 @@
 import {useRef, useState} from 'react'
 import { AiOutlineClose } from 'react-icons/ai';
-import { Autor } from './types';
+import { Autor, AutorskoDelo, Podnosilac, PrilozeniDokumenti, Punomocnik } from './types';
  
 const AutorskaForm: React.FunctionComponent = () => {
     const namePodnosilac:React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -12,7 +12,11 @@ const AutorskaForm: React.FunctionComponent = () => {
     const surnamePunomocnik:React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
     const citizenshipPunomocnik: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
+    const [podnosilac, setPodnosilac] = useState<Podnosilac>(new Podnosilac());
+    const [punomocnik, setPunomocnik] = useState<Punomocnik>(new Punomocnik());
     const [autori, setAutori] = useState<Autor[]>([new Autor()]);
+    const [autorskoDelo, setAutorskoDelo] = useState<AutorskoDelo>(new AutorskoDelo());
+    const [prilozeniDokumenti, setPrilozeniDokumenti] = useState<PrilozeniDokumenti>(new PrilozeniDokumenti());
 
     const showFizickoLice =(name:React.RefObject<HTMLInputElement>, surname:React.RefObject<HTMLInputElement>, citizenship:React.RefObject<HTMLInputElement>, pseudonim?:React.RefObject<HTMLInputElement>) => {
         name.current!.classList.remove("hidden");
@@ -55,6 +59,11 @@ const AutorskaForm: React.FunctionComponent = () => {
     const changeAnonymity = (ind: number, value:boolean) => {
         const filtered = autori.map((autor, index) =>  (index === ind ? {...autor, anoniman:value} : {...autor}));
         setAutori(filtered)
+    }
+
+    const setAutor = (ind: number, updatedAutor: Autor) => {
+        const updated = autori.map((autor, index) => index === ind ? updatedAutor : autor);
+        setAutori(updated);
     }
 
 
@@ -314,10 +323,10 @@ const AutorskaForm: React.FunctionComponent = () => {
                             <h2 className=" col-span-full"> Vrsta autorskog dela</h2>
                             <div className='flex gap-4 w-full'>
                                 <select className="w-1/2 py-2.5 px-0 bg-transparent border-0 border-b-2 appearance-none focus:!outline-none focus:ring-0 border-gray-dark">
-                                    <option value="knjizevno_delo">Knjizevno delo</option>
-                                    <option value="muzicko_delo">Muzicko delo</option> 
-                                    <option value="likovno_delo">Likovno delo</option> 
-                                    <option value="racunarski_program">Racunarski program</option> 
+                                    <option value="knjizevno">Književno delo</option>
+                                    <option value="muzicko">Muzičko delo</option> 
+                                    <option value="likovno">Likovno delo</option> 
+                                    <option value="racunarsko">Računarski program</option> 
                                 </select>
                                 <div className='flex-col gap-1 items-start w-1/2'>
                                     <p className='font-light text-sm'>Druga vrsta:</p>
@@ -341,7 +350,7 @@ const AutorskaForm: React.FunctionComponent = () => {
                             </div>
 
 
-                            <h2 className=" w-full"> Nacin koriscenja</h2>
+                            <h2 className=" w-full"> Način korišćenja</h2>
                             <input type="text" name="ulica-dostavljanje" className='w-full'/>                                                    
                         </div>
                     </div>
@@ -363,15 +372,15 @@ const AutorskaForm: React.FunctionComponent = () => {
                             <input type="file" name='dokaz-o-uplati-takse-fajl' className="!border-none"/>
                         </div>
                         <div className="flex justify-between w-full items-center">
-                            <p>Izjava o pravno osnovu za podnosenje prijave:</p>
+                            <p>Izjava o pravno osnovu za podnošenje prijave:</p>
                             <input type="file" name='izjava-pravni-osnov-fajl' className="!border-none"/>
                         </div>
                         <div className="flex justify-between w-full items-center">
-                            <p>Izjava o zajednickom predstavniku:</p>
+                            <p>Izjava o zajedničkom predstavniku:</p>
                             <input type="file" name='zajednicki-predstavnik-fajl' className="!border-none"/>
                         </div>
                         <div className="flex justify-between w-full items-center">
-                            <p>Punomocje:</p>
+                            <p>Punomoćje:</p>
                             <input type="file" name='punomocje-fajl' className="!border-none"/>
                         </div>
                     </div>
