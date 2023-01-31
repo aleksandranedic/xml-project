@@ -1,4 +1,5 @@
-import {useRef, useState} from 'react';
+import {useRef, useState, useContext} from 'react';
+import UserContext from '../../store/user-context';
 import { InformacijeOZigu, PlaceneTakse, Podnosilac, PrilozeniDokumenti, Punomocnik, VrstaA, VrstaB } from './types';
 
 interface ZigFormProps {
@@ -28,6 +29,8 @@ const nicanskaKlasifikacija = (informacijeOZigu: InformacijeOZigu, setInformacij
     return <ul className=" text-sm grid grid-cols-12 gap-1">{rows}</ul>;
 }
 const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
+    const { user, setUser } = useContext(UserContext);
+
     const namePodnosilac:React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
     const surnamePodnosilac: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
 
@@ -121,7 +124,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Email</p>
-                                <input type="text" name="email" className='w-full' value={podnosilac.kontakt.eposta} onChange = {e => setPodnosilac({...podnosilac, kontakt:{...podnosilac.kontakt, eposta:e.target.value}})}/>
+                                <input type="text" name="email" className='w-full' value={user!.email}/>
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Faks</p>

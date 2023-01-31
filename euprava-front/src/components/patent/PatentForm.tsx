@@ -1,11 +1,13 @@
-import {useRef, useState} from 'react'
+import {useRef, useState, useContext} from 'react'
 import { IoIosAddCircle, IoIosCloseCircle } from 'react-icons/io'
 import { AiOutlineClose } from 'react-icons/ai'
 import { Dostavljanje, NazivPatent, Podnosilac, PrilozeniDokumenti, Pronalazac, PrvobitnaPrijava, Punomocnik, RanijaPrijava, TipPrvobitnePrijave } from './types';
 import { toast, ToastContainer } from 'react-toastify';
+import UserContext from '../../store/user-context';
 
 
 const PatentForm: React.FunctionComponent = () => {
+    const { user, setUser } = useContext(UserContext);
     const namePodnosilac:React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
     const surnamePodnosilac: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
     const citizenshipPodnosilac: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -183,7 +185,7 @@ const PatentForm: React.FunctionComponent = () => {
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>E-pošta</p>
-                                <input type="text" name="eposta" className='w-full' value={podnosilac.kontakt.eposta} onChange = {e => setPodnosilac({...podnosilac, kontakt:{...podnosilac.kontakt, eposta:e.target.value}})}/>
+                                <input type="text" name="eposta" className='w-full' value={user!.email}/>
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Faks</p>

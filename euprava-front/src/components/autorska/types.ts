@@ -30,7 +30,7 @@ export enum VrstaDela {
 export class AutorskoDelo {
   public radniOdnos: boolean;
   public naslov: string;
-  public vrstaDela: VrstaDela;
+  public vrstaDela: VrstaDela | null;
   public drugaVrsta: string;
   public forma: string;
   public naslovPrerade: string;
@@ -40,7 +40,7 @@ export class AutorskoDelo {
   constructor() {
     this.radniOdnos = false;
     this.naslov = "";
-    this.vrstaDela = VrstaDela.knjizevno;
+    this.vrstaDela = null;
     this.drugaVrsta = "";
     this.forma = "";
     this.naslovPrerade = "";
