@@ -11,7 +11,7 @@
                 <pred:Broj_prijave>
                     <xsl:value-of select="//zig:broj_prijave_ziga"/>
                 </pred:Broj_prijave>
-                <pred:Naziv>
+                <pred:Podnosilac>
                     <xsl:choose>
                         <xsl:when test="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime">
                             <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime"/>
@@ -20,10 +20,16 @@
                                 <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:prezime"/>
                         </xsl:otherwise>
                     </xsl:choose>
-                </pred:Naziv>
+                </pred:Podnosilac>
                 <pred:Datum_podnosenja>
-                    <xsl:value-of select="//zig:datum_podnosenja"></xsl:value-of>
+                    <xsl:value-of select="//zig:datum_podnosenja"/>
                 </pred:Datum_podnosenja>
+
+                <pred:Takse>
+                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:placene_takse/zig:ukupno"/>
+                </pred:Takse>
+
+
             </rdf:Description>
         </rdf:RDF>
     </xsl:template>

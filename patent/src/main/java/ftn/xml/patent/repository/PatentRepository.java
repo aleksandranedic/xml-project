@@ -65,6 +65,7 @@ public class PatentRepository {
         return retrieveBasedOnXQuery(xquery);
     }
 
+
     private List<ZahtevZaPriznanjePatenta> retrieveBasedOnXQuery(String xquery) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException {
         createConnection();
         Collection col = null;

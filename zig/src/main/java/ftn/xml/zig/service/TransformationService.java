@@ -1,4 +1,4 @@
-package ftn.xml.patent.service;
+package ftn.xml.zig.service;
 
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.fop.apps.FOUserAgent;
@@ -19,8 +19,8 @@ import java.io.*;
 
 @Service
 public class TransformationService {
-    public static final String PDF_XSL_FILE = "./src/main/resources/data/xsl-fo/patent.xsl";
-    public static final String HTML_XSL_FILE = "./src/main/resources/data/xhtml/patent.xsl";
+    public static final String PDF_XSL_FILE = "./src/main/resources/data/xsl-fo/zig.xsl";
+    public static final String HTML_XSL_FILE = "./src/main/resources/data/xhtml/zig.xsl";
     private final FopFactory fopFactory;
     private TransformerFactory transformerFactory;
     private static final DocumentBuilderFactory documentFactory;

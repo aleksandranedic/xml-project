@@ -1,6 +1,6 @@
-package ftn.xml.patent.controller;
+package ftn.xml.zig.controller;
 
-import ftn.xml.patent.service.StorageService;
+import ftn.xml.zig.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +21,6 @@ public class StorageController {
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file) {
         String fileName = storageService.storeFile(file);
 
-        return ResponseEntity.ok().body("http://localhost:8002/prilozi/" + fileName);
+        return ResponseEntity.ok().body("http://localhost:8000/prilozi/" + fileName);
     }
 }

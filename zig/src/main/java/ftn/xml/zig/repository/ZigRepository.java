@@ -6,33 +6,38 @@ import ftn.xml.zig.utils.PrettyPrint;
 import org.springframework.stereotype.Repository;
 import org.exist.xmldb.EXistResource;
 import org.xmldb.api.DatabaseManager;
-import org.xmldb.api.base.Collection;
-import org.xmldb.api.base.Database;
-import org.xmldb.api.base.XMLDBException;
+import org.xmldb.api.base.*;
 import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.modules.CollectionManagementService;
+import org.xmldb.api.modules.XQueryService;
 
 import java.io.OutputStream;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.OutputKeys;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class ZigRepository {
     private AuthenticationUtilities.ConnectionProperties conn;
-    private final String collectionId = "/db/zig";
+    private final String COLLECTION_ID = "/db/zig";
+    private final Unmarshaller unmarshaller;
 
-    ZigRepository() throws IOException {
+    ZigRepository() throws IOException, JAXBException {
         this.conn = AuthenticationUtilities.loadProperties();
+        JAXBContext context = JAXBContext.newInstance("ftn.xml.zig.model");
+        unmarshaller = context.createUnmarshaller();
     }
     public ZahtevZaPriznanjeZiga retrieve(String documentId) throws Exception {
         createConnection();
         Collection col = null;
         XMLResource res = null;
         try {
-            col = DatabaseManager.getCollection(conn.uri + collectionId);
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
             col.setProperty(OutputKeys.INDENT, "yes");
             res = (XMLResource)col.getResource(documentId);
             if(res == null) {
@@ -50,12 +55,91 @@ public class ZigRepository {
             closeConnection(col, res);
         }
     }
+
+    public void remove(String documentName) throws Exception {
+        createConnection();
+        Collection col = null;
+        XMLResource res = null;
+        try {
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
+            col.setProperty(OutputKeys.INDENT, "yes");
+            res = (XMLResource) col.getResource(documentName);
+            col.removeResource(res);
+            if (res == null) {
+                throw new RuntimeException("No document with given name.");
+            } else {
+                col.removeResource(res);
+
+            }
+        } finally {
+            closeConnection(col, res);
+        }
+    }
+
+
+    public List<ZahtevZaPriznanjeZiga> retrieveAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String xquery = "let $files := collection(\"/db/zig\") return $files";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    public List<ZahtevZaPriznanjeZiga> retrieveBasedOnTerm(String term) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String xquery = "let $files := collection(\"/db/zig\") return $files[contains(., \"" + term + "\")]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    public List<ZahtevZaPriznanjeZiga> retrieveBasedOnTermList(String[] termList) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        StringBuilder xquery = new StringBuilder("let $files := collection(\"/db/zig\") return $files[");
+        for (int i = 0; i < termList.length; i++) {
+            if (i == 0) {
+                xquery.append("contains(., \"").append(termList[i]).append("\")");
+            } else {
+                xquery.append(" and contains(., \"").append(termList[i]).append("\")");
+            }
+        }
+        xquery.append("]");
+        return retrieveBasedOnXQuery(xquery.toString());
+    }
+
+
+    public List<ZahtevZaPriznanjeZiga> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String xquery = "let $files := collection(\"/db/zig\") return $files[Zahtev_za_priznanje_ziga/Broj_prijave_ziga = \"" + Broj_prijave + "\"]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+
+
+    private List<ZahtevZaPriznanjeZiga> retrieveBasedOnXQuery(String xquery) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException {
+        createConnection();
+        Collection col = null;
+        List<XMLResource> resources = new ArrayList<>();
+        try {
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
+            col.setProperty(OutputKeys.INDENT, "yes");
+            XQueryService xqs = (XQueryService) col.getService("XQueryService", "1.0");
+
+            ResourceSet result = xqs.query(xquery);
+            for (ResourceIterator i = result.getIterator(); i.hasMoreResources(); ) {
+                Resource resource = i.nextResource();
+                resources.add((XMLResource) resource);
+            }
+        } finally {
+            closeConnection(col, resources);
+        }
+        List<ZahtevZaPriznanjeZiga> list = resources.stream().map(res -> {
+            try {
+                return (ZahtevZaPriznanjeZiga) unmarshaller.unmarshal(res.getContentAsDOM());
+            } catch (JAXBException | XMLDBException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
+        return list;
+    }
     public void store(String documentId, OutputStream os) throws Exception {
         createConnection();
         Collection col = null;
         XMLResource res = null;
         try {
-            col = getOrCreateCollection(collectionId);
+            col = getOrCreateCollection(COLLECTION_ID);
             res = (XMLResource) col.createResource(documentId, XMLResource.RESOURCE_TYPE);
             res.setContent(os);
             System.out.println("[INFO] Storing the document: " + res.getId());
@@ -89,6 +173,26 @@ public class ZigRepository {
             }
         }
     }
+
+    private static void closeConnection(Collection col, List<XMLResource> resources) {
+        for (XMLResource res : resources) {
+            if (res != null) {
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException xe) {
+                    xe.printStackTrace();
+                }
+            }
+        }
+        if (col != null) {
+            try {
+                col.close();
+            } catch (XMLDBException xe) {
+                xe.printStackTrace();
+            }
+        }
+    }
+
 
     private Collection getOrCreateCollection(String collectionUri) throws XMLDBException {
         return getOrCreateCollection(collectionUri, 0);

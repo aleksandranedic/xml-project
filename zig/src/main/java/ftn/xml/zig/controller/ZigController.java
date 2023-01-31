@@ -1,8 +1,12 @@
 package ftn.xml.zig.controller;
+import ftn.xml.zig.dto.Zahtev;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.service.ZigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.xmldb.api.base.XMLDBException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path="zig")
@@ -14,48 +18,45 @@ public class ZigController {
         this.service = service;
     }
 
-    @GetMapping(value = "")
-    public boolean findAll() {
-        return true;
-    }
-    @GetMapping(value = "unmarshal")
-    public void unmarshal() {
-        service.unmarshalling();
-    }
-    @GetMapping(value = "marshal")
-    public void marshal(@RequestBody() ZahtevZaPriznanjeZiga zahtev) {
-        service.marshalling(zahtev);
-    }
-    @GetMapping(value = "pdf")
-    public void toPdf() {
-        service.toPDF();
-    }
-    @GetMapping(value = "xhtml")
-    public void toXHTML() {
-        service.toXHTML();
-    }
-    @GetMapping(value = "rdf")
-    public void createRdf() {
-        service.createRdf();
-    }
-    @GetMapping(path = "{documentId}")
-    public boolean findRequest(@PathVariable("documentId") String documentId) {
-        this.service.getZahtev(documentId);
-        return true;
+    @GetMapping
+    public List<ZahtevZaPriznanjeZiga> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAll();
     }
 
-    @PostMapping(value = "")
-    public boolean createRequest(@RequestBody() int requestDto) {
-        return true;
+    @GetMapping("/{broj}")
+    public ZahtevZaPriznanjeZiga getRequest(@PathVariable("broj") String brojPrijave) {
+        return this.service.getZahtev(brojPrijave);
     }
 
-    @PutMapping(value = "{id}")
-    public boolean updateRequest(@RequestParam() int id) {
-        return true;
+
+    @PostMapping(value = "/create")
+    public String createRequest(@RequestBody Zahtev zahtev) {
+        try {
+            service.save(zahtev);
+            return "Uspešno ste dodali zahtev.";
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @DeleteMapping(value = "{id}")
-    public boolean deleteRequest(@RequestParam() int id) {
-        return true;
+    @PutMapping
+    public String updateRequest(@RequestParam("broj") int brojPrijave, Zahtev zahtev) {
+        try {
+            //service.updateRequest(brojPrijave, zahtev);
+            return "Uspešno ste ažurirali zahtev.";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @DeleteMapping
+    public String deleteRequest(@RequestParam("broj") int brojPrijave) {
+        try {
+            service.deleteRequest(brojPrijave);
+            return "Uspešno ste obrisali zahtev.";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

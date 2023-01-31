@@ -27,6 +27,9 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
         if (type === "patent") {
             port = "8002"
         }
+        if (type === "zig") {
+            port = "8000"
+        }
 
         let terms:string = keywords.join(";");
 
