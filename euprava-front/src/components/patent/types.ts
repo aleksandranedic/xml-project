@@ -20,6 +20,19 @@ export class Punomocnik extends Lice {
     this.zaPrijem = false;
     this.zajednickiPredstavnik = false;
   }
+
+  public static validate(punomocnik:Punomocnik) {
+    if (!punomocnik.zaPrijem && !punomocnik.zaZastupanje && !punomocnik.zajednickiPredstavnik && Lice.isEmpty(punomocnik)) {
+      return true;
+    }
+    else if (Lice.validate(punomocnik)) {
+      if ((punomocnik.zaZastupanje && !punomocnik.zajednickiPredstavnik) || (punomocnik.zajednickiPredstavnik && punomocnik.zaZastupanje)) {
+        return true;
+      }
+    }
+    return false;
+
+  }
 }
 
 export class NazivPatent {
@@ -28,6 +41,10 @@ export class NazivPatent {
   constructor() {
     this.srpski = "";
     this.engleski = "";
+  }
+
+  public static validate(naziv: NazivPatent) {
+    return naziv.srpski && naziv.engleski;
   }
 }
 
@@ -45,6 +62,19 @@ export class PrvobitnaPrijava {
     this.datum = "";
     this.tip = TipPrvobitnePrijave.izdvojena;
   }
+
+  static validate(prijava: PrvobitnaPrijava) {
+    if (this.isEmpty(prijava)) {
+      return true;
+    }
+    else {
+      return prijava.brojPrijave && prijava.datum;
+    }
+  }
+
+  static isEmpty(prijava:PrvobitnaPrijava) {
+    return !prijava.datum && !prijava.brojPrijave;
+  }
 }
 
 export class RanijaPrijava {
@@ -57,6 +87,18 @@ export class RanijaPrijava {
     this.datum = "";
     this.oznaka = "";
   }
+  static validate(prijava: RanijaPrijava) {
+    if (this.isEmpty(prijava)) {
+      return true;
+    }
+    else {
+      return prijava.brojPrijave && prijava.datum && prijava.oznaka;
+    }
+  }
+
+  static isEmpty(prijava:RanijaPrijava) {
+    return !prijava.datum && !prijava.brojPrijave && !prijava.oznaka;
+  }
 }
 
 export class Dostavljanje extends Adresa {
@@ -66,6 +108,13 @@ export class Dostavljanje extends Adresa {
     super();
     this.pisano = false;
     this.elektronski = false;
+  }
+
+  public static validate(dostavljanje:Dostavljanje):boolean {
+    if ((dostavljanje.pisano && !dostavljanje.elektronski) || (dostavljanje.elektronski && !dostavljanje.pisano)) {
+      return Adresa.isEmpty(dostavljanje) || Adresa.validate(dostavljanje);
+    }
+    return false;
   }
 }
 

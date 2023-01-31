@@ -9,9 +9,16 @@ export class Lice {
       broj: "",
       postanskiBroj: "",
       grad: "",
-      drzava: "",
+      drzava: ""
     };
     this.kontakt = { telefon: "", eposta: "", faks: "" };
+  }
+  public static validate(lice:Lice):boolean {
+    return Kontakt.validate(lice.kontakt) && Adresa.validate(lice.adresa) && Info.validate(lice.info);
+  }
+
+  public static isEmpty(lice:Lice):boolean {
+    return Kontakt.isEmpty(lice.kontakt) && Adresa.isEmpty(lice.adresa) && Info.isEmpty(lice.info);
   }
 }
 
@@ -24,6 +31,14 @@ export class Kontakt {
     this.telefon = "";
     this.eposta = "";
     this.faks = "";
+  }
+
+  public static validate(kontakt: Kontakt) {
+    return kontakt.eposta !== "" && kontakt.faks !== "" && kontakt.telefon !== "";
+  }
+
+  public static isEmpty(kontakt: Kontakt) {
+    return kontakt.eposta === "" && kontakt.faks === "" && kontakt.telefon === "";
   }
 }
 
@@ -41,10 +56,35 @@ export class Adresa {
     this.grad = "";
     this.drzava = "";
   }
+
+  public static validate(adresa: Adresa):boolean {
+    return adresa.ulica !== "" && adresa.broj !== "" && adresa.postanskiBroj !== "" && adresa.grad !== "" && adresa.drzava !== "";
+  }
+
+  public static isEmpty(adresa: Adresa):boolean {
+    return adresa.ulica === "" && adresa.broj === "" && adresa.postanskiBroj === "" && adresa.grad === "" && adresa.drzava === "";
+  }
 }
 
-export interface Info {
+export class Info {
   ime: string;
   prezime?: string;
   drzavljanstvo?: string;
+
+  constructor() {
+    this.ime = "";
+  }
+  static validate(info: Info): boolean {
+    if (info.drzavljanstvo) {
+      return info.ime !== "" && typeof info.prezime !== undefined && info.prezime !== "";
+    }
+    else return info.ime !== "";
+  }
+
+  static isEmpty(info: Info): boolean {
+    return info.ime === "" && !info.prezime && !info.drzavljanstvo;
+
+  }
+
+
 }

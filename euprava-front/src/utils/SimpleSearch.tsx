@@ -1,10 +1,15 @@
-import {useState} from "react"
+import {useContext, useState} from "react"
+import RequestTypeContext from "../store/request-type-context";
+import axios from "axios";
+import {toast} from "react-toastify";
 
 interface SimpleSearchProps {
     
 }
  
 const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
+    const {type} = useContext(RequestTypeContext);
+
     const [keywords, setKeywords] = useState<string[]>([]);
 
     const handleBadgeRemove = (keyword: string) => {
@@ -16,7 +21,23 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
           setKeywords([...keywords, event.target.value])
         }
     }
-    return ( 
+
+    function search() {
+        let port;
+        if (type === "patent") {
+            port = "8002"
+        }
+
+        let terms:string = keywords.join(";");
+
+        axios.get(`http://localhost:${port}/search/basic?terms=${terms}`).then(response => {
+            console.log(response.data);
+        }).catch(() => {
+            toast.error("Greška pri pretrazi.")
+        })
+    }
+
+    return (
         <div className="overflow-auto flex justify-center w-1/2">
             <div className="overflow-auto flex gap-1 border border-gray-dark items-center w-10/12 justify-start rounded-l-lg">                  
                 <div className="w-50vh flex items-center justify-end">
@@ -31,7 +52,7 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
                 </div>
                 <input onKeyDown={handleKeyDown} type='text' className={`w-[75vh] rounded-none py-2 bg-transparent border-0 appearance-none-full focus:outline-none focus:!ring-0 `}/>
             </div>
-            <button className="text-white rounded-r-lg px-4 py-2 bg-green-700 w-2/12 ">Pretraga</button>
+            <button className="text-white rounded-r-lg px-4 py-2 bg-green-700 w-2/12 " onClick={()=>search()}>Pretraga</button>
         </div>
      );
 }
