@@ -3,13 +3,18 @@ package ftn.xml.patent.controller;
 import ftn.xml.patent.dto.Zahtev;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.service.PatentService;
+import org.apache.directory.api.util.exception.NotImplementedException;
+import org.apache.jena.atlas.lib.NotImplemented;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBException;
 import java.util.List;
+
 @RestController
 @RequestMapping(path = "patent")
 public class PatentController {
@@ -25,29 +30,30 @@ public class PatentController {
     public List<ZahtevZaPriznanjePatenta> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         return service.getAll();
     }
-    @GetMapping(value = "unmarshal")
-    public void unmarshal() throws JAXBException {
-        service.unmarshall();
-    }
+
+//    @GetMapping
+//    public List<ZahtevZaPriznanjePatenta> getAllWithoutApproval() {
+//        throw new NotImplementedException();
+//    }
+//
+//    @GetMapping
+//    public List<ZahtevZaPriznanjePatenta> getAllUserApproved() {
+//        throw new NotImplementedException();
+//    }
 
     @GetMapping("/{broj}")
-    public boolean findRequest(@PathVariable("broj") String brojPrijave) {
+    public boolean getRequest(@PathVariable("broj") String brojPrijave) {
         this.service.getZahtev(brojPrijave);
         return true;
     }
 
-    @GetMapping(path = "a", produces = MediaType.APPLICATION_XML_VALUE)
-    public String test() {
-        return "Success";
-    }
 
-    @PostMapping(path = "create", consumes = MediaType.APPLICATION_XML_VALUE)
-    public void createRequest(@RequestBody Zahtev zahtev) {
+    @PostMapping(value = "/create")
+    public String createRequest(@RequestBody Zahtev zahtev) {
         try {
-            //service.save(zahtevZaPriznanjePatenta);
-            System.out.println(zahtev);
+            service.save(zahtev);
+            return "Uspešno ste dodali zahtev.";
 
-            //return "Uspešno ste predali zahtev.";
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping(path = "search")
+@RequestMapping("/search")
 public class SearchController {
 
     private final SearchService searchService;
@@ -21,7 +21,7 @@ public class SearchController {
 
     }
 
-    @GetMapping(value = "advanced")
+    @PostMapping(value = "advanced")
     public ResponseEntity<?> advanced(@RequestBody MetadataList metadata) {
         try {
             return ResponseEntity.ok(this.searchService.advancedSearch(metadata));
@@ -31,10 +31,10 @@ public class SearchController {
         }
     }
 
-    @GetMapping(value = "basic")
-    public ResponseEntity<?> basic(@RequestParam("term") String term) {
+    @GetMapping("/basic")
+    public ResponseEntity<?> basic(@RequestParam("terms") String terms) {
         try {
-            return ResponseEntity.ok(this.searchService.basicSearch(term));
+            return ResponseEntity.ok(this.searchService.basicSearch(terms));
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

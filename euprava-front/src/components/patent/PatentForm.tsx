@@ -250,17 +250,14 @@ const PatentForm: React.FunctionComponent = () => {
                 ranijePrijave: ranijePrijave
             }
 
-            const xml2js = require("xml2js");
-            const builder = new xml2js.Builder();
-            let xml = builder.buildObject(dto);
+            //const xml2js = require("xml2js");
+            //const builder = new xml2js.Builder();
+            //let xml = builder.buildObject(dto);
 
-            axios.post("http://localhost:8002/patent/create", xml,{
-                headers: {
-                    "Content-Type": "application/xml",
-                    "Accept": "application/xml",
-                },
-            }).then(response => {
-                alert(response);
+            axios.post("http://localhost:8002/patent/create", dto).then(response => {
+                toast.success(response.data);
+            }).catch(() => {
+                toast.error("Greška pri čuvanju zahteva.")
             })
         }
     }

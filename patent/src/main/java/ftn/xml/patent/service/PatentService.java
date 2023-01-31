@@ -1,7 +1,7 @@
 package ftn.xml.patent.service;
 
 import ftn.xml.patent.dto.Zahtev;
-import ftn.xml.patent.model.Adresa;
+import ftn.xml.patent.dto.ZahtevMapper;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.repository.RdfRepository;
@@ -16,10 +16,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
-import java.math.BigInteger;
+import java.text.ParseException;
 import java.util.List;
 
 @Service
@@ -32,10 +33,13 @@ public class PatentService {
     private final Unmarshaller unmarshaller;
     private final Marshaller marshaller;
 
+    private final ZahtevMapper mapper;
+
     @Autowired
-    public PatentService(PatentRepository repository, RdfRepository rdfRepository) throws SAXException, JAXBException {
+    public PatentService(PatentRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper) throws SAXException, JAXBException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
+        this.mapper = mapper;
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -105,4 +109,7 @@ public class PatentService {
     }
 
 
+    public void save(Zahtev zahtev) throws Exception {
+        save(mapper.parseZahtev(zahtev));
+    }
 }

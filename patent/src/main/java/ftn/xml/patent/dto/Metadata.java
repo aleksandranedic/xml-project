@@ -12,6 +12,6 @@ import lombok.Setter;
 public class Metadata {
     private String meta;
     private String value;
+    private String logicalOperator;
     private String operator;
-    private String negative;
 }

@@ -17,10 +17,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 @Component
 public class ZahtevMapper {
-
 
     private final PatentRepository patentRepository;
 
@@ -78,6 +78,10 @@ public class ZahtevMapper {
     private ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave getRanijePrijave(Zahtev zahtev) throws DatatypeConfigurationException, ParseException {
         ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave ranijePrijave = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave();
 
+        if (zahtev.getRanijaPrijave() == null) {
+            return null;
+        }
+
         for (Zahtev.RanijaPrijava ranijaPrijava: zahtev.getRanijaPrijave()) {
             ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave.Prijava prijava = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave.Prijava();
             prijava.setBrojPrijave(ranijaPrijava.getBrojPrijave());
@@ -90,6 +94,10 @@ public class ZahtevMapper {
 
     private ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava getPrvobitnaPrijava(Zahtev zahtev) throws DatatypeConfigurationException, ParseException {
         ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava prvobitnaPrijava = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava();
+        if (Objects.equals(zahtev.getPrvobitnaPrijava().getBrojPrijave(), "")) {
+            return null;
+        }
+
         prvobitnaPrijava.setTipPrijave(zahtev.getPrvobitnaPrijava().getTipPrijave());
         prvobitnaPrijava.setBrojPrijave(zahtev.getPrvobitnaPrijava().getBrojPrijave());
         prvobitnaPrijava.setDatumPodnosenja(parseToXMLGregorianCalendar(zahtev.getPrvobitnaPrijava().getDatumPodnosenja()));
@@ -117,6 +125,9 @@ public class ZahtevMapper {
             podaciOPronalazacu.setPronalazacNeZeliDaBudeNaveden(new TEmpty());
         } else {
             for (Zahtev.Lice pronalazac : zahtev.getPronalazaci()) {
+                if (Objects.equals(pronalazac.getInfo().getIme(), "")) {
+                    return null;
+                }
                 if (pronalazac.getInfo().getPrezime() == null) {
                     podaciOPronalazacu.getPronalazac().add(getPoslovnoLice(pronalazac));
                 } else {
@@ -130,6 +141,10 @@ public class ZahtevMapper {
     private static ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku getPodaciOPunomocniku(Zahtev zahtev) {
         ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku podaciOPunomocniku = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku();
         Zahtev.Punomocnik punomocnik = zahtev.getPunomocnik();
+        if (Objects.equals(punomocnik.getInfo().getIme(), "")) {
+            return null;
+        }
+
         if (punomocnik.getInfo().getPrezime() == null) {
             podaciOPunomocniku.setPunomocnik(getPoslovnoLice(punomocnik));
         } else {
@@ -180,6 +195,10 @@ public class ZahtevMapper {
     }
 
     private static Adresa getAdresa(Zahtev.Adresa a) {
+        if (a.getUlica() == "") {
+            return null;
+        }
+
         Adresa adresa = new Adresa();
         adresa.setDrzava(a.getDrzava());
         adresa.setGrad(a.getGrad());

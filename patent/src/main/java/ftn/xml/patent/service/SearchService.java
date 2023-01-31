@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.xmldb.api.base.XMLDBException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class SearchService {
@@ -40,7 +37,7 @@ public class SearchService {
             Metadata m = metadata.get(i);
             int lastIndex = metadata.size() - 1;
 
-            if (Objects.equals(m.getNegative(), "!=")) {
+            if (Objects.equals(m.getOperator(), "!=")) {
                 builder.append(getNegativeValue(i, m));
             } else {
                 builder.append(getPositiveValue(i, m));
@@ -54,10 +51,10 @@ public class SearchService {
         if (i == 0) {
             value = String.format("?%s = \"%s\"", m.getMeta(), m.getValue());
         } else {
-            if (Objects.equals(m.getOperator(), "")) {
+            if (Objects.equals(m.getLogicalOperator(), "")) {
                 throw new IllegalArgumentException("Only last parameter can be without operator.");
             }
-            value = String.format(" %s ?%s = \"%s\"", m.getOperator(), m.getMeta(), m.getValue());
+            value = String.format(" %s ?%s = \"%s\"", m.getLogicalOperator(), m.getMeta(), m.getValue());
         }
         return value;
     }
@@ -67,10 +64,10 @@ public class SearchService {
         if (i == 0) {
             value = String.format("NOT EXISTS {?patent <%s> \"%s\"}", m.getMeta(), m.getValue());
         } else {
-            if (Objects.equals(m.getOperator(), "")) {
+            if (Objects.equals(m.getLogicalOperator(), "")) {
                 throw new IllegalArgumentException("Only last parameter can be without operator.");
             }
-            value = String.format(" %s NOT EXISTS {?patent <%s> \"%s\"}", m.getOperator(), m.getMeta(), m.getValue());
+            value = String.format(" %s NOT EXISTS {?patent <%s> \"%s\"}", m.getLogicalOperator(), m.getMeta(), m.getValue());
         }
         return value;
     }
@@ -122,8 +119,16 @@ public class SearchService {
         return builder.toString();
     }
 
-    public List<ZahtevZaPriznanjePatenta> basicSearch(String term) throws Exception {
-        return repository.retrieveBasedOnTerm(term);
+    public List<ZahtevZaPriznanjePatenta> basicSearch(String terms) throws Exception {
+
+        Set<ZahtevZaPriznanjePatenta> zahtevi = new HashSet<>();
+
+        for (String term: terms.split(";")) {
+            zahtevi.addAll(repository.retrieveBasedOnTerm(term));
+        }
+
+        return zahtevi.stream().toList();
+
     }
 
 

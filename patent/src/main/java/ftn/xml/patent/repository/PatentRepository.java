@@ -20,6 +20,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.regex.Pattern;
+
 @Repository
 public class PatentRepository {
     private final AuthenticationUtilities.ConnectionProperties conn;
@@ -219,12 +222,21 @@ public class PatentRepository {
             String brojPrijave = null;
 
             while (brojPrijave == null || brojeviPrijave.contains(brojPrijave)) {
-                brojPrijave = "P-"+ RandomStringUtils.randomAlphanumeric(5);
+                brojPrijave = getRandomBrojPrijave();
             }
-            return brojPrijave;
+            return brojPrijave.split(Pattern.quote("."))[0];
 
         } finally {
             closeConnection(col, res);
         }
+    }
+
+    private String getRandomBrojPrijave() {
+        Random random = new Random();
+        StringBuilder randomString = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            randomString.append(random.nextInt(10));
+        }
+        return "P-"+ randomString.toString() + ".xml";
     }
 }
