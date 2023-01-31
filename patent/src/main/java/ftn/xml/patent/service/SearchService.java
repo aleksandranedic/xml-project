@@ -120,13 +120,7 @@ public class SearchService {
     }
 
     public List<ZahtevZaPriznanjePatenta> basicSearch(String terms) throws Exception {
-
-        Set<ZahtevZaPriznanjePatenta> zahtevi = new HashSet<>();
-
-        for (String term: terms.split(";")) {
-            zahtevi.addAll(repository.retrieveBasedOnTerm(term));
-        }
-
+        Set<ZahtevZaPriznanjePatenta> zahtevi = new HashSet<>(repository.retrieveBasedOnTermList(terms.split(";")));
         return zahtevi.stream().toList();
 
     }

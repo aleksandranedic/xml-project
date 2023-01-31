@@ -46,6 +46,20 @@ public class PatentRepository {
         return retrieveBasedOnXQuery(xquery);
     }
 
+    public List<ZahtevZaPriznanjePatenta> retrieveBasedOnTermList(String[] termList) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        StringBuilder xquery = new StringBuilder("let $files := collection(\"/db/patent\") return $files[");
+        for (int i = 0; i < termList.length; i++) {
+            if (i == 0) {
+                xquery.append("contains(., \"").append(termList[i]).append("\")");
+            } else {
+                xquery.append(" and contains(., \"").append(termList[i]).append("\")");
+            }
+        }
+        xquery.append("]");
+        return retrieveBasedOnXQuery(xquery.toString());
+    }
+
+
     public List<ZahtevZaPriznanjePatenta> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         String xquery = "let $files := collection(\"/db/patent\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
         return retrieveBasedOnXQuery(xquery);
@@ -61,12 +75,11 @@ public class PatentRepository {
             XQueryService xqs = (XQueryService) col.getService("XQueryService", "1.0");
 
             ResourceSet result = xqs.query(xquery);
-            for (ResourceIterator i = result.getIterator(); i.hasMoreResources();) {
+            for (ResourceIterator i = result.getIterator(); i.hasMoreResources(); ) {
                 Resource resource = i.nextResource();
                 resources.add((XMLResource) resource);
             }
-        }
-        finally {
+        } finally {
             closeConnection(col, resources);
         }
         List<ZahtevZaPriznanjePatenta> list = resources.stream().map(res -> {
@@ -80,15 +93,15 @@ public class PatentRepository {
     }
 
 
-    public ZahtevZaPriznanjePatenta retrieve(String documentName) throws Exception{
+    public ZahtevZaPriznanjePatenta retrieve(String documentName) throws Exception {
         createConnection();
         Collection col = null;
         XMLResource res = null;
         try {
             col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
             col.setProperty(OutputKeys.INDENT, "yes");
-            res = (XMLResource)col.getResource(documentName);
-            if(res == null) {
+            res = (XMLResource) col.getResource(documentName);
+            if (res == null) {
                 return null;
             } else {
                 return (ZahtevZaPriznanjePatenta) unmarshaller.unmarshal(res.getContentAsDOM());
@@ -98,16 +111,16 @@ public class PatentRepository {
         }
     }
 
-    public void remove(String documentName) throws Exception{
+    public void remove(String documentName) throws Exception {
         createConnection();
         Collection col = null;
         XMLResource res = null;
         try {
             col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
             col.setProperty(OutputKeys.INDENT, "yes");
-            res = (XMLResource)col.getResource(documentName);
+            res = (XMLResource) col.getResource(documentName);
             col.removeResource(res);
-            if(res == null) {
+            if (res == null) {
                 throw new RuntimeException("No document with given name.");
             } else {
                 col.removeResource(res);
@@ -117,6 +130,7 @@ public class PatentRepository {
             closeConnection(col, res);
         }
     }
+
     public void store(String documentId, OutputStream os) throws Exception {
         createConnection();
         Collection col = null;
@@ -139,14 +153,14 @@ public class PatentRepository {
     }
 
     private static void closeConnection(Collection col, XMLResource res) {
-        if(res != null) {
+        if (res != null) {
             try {
                 ((EXistResource) res).freeResources();
             } catch (XMLDBException xe) {
                 xe.printStackTrace();
             }
         }
-        if(col != null) {
+        if (col != null) {
             try {
                 col.close();
             } catch (XMLDBException xe) {
@@ -156,8 +170,8 @@ public class PatentRepository {
     }
 
     private static void closeConnection(Collection col, List<XMLResource> resources) {
-        for (XMLResource res: resources) {
-            if(res != null) {
+        for (XMLResource res : resources) {
+            if (res != null) {
                 try {
                     ((EXistResource) res).freeResources();
                 } catch (XMLDBException xe) {
@@ -165,7 +179,7 @@ public class PatentRepository {
                 }
             }
         }
-        if(col != null) {
+        if (col != null) {
             try {
                 col.close();
             } catch (XMLDBException xe) {
@@ -181,14 +195,14 @@ public class PatentRepository {
     private Collection getOrCreateCollection(String collectionUri, int pathSegmentOffset) throws XMLDBException {
         Collection col = DatabaseManager.getCollection(this.conn.uri + collectionUri, this.conn.user, this.conn.password);
 
-        if(col == null) {
-            if(collectionUri.startsWith("/")) {
+        if (col == null) {
+            if (collectionUri.startsWith("/")) {
                 collectionUri = collectionUri.substring(1);
             }
             String pathSegments[] = collectionUri.split("/");
-            if(pathSegments.length > 0) {
+            if (pathSegments.length > 0) {
                 StringBuilder path = new StringBuilder();
-                for(int i = 0; i <= pathSegmentOffset; i++) {
+                for (int i = 0; i <= pathSegmentOffset; i++) {
                     path.append("/" + pathSegments[i]);
                 }
                 Collection startCol = DatabaseManager.getCollection(conn.uri + path, conn.user, conn.password);
@@ -237,6 +251,6 @@ public class PatentRepository {
         for (int i = 0; i < 5; i++) {
             randomString.append(random.nextInt(10));
         }
-        return "P-"+ randomString.toString() + ".xml";
+        return "P-" + randomString.toString() + ".xml";
     }
 }
