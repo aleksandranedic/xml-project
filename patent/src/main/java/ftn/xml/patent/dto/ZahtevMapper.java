@@ -1,48 +1,156 @@
 package ftn.xml.patent.dto;
 
 import ftn.xml.patent.model.*;
+import ftn.xml.patent.repository.PatentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.xmldb.api.base.XMLDBException;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
+@Component
 public class ZahtevMapper {
 
 
-    public ZahtevZaPriznanjePatenta parseZahtev(Zahtev zahtev) {
+    private final PatentRepository patentRepository;
+
+    @Autowired
+    public ZahtevMapper(PatentRepository patentRepository) {
+        this.patentRepository = patentRepository;
+    }
+
+
+    public ZahtevZaPriznanjePatenta parseZahtev(Zahtev zahtev) throws DatatypeConfigurationException, ParseException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = new ZahtevZaPriznanjePatenta();
         zahtevZaPriznanjePatenta.setInformacijeOUstanovi(getInformacijeOUstanovi());
-        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc popunjavaPodnosioc = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc();
-
-        popunjavaPodnosioc.setNazivPatenta(getNazivPatenta(zahtev));
-        popunjavaPodnosioc.setPodaciOPunomocniku(getPodaciOPunomocniku(zahtev));
-        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu podaciOPronalazacu = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu();
-        //TODO: Menjaj pronalazaca moze biti vise, pronalazac ne zeli da bude naveden i na beku i na frontu
-
-
-        for (Zahtev.Pronalazac pronalazac : zahtev.getPronalazaci()) {
-            if (pronalazac.getInfo().getPrezime() == null) {
-                podaciOPronalazacu.setPronalazac(getPoslovnoLice(pronalazac));
-            } else {
-                podaciOPronalazacu.setPronalazac(getFizickoLice(pronalazac));
-            }
-        }
-        popunjavaPodnosioc.setPodaciOPronalazacu(podaciOPronalazacu);
+        zahtevZaPriznanjePatenta.setPopunjavaPodnosioc(getPopunjavaPodnosioc(zahtev));
+        ZahtevZaPriznanjePatenta.PopunjavaZavod popunjavaZavod = new ZahtevZaPriznanjePatenta.PopunjavaZavod();
+        popunjavaZavod.setDatumPrijema(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
+        popunjavaZavod.setBrojPrijave(patentRepository.getNextBrojPrijave());
+        zahtevZaPriznanjePatenta.setPopunjavaZavod(popunjavaZavod);
 
         return zahtevZaPriznanjePatenta;
     }
 
+    private ZahtevZaPriznanjePatenta.PopunjavaPodnosioc getPopunjavaPodnosioc(Zahtev zahtev) throws DatatypeConfigurationException, ParseException {
+        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc popunjavaPodnosioc = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc();
+
+        popunjavaPodnosioc.setNazivPatenta(getNazivPatenta(zahtev));
+        popunjavaPodnosioc.setPodaciOPunomocniku(getPodaciOPunomocniku(zahtev));
+        popunjavaPodnosioc.setPodaciOPronalazacu(getPodaciOPronalazacu(zahtev));
+        popunjavaPodnosioc.setPrvobitnaPrijava(getPrvobitnaPrijava(zahtev));
+        popunjavaPodnosioc.setRanijePrijave(getRanijePrijave(zahtev));
+        popunjavaPodnosioc.setDostavljanje( getDostavljanje(zahtev));
+        popunjavaPodnosioc.setPodaciOPodnosiocu(getPodaciOPodnosiocu(zahtev));
+        return popunjavaPodnosioc;
+    }
+
+    private static ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu getPodaciOPodnosiocu(Zahtev zahtev) {
+        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu podaciOPodnosiocu = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu();
+        Zahtev.Lice podnosilac = zahtev.getPodnosilac();
+        if (podnosilac.getInfo().getPrezime() == null) {
+            podaciOPodnosiocu.setPodnosioc(getPoslovnoLice(podnosilac));
+        } else {
+            podaciOPodnosiocu.setPodnosioc(getFizickoLice(podnosilac));
+        }
+        if (zahtev.podnosilacJePronalazac)
+            podaciOPodnosiocu.setPodnosiocJePronalazac(new TEmpty());
+        return podaciOPodnosiocu;
+    }
+
+    private static ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.Dostavljanje getDostavljanje(Zahtev zahtev) {
+        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.Dostavljanje dostavljanje = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.Dostavljanje();
+        dostavljanje.setAdresa(getAdresa(zahtev.getAdresaZaDostavljanje()));
+        dostavljanje.setNacin(zahtev.getNacinDostavljanja());
+        return dostavljanje;
+    }
+
+    private ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave getRanijePrijave(Zahtev zahtev) throws DatatypeConfigurationException, ParseException {
+        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave ranijePrijave = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave();
+
+        for (Zahtev.RanijaPrijava ranijaPrijava: zahtev.getRanijaPrijave()) {
+            ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave.Prijava prijava = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave.Prijava();
+            prijava.setBrojPrijave(ranijaPrijava.getBrojPrijave());
+            prijava.setDvoslovnaOznaka(ranijaPrijava.getDvoslovnaOznaka());
+            prijava.setDatumPodnosenja(parseToXMLGregorianCalendar(ranijaPrijava.getDatumPodnosenja()));
+            ranijePrijave.getPrijava().add(prijava);
+        }
+        return ranijePrijave;
+    }
+
+    private ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava getPrvobitnaPrijava(Zahtev zahtev) throws DatatypeConfigurationException, ParseException {
+        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava prvobitnaPrijava = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava();
+        prvobitnaPrijava.setTipPrijave(zahtev.getPrvobitnaPrijava().getTipPrijave());
+        prvobitnaPrijava.setBrojPrijave(zahtev.getPrvobitnaPrijava().getBrojPrijave());
+        prvobitnaPrijava.setDatumPodnosenja(parseToXMLGregorianCalendar(zahtev.getPrvobitnaPrijava().getDatumPodnosenja()));
+        return prvobitnaPrijava;
+    }
+
+    private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = format.parse(dateString);
+
+        return parseToXMLGregorianCalendar(date);
+    }
+
+    private static XMLGregorianCalendar parseToXMLGregorianCalendar(Date date) throws DatatypeConfigurationException {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+    }
+
+    private static ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu getPodaciOPronalazacu(Zahtev zahtev) {
+        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu podaciOPronalazacu = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu();
+
+        if (zahtev.getPronalazaci().size() == 0) {
+            podaciOPronalazacu.setPronalazacNeZeliDaBudeNaveden(new TEmpty());
+        } else {
+            for (Zahtev.Lice pronalazac : zahtev.getPronalazaci()) {
+                if (pronalazac.getInfo().getPrezime() == null) {
+                    podaciOPronalazacu.getPronalazac().add(getPoslovnoLice(pronalazac));
+                } else {
+                    podaciOPronalazacu.getPronalazac().add(getFizickoLice(pronalazac));
+                }
+            }
+        }
+        return podaciOPronalazacu;
+    }
+
     private static ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku getPodaciOPunomocniku(Zahtev zahtev) {
         ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku podaciOPunomocniku = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku();
-
         Zahtev.Punomocnik punomocnik = zahtev.getPunomocnik();
         if (punomocnik.getInfo().getPrezime() == null) {
             podaciOPunomocniku.setPunomocnik(getPoslovnoLice(punomocnik));
         } else {
             podaciOPunomocniku.setPunomocnik(getFizickoLice(punomocnik));
         }
-
-
-
+        podaciOPunomocniku.setTipPunomocnika(getTipPunomocnika(punomocnik));
         return podaciOPunomocniku;
+    }
+
+    private static ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku.TipPunomocnika getTipPunomocnika(Zahtev.Punomocnik punomocnik) {
+        ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku.TipPunomocnika tipPunomocnika = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku.TipPunomocnika();
+        if (punomocnik.zajednickiPredstavnik) {
+            tipPunomocnika.setPredstavnik(new TEmpty());
+        }
+        if (punomocnik.zaZastupanje) {
+            tipPunomocnika.setZaZastupanje(new TEmpty());
+        }
+        if (punomocnik.zaPrijem) {
+            tipPunomocnika.setZaPrijem(new TEmpty());
+        }
+        return tipPunomocnika;
     }
 
     private static TFizickoLice getFizickoLice(Zahtev.Lice l) {

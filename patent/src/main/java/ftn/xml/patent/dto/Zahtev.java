@@ -11,11 +11,47 @@ import java.util.*;
 @NoArgsConstructor
 public class Zahtev {
     Lice podnosilac;
-    List<Pronalazac> pronalazaci;
+    boolean podnosilacJePronalazac;
+    List<Lice> pronalazaci;
     Punomocnik punomocnik;
-
     String nazivNaSrpskom;
     String nazivNaEngleskom;
+    Adresa adresaZaDostavljanje;
+    String nacinDostavljanja;
+    PrvobitnaPrijava prvobitnaPrijava;
+    List<RanijaPrijava> ranijaPrijave;
+    Prilozi prilozi;
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    static
+    class Prilozi{
+        String prvobitnaPrijava;
+        List<String> ranijePrijave;
+        String izjavaOSticanjuPrava;
+        String izajavaPronalazaca;
+        String opis;
+        String nacrt;
+        String apstrakt;
+    }
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    static
+    class RanijaPrijava{
+        String brojPrijave;
+        String datumPodnosenja;
+        String dvoslovnaOznaka;
+    }
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    static
+    class PrvobitnaPrijava{
+        String brojPrijave;
+        String datumPodnosenja;
+        String tipPrijave;
+    }
 
     @Getter
     @Setter
@@ -57,13 +93,6 @@ public class Zahtev {
         Info info;
         Adresa adresa;
         Kontakt kontakt;
-    }
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    static
-    public class Pronalazac extends Lice {
-        boolean pronalazacNaveden;
     }
     @Getter
     @Setter

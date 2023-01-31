@@ -2,6 +2,7 @@ package ftn.xml.patent.repository;
 
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.utils.AuthenticationUtilities;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.exist.xmldb.EXistResource;
 import org.springframework.stereotype.Repository;
 import org.xmldb.api.DatabaseManager;
@@ -17,6 +18,7 @@ import javax.xml.transform.OutputKeys;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 @Repository
 public class PatentRepository {
@@ -24,7 +26,7 @@ public class PatentRepository {
     private final String COLLECTION_ID = "/db/patent";
     private final Unmarshaller unmarshaller;
 
-    PatentRepository() throws IOException, JAXBException {
+    public PatentRepository() throws IOException, JAXBException {
         this.conn = AuthenticationUtilities.loadProperties();
         JAXBContext context = JAXBContext.newInstance("ftn.xml.patent.model");
         unmarshaller = context.createUnmarshaller();
@@ -202,6 +204,27 @@ public class PatentRepository {
             return getOrCreateCollection(collectionUri, ++pathSegmentOffset);
         } else {
             return col;
+        }
+    }
+
+    public String getNextBrojPrijave() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        createConnection();
+        Collection col = null;
+        XMLResource res = null;
+        try {
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
+            col.setProperty(OutputKeys.INDENT, "yes");
+            List<String> brojeviPrijave = Arrays.stream(col.listResources()).toList();
+
+            String brojPrijave = null;
+
+            while (brojPrijave == null || brojeviPrijave.contains(brojPrijave)) {
+                brojPrijave = "P-"+ RandomStringUtils.randomAlphanumeric(5);
+            }
+            return brojPrijave;
+
+        } finally {
+            closeConnection(col, res);
         }
     }
 }

@@ -18,7 +18,7 @@ public class PrettyPrint {
         System.out.println("------------------------------");
 
         print(popunjavaPodnosioc.getNazivPatenta());
-        print(popunjavaPodnosioc.getPodaciOPodnosiocu());
+        //print(popunjavaPodnosioc.getPodaciOPodnosiocu());
         print(popunjavaPodnosioc.getPodaciOPronalazacu());
         print(popunjavaPodnosioc.getPodaciOPunomocniku());
         print(popunjavaPodnosioc.getDostavljanje());
@@ -71,7 +71,7 @@ public class PrettyPrint {
 
     private static void print(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu podaciOPronalazacu) {
         System.out.println("\nPronalazac: ");
-        print(podaciOPronalazacu.getPronalazac());
+        //print(podaciOPronalazacu.getPronalazac());
     }
 
     private static void print(List<ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu> podaciOPodnosiocima) {
