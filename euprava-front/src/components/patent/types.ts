@@ -1,10 +1,6 @@
 import { Adresa, Lice } from "../types";
 
-export class Pronalazac extends Lice {
-  constructor() {
-    super();
-  }
-}
+export class Pronalazac extends Lice {}
 
 export class Podnosilac extends Lice {
   public pronalazac: boolean;
@@ -82,5 +78,4 @@ export class PrilozeniDokumenti {
   public zastitaPronalaska?: FileList;
   public nacrt?: FileList;
   public apstrakt?: FileList;
-  constructor() {}
 }
