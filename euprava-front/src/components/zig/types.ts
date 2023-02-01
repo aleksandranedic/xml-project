@@ -1,4 +1,17 @@
-import { Lice } from "../types";
+import { InformacijeOResenju, Lice } from "../types";
+
+export class ZahtevZaPriznanjeZiga {
+  public podnosilac: Podnosilac = new Podnosilac();
+  public punomocnik: Punomocnik = new Punomocnik();
+  public informacijeOZigu: InformacijeOZigu = new InformacijeOZigu();
+  public placeneTakse: PlaceneTakse = new PlaceneTakse();
+  public prilozeniDokumenti: PrilozeniDokumenti = new PrilozeniDokumenti();
+  public QRkod: string = "";
+
+  public informacijeOResenju: InformacijeOResenju = new InformacijeOResenju();
+  public datumPodnosenja: Date = new Date();
+  public sifraZahteva: string = "";
+}
 
 export class Podnosilac extends Lice {}
 

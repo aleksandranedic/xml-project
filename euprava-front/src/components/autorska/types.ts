@@ -1,4 +1,16 @@
-import { Lice } from "../types";
+import { InformacijeOResenju, Lice } from "../types";
+
+export class ZahtevZaPriznanjeAutorska {
+  public podnosilac: Podnosilac = new Podnosilac();
+  public punomocnik: Punomocnik = new Punomocnik();
+  public autor: Autor[] = [];
+  public autorskoDelo: AutorskoDelo = new AutorskoDelo();
+  public prilozeniDokumenti: PrilozeniDokumenti = new PrilozeniDokumenti();
+
+  public informacijeOResenju: InformacijeOResenju = new InformacijeOResenju();
+  public datumPodnosenja: Date = new Date();
+  public sifraZahteva: string = "";
+}
 
 export class Podnosilac extends Lice {
   public pseudonim: string;
