@@ -31,9 +31,9 @@ const Zahtevi: React.FunctionComponent<ZahteviProps> = ({zahtevi}) => {
     }
 
     return ( 
-        <div className="w-1/2">
+        <>
         {zahtevi.map(zahtev => 
-            <div onClick={e => onShowModal(zahtev)} key={zahtev.sifraZahteva} className="shadow-aroundLess bg-white p-7 flex flex-col gap-4 items-start hover:scale-105 hover:shadow-around cursor-pointer">
+            <div onClick={e => onShowModal(zahtev)} key={zahtev.sifraZahteva} className="w-[49%] shadow-aroundLess bg-white p-7 flex flex-col gap-4 items-start hover:scale-105 hover:shadow-around cursor-pointer">
                 <div className="w-full justify-between flex">
                     <p className="font-semibold text-lg"> Zahtev za priznanje {setType(zahtev)}</p>
                     <p className={`font-semibold italic ${getColor(zahtev.informacijeOResenju.status)}`}> {zahtev.informacijeOResenju.status} </p>
@@ -51,7 +51,7 @@ const Zahtevi: React.FunctionComponent<ZahteviProps> = ({zahtevi}) => {
             </div>
         )}
         <ZahtevModal zahtev={zahtev} showModal={showModal} setShowModal={setShowModal} />
-        </div>
+        </>
     );
 }
  

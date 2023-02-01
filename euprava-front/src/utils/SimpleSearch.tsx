@@ -47,11 +47,6 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
             }
             console.log(response.data);
         }).catch(() => {
-            switch (type) {
-                case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
-                case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
-                case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
-            }
             toast.error("Greška pri pretrazi.")
         })
     }

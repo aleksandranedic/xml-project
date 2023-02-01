@@ -114,11 +114,6 @@ const AdvancedSearch: React.FunctionComponent = () => {
                 case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
             }
         }).catch(() => {
-            switch (type) {
-                case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
-                case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
-                case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
-            }
             toast.error("Greška pri pretrazi.")
         })
 
