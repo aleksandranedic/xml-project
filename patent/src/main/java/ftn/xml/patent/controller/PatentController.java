@@ -1,18 +1,13 @@
 package ftn.xml.patent.controller;
 
 import ftn.xml.patent.dto.Zahtev;
+import ftn.xml.patent.dto.ZahtevData;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.service.PatentService;
-import org.apache.directory.api.util.exception.NotImplementedException;
-import org.apache.jena.atlas.lib.NotImplemented;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.bind.JAXBException;
 import java.util.List;
 
 @RestController
@@ -20,6 +15,8 @@ import java.util.List;
 public class PatentController {
 
     private final PatentService service;
+    public static final String FILES = "http://localhost:8002/files/";
+
 
     @Autowired
     public PatentController(PatentService service) {
@@ -27,13 +24,31 @@ public class PatentController {
     }
 
     @GetMapping
-    public List<ZahtevZaPriznanjePatenta> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevData> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         return service.getAll();
     }
 
     @GetMapping("/{broj}")
-    public ZahtevZaPriznanjePatenta getRequest(@PathVariable("broj") String brojPrijave) {
-        return this.service.getZahtev(brojPrijave);
+    public ZahtevData getRequest(@PathVariable("broj") String brojPrijave) {
+        return this.service.getZahtevData(brojPrijave);
+    }
+
+    @GetMapping("/pdf/{broj}")
+    public String getPdf(@PathVariable("broj") String brojPrijave) {
+        try {
+            return FILES + this.service.getPdf(brojPrijave);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/html/{broj}")
+    public String getHtml(@PathVariable("broj") String brojPrijave) {
+        try {
+            return FILES + this.service.getHtml(brojPrijave);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

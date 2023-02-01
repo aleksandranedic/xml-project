@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class StorageController {
+    public static final String FILES = "http://localhost:8002/files/";
     private final StorageService storageService;
 
     @Autowired
@@ -21,6 +22,6 @@ public class StorageController {
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file) {
         String fileName = storageService.storeFile(file);
 
-        return ResponseEntity.ok().body("http://localhost:8002/prilozi/" + fileName);
+        return ResponseEntity.ok().body(FILES + fileName);
     }
 }

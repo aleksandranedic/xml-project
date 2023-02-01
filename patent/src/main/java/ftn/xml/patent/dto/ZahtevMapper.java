@@ -2,6 +2,8 @@ package ftn.xml.patent.dto;
 
 import ftn.xml.patent.model.*;
 import ftn.xml.patent.repository.PatentRepository;
+import ftn.xml.patent.service.PatentService;
+import ftn.xml.patent.service.TransformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xmldb.api.base.XMLDBException;
@@ -24,11 +26,26 @@ public class ZahtevMapper {
 
     private final PatentRepository patentRepository;
 
+
     @Autowired
     public ZahtevMapper(PatentRepository patentRepository) {
         this.patentRepository = patentRepository;
     }
 
+
+    public ZahtevData parseZahtev(ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta, String html) {
+        ZahtevData data = new ZahtevData();
+
+        if (zahtevZaPriznanjePatenta.getResenje() != null) {
+            data.setStatus(zahtevZaPriznanjePatenta.getResenje().getStatus());
+        }
+        else data.setStatus("prilozen");
+
+        data.setDatum(zahtevZaPriznanjePatenta.getPopunjavaZavod().getDatumPrijema().toString());
+        data.setBrojPrijave(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave());
+        data.setHtml(html);
+        return data;
+    }
 
     public ZahtevZaPriznanjePatenta parseZahtev(Zahtev zahtev) throws DatatypeConfigurationException, ParseException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = new ZahtevZaPriznanjePatenta();

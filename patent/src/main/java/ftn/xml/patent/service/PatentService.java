@@ -1,6 +1,7 @@
 package ftn.xml.patent.service;
 
 import ftn.xml.patent.dto.Zahtev;
+import ftn.xml.patent.dto.ZahtevData;
 import ftn.xml.patent.dto.ZahtevMapper;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.repository.PatentRepository;
@@ -20,23 +21,29 @@ import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
+
 
 @Service
 public class PatentService {
 
     public static final String CONTEXT_PATH = "ftn.xml.patent.model";
     private static final String SCHEMA_PATH = "./src/main/resources/data/xsd/p-1.xsd";
+    private static final String FILE_FOLDER = "./src/main/resources/data/files/";
     private final PatentRepository repository;
     private final RdfRepository rdfRepository;
+    private final TransformationService trasformationService;
     private final Unmarshaller unmarshaller;
     private final Marshaller marshaller;
     private final ZahtevMapper mapper;
 
     @Autowired
-    public PatentService(PatentRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper) throws SAXException, JAXBException {
+    public PatentService(PatentRepository repository, RdfRepository rdfRepository, TransformationService trasformationService, ZahtevMapper mapper) throws SAXException, JAXBException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
+        this.trasformationService = trasformationService;
         this.mapper = mapper;
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
@@ -50,19 +57,29 @@ public class PatentService {
         marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
     }
+
+    public ZahtevData getZahtevData(String brojPrijave) {
+        try {
+            return mapper.parseZahtev(repository.retrieve(brojPrijave + ".xml"), getHtmlString(brojPrijave));
+        } catch (Exception e) {
+            throw new RuntimeException("Ne postoji zahtev za zadatim brojem prijave.");
+        }
+    }
+
     public ZahtevZaPriznanjePatenta getZahtev(String brojPrijave) {
         try {
             return repository.retrieve(brojPrijave + ".xml");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Ne postoji zahtev za zadatim brojem prijave.");
         }
     }
+
 
     public void unmarshall() throws JAXBException {
         unmarshall("./src/main/resources/data/xml/p-1.xml");
     }
 
-    public ZahtevZaPriznanjePatenta unmarshall(String path) throws JAXBException{
+    public ZahtevZaPriznanjePatenta unmarshall(String path) throws JAXBException {
         return (ZahtevZaPriznanjePatenta) unmarshaller.unmarshal(new File(path));
     }
 
@@ -100,8 +117,10 @@ public class PatentService {
         rdfRepository.writeRdf(zahtev_output.toString());
     }
 
-    public List<ZahtevZaPriznanjePatenta> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return repository.retrieveAll();
+    public List<ZahtevData> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return repository.retrieveAll().stream().map(zahtevZaPriznanjePatenta -> {
+            return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
+        }).toList();
     }
 
     public void deleteRequest(int brojPrijave) throws Exception {
@@ -112,5 +131,37 @@ public class PatentService {
         ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = mapper.parseZahtev(zahtev);
         save(zahtevZaPriznanjePatenta);
         addRdf(zahtevZaPriznanjePatenta);
+    }
+
+    public String getPdf(String brojPrijave) throws JAXBException {
+        return trasformationService.toPDF(marshal(getZahtev(brojPrijave)), brojPrijave + ".pdf");
+    }
+
+    public String getHtml(String brojPrijave) throws JAXBException {
+        return trasformationService.toXHTML(marshal(getZahtev(brojPrijave)), brojPrijave + ".html");
+    }
+
+    public String getHtmlString(String brojPrijave) {
+
+        String filePath = FILE_FOLDER + brojPrijave + ".html";
+
+        String content = "";
+        File file = new File(filePath);
+        if (file.exists() && file.isFile()) {
+            try {
+                content = Files.readString(file.toPath(), Charset.defaultCharset());
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        } else {
+            try {
+                getHtml(brojPrijave);
+
+            } catch (JAXBException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+            return getHtmlString(brojPrijave);
+        }
+        return content;
     }
 }
