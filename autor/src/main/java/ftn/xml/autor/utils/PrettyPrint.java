@@ -11,7 +11,6 @@ public class PrettyPrint {
         System.out.println("\t - Naziv: " + zahtevZaIntelektualnuSvojinu.getInformacijaOUstanovi().getNaziv());
         System.out.println("\t - Adresa: " + printAdress(zahtevZaIntelektualnuSvojinu.getInformacijaOUstanovi().getAdresa()));
         printPopunjavaPodnosilac(zahtevZaIntelektualnuSvojinu.getPopunjavaPodnosilac());
-        printPopunjavaZavod(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod());
     }
 
     private static void printPopunjavaPodnosilac(ZahtevZaIntelektualnuSvojinu.PopunjavaPodnosilac popunjavaPodnosilac) {
@@ -75,18 +74,7 @@ public class PrettyPrint {
         }
     }
 
-    private static void printPopunjavaZavod(ZahtevZaIntelektualnuSvojinu.PopunjavaZavod popunjavaZavod) {
-        System.out.println("-- Popunjava zavod --");
-        System.out.println("\t - Broj prijave: " + popunjavaZavod.getBrojPrijave());
-        System.out.println("\t - Datum podnosenja: " + popunjavaZavod.getDatumPodnosenja().getDay() + "." + popunjavaZavod.getDatumPodnosenja().getMonth() + "." + popunjavaZavod.getDatumPodnosenja().getYear());
-        System.out.println("\t - Prilozi uz zahtev - ");
-        System.out.println("\t\tPrimer autorskog dela: " + popunjavaZavod.getPriloziUzZahtev().getPrimerAutorskogDela().toString());
-        if (popunjavaZavod.getPriloziUzZahtev().getOpisAutorskogDela() != null) {
-            System.out.println("\t\t - Opis autorskog dela - ");
-            System.out.println("\t\tOpis sadrzaja autorskog dela: " + popunjavaZavod.getPriloziUzZahtev().getOpisAutorskogDela().getOpisSadrzajaAutorskogDela());
-            System.out.println("\t\tOpis naslov autorskog dela: " + popunjavaZavod.getPriloziUzZahtev().getOpisAutorskogDela().getNazivAutorskogDela());
-        }
-    }
+
 
     private static String printAdress(Adresa adresa) {
         return adresa.getUlica() + " " + adresa.getBroj() + " " + adresa.getPostanskiBroj() + " " + adresa.getGrad() + " " + adresa.getDrzava();

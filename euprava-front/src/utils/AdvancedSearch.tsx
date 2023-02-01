@@ -165,9 +165,6 @@ const AdvancedSearch: React.FunctionComponent = () => {
                 </td>
             </tr>
         )}
-
-
-
     </tbody>
     </table>
 

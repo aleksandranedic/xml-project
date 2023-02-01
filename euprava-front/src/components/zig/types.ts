@@ -68,6 +68,10 @@ export class PlaceneTakse {
     this.grafickoResenje = 0;
     this.ukupno = 0;
   }
+
+  static validate(placeneTakse:PlaceneTakse):boolean {
+    return placeneTakse.naziv !== "";
+  }
 }
 
 export class PrilozeniDokumenti {

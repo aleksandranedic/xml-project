@@ -1,6 +1,6 @@
-package ftn.xml.patent.controller;
+package ftn.xml.autor.controller;
 
-import ftn.xml.patent.service.StorageService;
+import ftn.xml.autor.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

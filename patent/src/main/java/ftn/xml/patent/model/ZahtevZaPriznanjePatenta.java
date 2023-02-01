@@ -8,10 +8,14 @@
 
 package ftn.xml.patent.model;
 
-import javax.xml.bind.annotation.*;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -314,25 +318,25 @@ import java.util.List;
 public class ZahtevZaPriznanjePatenta {
 
     @XmlElement(name = "Informacije_o_ustanovi", required = true)
-    protected InformacijeOUstanovi informacijeOUstanovi;
+    protected ZahtevZaPriznanjePatenta.InformacijeOUstanovi informacijeOUstanovi;
     @XmlElement(name = "Popunjava_zavod", required = true)
-    protected PopunjavaZavod popunjavaZavod;
+    protected ZahtevZaPriznanjePatenta.PopunjavaZavod popunjavaZavod;
     @XmlElement(name = "Popunjava_podnosioc", required = true)
-    protected PopunjavaPodnosioc popunjavaPodnosioc;
+    protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc popunjavaPodnosioc;
     @XmlElement(name = "Prilozi_uz_zahtev", required = true)
-    protected PriloziUzZahtev priloziUzZahtev;
+    protected ZahtevZaPriznanjePatenta.PriloziUzZahtev priloziUzZahtev;
     @XmlElement(name = "Resenje")
-    protected Resenje resenje;
+    protected ZahtevZaPriznanjePatenta.Resenje resenje;
 
     /**
      * Gets the value of the informacijeOUstanovi property.
      * 
      * @return
      *     possible object is
-     *     {@link InformacijeOUstanovi }
+     *     {@link ZahtevZaPriznanjePatenta.InformacijeOUstanovi }
      *     
      */
-    public InformacijeOUstanovi getInformacijeOUstanovi() {
+    public ZahtevZaPriznanjePatenta.InformacijeOUstanovi getInformacijeOUstanovi() {
         return informacijeOUstanovi;
     }
 
@@ -341,10 +345,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @param value
      *     allowed object is
-     *     {@link InformacijeOUstanovi }
+     *     {@link ZahtevZaPriznanjePatenta.InformacijeOUstanovi }
      *     
      */
-    public void setInformacijeOUstanovi(InformacijeOUstanovi value) {
+    public void setInformacijeOUstanovi(ZahtevZaPriznanjePatenta.InformacijeOUstanovi value) {
         this.informacijeOUstanovi = value;
     }
 
@@ -353,10 +357,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @return
      *     possible object is
-     *     {@link PopunjavaZavod }
+     *     {@link ZahtevZaPriznanjePatenta.PopunjavaZavod }
      *     
      */
-    public PopunjavaZavod getPopunjavaZavod() {
+    public ZahtevZaPriznanjePatenta.PopunjavaZavod getPopunjavaZavod() {
         return popunjavaZavod;
     }
 
@@ -365,10 +369,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @param value
      *     allowed object is
-     *     {@link PopunjavaZavod }
+     *     {@link ZahtevZaPriznanjePatenta.PopunjavaZavod }
      *     
      */
-    public void setPopunjavaZavod(PopunjavaZavod value) {
+    public void setPopunjavaZavod(ZahtevZaPriznanjePatenta.PopunjavaZavod value) {
         this.popunjavaZavod = value;
     }
 
@@ -377,10 +381,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @return
      *     possible object is
-     *     {@link PopunjavaPodnosioc }
+     *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc }
      *     
      */
-    public PopunjavaPodnosioc getPopunjavaPodnosioc() {
+    public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc getPopunjavaPodnosioc() {
         return popunjavaPodnosioc;
     }
 
@@ -389,10 +393,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @param value
      *     allowed object is
-     *     {@link PopunjavaPodnosioc }
+     *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc }
      *     
      */
-    public void setPopunjavaPodnosioc(PopunjavaPodnosioc value) {
+    public void setPopunjavaPodnosioc(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc value) {
         this.popunjavaPodnosioc = value;
     }
 
@@ -401,10 +405,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @return
      *     possible object is
-     *     {@link PriloziUzZahtev }
+     *     {@link ZahtevZaPriznanjePatenta.PriloziUzZahtev }
      *     
      */
-    public PriloziUzZahtev getPriloziUzZahtev() {
+    public ZahtevZaPriznanjePatenta.PriloziUzZahtev getPriloziUzZahtev() {
         return priloziUzZahtev;
     }
 
@@ -413,10 +417,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @param value
      *     allowed object is
-     *     {@link PriloziUzZahtev }
+     *     {@link ZahtevZaPriznanjePatenta.PriloziUzZahtev }
      *     
      */
-    public void setPriloziUzZahtev(PriloziUzZahtev value) {
+    public void setPriloziUzZahtev(ZahtevZaPriznanjePatenta.PriloziUzZahtev value) {
         this.priloziUzZahtev = value;
     }
 
@@ -425,10 +429,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @return
      *     possible object is
-     *     {@link Resenje }
+     *     {@link ZahtevZaPriznanjePatenta.Resenje }
      *     
      */
-    public Resenje getResenje() {
+    public ZahtevZaPriznanjePatenta.Resenje getResenje() {
         return resenje;
     }
 
@@ -437,10 +441,10 @@ public class ZahtevZaPriznanjePatenta {
      * 
      * @param value
      *     allowed object is
-     *     {@link Resenje }
+     *     {@link ZahtevZaPriznanjePatenta.Resenje }
      *     
      */
-    public void setResenje(Resenje value) {
+    public void setResenje(ZahtevZaPriznanjePatenta.Resenje value) {
         this.resenje = value;
     }
 
@@ -722,29 +726,29 @@ public class ZahtevZaPriznanjePatenta {
     public static class PopunjavaPodnosioc {
 
         @XmlElement(name = "Naziv_patenta", required = true)
-        protected NazivPatenta nazivPatenta;
+        protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.NazivPatenta nazivPatenta;
         @XmlElement(name = "Podaci_o_podnosiocu", required = true)
-        protected PodaciOPodnosiocu podaciOPodnosiocu;
+        protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu podaciOPodnosiocu;
         @XmlElement(name = "Podaci_o_pronalazacu", required = true)
-        protected PodaciOPronalazacu podaciOPronalazacu;
+        protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu podaciOPronalazacu;
         @XmlElement(name = "Podaci_o_punomocniku", required = true)
-        protected PodaciOPunomocniku podaciOPunomocniku;
+        protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku podaciOPunomocniku;
         @XmlElement(name = "Dostavljanje", required = true)
-        protected Dostavljanje dostavljanje;
+        protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.Dostavljanje dostavljanje;
         @XmlElement(name = "Prvobitna_prijava", required = true)
-        protected PrvobitnaPrijava prvobitnaPrijava;
+        protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava prvobitnaPrijava;
         @XmlElement(name = "Ranije_prijave", required = true)
-        protected RanijePrijave ranijePrijave;
+        protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave ranijePrijave;
 
         /**
          * Gets the value of the nazivPatenta property.
          * 
          * @return
          *     possible object is
-         *     {@link NazivPatenta }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.NazivPatenta }
          *     
          */
-        public NazivPatenta getNazivPatenta() {
+        public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.NazivPatenta getNazivPatenta() {
             return nazivPatenta;
         }
 
@@ -753,10 +757,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @param value
          *     allowed object is
-         *     {@link NazivPatenta }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.NazivPatenta }
          *     
          */
-        public void setNazivPatenta(NazivPatenta value) {
+        public void setNazivPatenta(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.NazivPatenta value) {
             this.nazivPatenta = value;
         }
 
@@ -765,10 +769,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @return
          *     possible object is
-         *     {@link PodaciOPodnosiocu }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu }
          *     
          */
-        public PodaciOPodnosiocu getPodaciOPodnosiocu() {
+        public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu getPodaciOPodnosiocu() {
             return podaciOPodnosiocu;
         }
 
@@ -777,10 +781,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @param value
          *     allowed object is
-         *     {@link PodaciOPodnosiocu }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu }
          *     
          */
-        public void setPodaciOPodnosiocu(PodaciOPodnosiocu value) {
+        public void setPodaciOPodnosiocu(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPodnosiocu value) {
             this.podaciOPodnosiocu = value;
         }
 
@@ -789,10 +793,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @return
          *     possible object is
-         *     {@link PodaciOPronalazacu }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu }
          *     
          */
-        public PodaciOPronalazacu getPodaciOPronalazacu() {
+        public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu getPodaciOPronalazacu() {
             return podaciOPronalazacu;
         }
 
@@ -801,10 +805,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @param value
          *     allowed object is
-         *     {@link PodaciOPronalazacu }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu }
          *     
          */
-        public void setPodaciOPronalazacu(PodaciOPronalazacu value) {
+        public void setPodaciOPronalazacu(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu value) {
             this.podaciOPronalazacu = value;
         }
 
@@ -813,10 +817,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @return
          *     possible object is
-         *     {@link PodaciOPunomocniku }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku }
          *     
          */
-        public PodaciOPunomocniku getPodaciOPunomocniku() {
+        public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku getPodaciOPunomocniku() {
             return podaciOPunomocniku;
         }
 
@@ -825,10 +829,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @param value
          *     allowed object is
-         *     {@link PodaciOPunomocniku }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku }
          *     
          */
-        public void setPodaciOPunomocniku(PodaciOPunomocniku value) {
+        public void setPodaciOPunomocniku(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku value) {
             this.podaciOPunomocniku = value;
         }
 
@@ -837,10 +841,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @return
          *     possible object is
-         *     {@link Dostavljanje }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.Dostavljanje }
          *     
          */
-        public Dostavljanje getDostavljanje() {
+        public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.Dostavljanje getDostavljanje() {
             return dostavljanje;
         }
 
@@ -849,10 +853,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @param value
          *     allowed object is
-         *     {@link Dostavljanje }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.Dostavljanje }
          *     
          */
-        public void setDostavljanje(Dostavljanje value) {
+        public void setDostavljanje(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.Dostavljanje value) {
             this.dostavljanje = value;
         }
 
@@ -861,10 +865,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @return
          *     possible object is
-         *     {@link PrvobitnaPrijava }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava }
          *     
          */
-        public PrvobitnaPrijava getPrvobitnaPrijava() {
+        public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava getPrvobitnaPrijava() {
             return prvobitnaPrijava;
         }
 
@@ -873,10 +877,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @param value
          *     allowed object is
-         *     {@link PrvobitnaPrijava }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava }
          *     
          */
-        public void setPrvobitnaPrijava(PrvobitnaPrijava value) {
+        public void setPrvobitnaPrijava(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PrvobitnaPrijava value) {
             this.prvobitnaPrijava = value;
         }
 
@@ -885,10 +889,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @return
          *     possible object is
-         *     {@link RanijePrijave }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave }
          *     
          */
-        public RanijePrijave getRanijePrijave() {
+        public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave getRanijePrijave() {
             return ranijePrijave;
         }
 
@@ -897,10 +901,10 @@ public class ZahtevZaPriznanjePatenta {
          * 
          * @param value
          *     allowed object is
-         *     {@link RanijePrijave }
+         *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave }
          *     
          */
-        public void setRanijePrijave(RanijePrijave value) {
+        public void setRanijePrijave(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave value) {
             this.ranijePrijave = value;
         }
 
@@ -1301,7 +1305,7 @@ public class ZahtevZaPriznanjePatenta {
             @XmlElement(name = "Punomocnik", required = true)
             protected TLice punomocnik;
             @XmlElement(name = "Tip_punomocnika", required = true)
-            protected TipPunomocnika tipPunomocnika;
+            protected ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku.TipPunomocnika tipPunomocnika;
 
             /**
              * Gets the value of the punomocnik property.
@@ -1332,10 +1336,10 @@ public class ZahtevZaPriznanjePatenta {
              * 
              * @return
              *     possible object is
-             *     {@link TipPunomocnika }
+             *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku.TipPunomocnika }
              *     
              */
-            public TipPunomocnika getTipPunomocnika() {
+            public ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku.TipPunomocnika getTipPunomocnika() {
                 return tipPunomocnika;
             }
 
@@ -1344,10 +1348,10 @@ public class ZahtevZaPriznanjePatenta {
              * 
              * @param value
              *     allowed object is
-             *     {@link TipPunomocnika }
+             *     {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku.TipPunomocnika }
              *     
              */
-            public void setTipPunomocnika(TipPunomocnika value) {
+            public void setTipPunomocnika(ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku.TipPunomocnika value) {
                 this.tipPunomocnika = value;
             }
 
@@ -1647,7 +1651,7 @@ public class ZahtevZaPriznanjePatenta {
         public static class RanijePrijave {
 
             @XmlElement(name = "Prijava")
-            protected List<Prijava> prijava;
+            protected List<ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave.Prijava> prijava;
 
             /**
              * Gets the value of the prijava property.
@@ -1667,13 +1671,13 @@ public class ZahtevZaPriznanjePatenta {
              * 
              * <p>
              * Objects of the following type(s) are allowed in the list
-             * {@link Prijava }
+             * {@link ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave.Prijava }
              * 
              * 
              */
-            public List<Prijava> getPrijava() {
+            public List<ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave.Prijava> getPrijava() {
                 if (prijava == null) {
-                    prijava = new ArrayList<Prijava>();
+                    prijava = new ArrayList<ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.RanijePrijave.Prijava>();
                 }
                 return this.prijava;
             }

@@ -16,11 +16,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
-import java.text.ParseException;
 import java.util.List;
 
 @Service
@@ -32,7 +31,6 @@ public class PatentService {
     private final RdfRepository rdfRepository;
     private final Unmarshaller unmarshaller;
     private final Marshaller marshaller;
-
     private final ZahtevMapper mapper;
 
     @Autowired
@@ -51,7 +49,6 @@ public class PatentService {
 
         marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
     }
     public ZahtevZaPriznanjePatenta getZahtev(String brojPrijave) {
         try {
@@ -75,7 +72,6 @@ public class PatentService {
     }
 
     public OutputStream save(ZahtevZaPriznanjePatenta zahtev) throws Exception {
-
         OutputStream os = marshal(zahtev);
         repository.store(zahtev.getPopunjavaZavod().getBrojPrijave() + ".xml", os);
         return os;
@@ -87,17 +83,21 @@ public class PatentService {
         return os;
     }
 
-    public void createRdf(String file_path) {
+    public void addRdf(String file_path) {
         try {
             ZahtevZaPriznanjePatenta zahtev = getZahtev(file_path);
-            ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshal(zahtev);
-            InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
-            ByteArrayOutputStream zahtev_output = new ByteArrayOutputStream();
-            rdfRepository.extractMetadata(zahtev_input, zahtev_output);
-            rdfRepository.writeRdf(zahtev_output.toString());
+            addRdf(zahtev);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void addRdf(ZahtevZaPriznanjePatenta zahtev) throws JAXBException, TransformerException {
+        ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshal(zahtev);
+        InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
+        ByteArrayOutputStream zahtev_output = new ByteArrayOutputStream();
+        rdfRepository.extractMetadata(zahtev_input, zahtev_output);
+        rdfRepository.writeRdf(zahtev_output.toString());
     }
 
     public List<ZahtevZaPriznanjePatenta> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -108,8 +108,9 @@ public class PatentService {
         repository.remove(brojPrijave + ".xml");
     }
 
-
     public void save(Zahtev zahtev) throws Exception {
-        save(mapper.parseZahtev(zahtev));
+        ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = mapper.parseZahtev(zahtev);
+        save(zahtevZaPriznanjePatenta);
+        addRdf(zahtevZaPriznanjePatenta);
     }
 }

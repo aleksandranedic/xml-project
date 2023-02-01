@@ -61,7 +61,7 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element maxOccurs="unbounded" name="Podaci_o_podnosiocu">
+                            <xs:element maxOccurs="1" name="Podaci_o_podnosiocu">
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element maxOccurs="1" name="Podnosioc" type="TLice"/>
@@ -70,12 +70,13 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="Podaci_o_pronalazacu">
+                            <xs:element name="Podaci_o_pronalazacu" maxOccurs="1">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="Pronalazac" type="TLice"/>
+                                        <xs:element name="Pronalazac" type="TLice"
+                                            maxOccurs="unbounded"/>
                                         <xs:element name="Pronalazac_ne_zeli_da_bude_naveden"
-                                            type="TEmpty"/>
+                                            type="TEmpty" minOccurs="0"/>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
@@ -105,7 +106,7 @@
                                         <xs:element name="Nacin">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
-                                                  <xs:enumeration value="elektornski"/>
+                                                  <xs:enumeration value="elektronski"/>
                                                   <xs:enumeration value="pisano"/>
                                                 </xs:restriction>
                                             </xs:simpleType>
@@ -184,10 +185,43 @@
                                 type="xs:string"/>
                             <xs:element name="Opis_pronalaska" type="xs:string"/>
                             <xs:element maxOccurs="unbounded" minOccurs="1"
-                                name="Patentn_zahtevi_za_zastitu_pronalaska" type="xs:string"/>
+                                name="Patentni_zahtevi_za_zastitu_pronalaska" type="xs:string"/>
                             <xs:element name="Nacrt_na_koji_se_poziva_opis" type="xs:string"/>
                             <xs:element name="Apstrakt" type="xs:string"/>
                             <xs:element minOccurs="0" name="Resenje" type="xs:string"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element minOccurs="0" name="Resenje">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element minOccurs="1" name="Datum" type="xs:dateTime"/>
+                            <xs:element name="Status">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="Odobren"/>
+                                        <xs:enumeration value="Odbijen"/>
+                                        <xs:enumeration value=""/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="Ime">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="Prezime">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:minLength value="1"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="Broj_prijave" type="xs:string"/>
+                            <xs:element name="Referenca_na_zahtev" type="xs:string"/>
+                            <xs:element minOccurs="0" name="Obrazlozenje" type="xs:string"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>

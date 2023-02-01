@@ -31,20 +31,9 @@ public class PatentController {
         return service.getAll();
     }
 
-//    @GetMapping
-//    public List<ZahtevZaPriznanjePatenta> getAllWithoutApproval() {
-//        throw new NotImplementedException();
-//    }
-//
-//    @GetMapping
-//    public List<ZahtevZaPriznanjePatenta> getAllUserApproved() {
-//        throw new NotImplementedException();
-//    }
-
     @GetMapping("/{broj}")
-    public boolean getRequest(@PathVariable("broj") String brojPrijave) {
-        this.service.getZahtev(brojPrijave);
-        return true;
+    public ZahtevZaPriznanjePatenta getRequest(@PathVariable("broj") String brojPrijave) {
+        return this.service.getZahtev(brojPrijave);
     }
 
 

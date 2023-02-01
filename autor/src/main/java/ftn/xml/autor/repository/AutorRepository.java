@@ -1,29 +1,91 @@
 package ftn.xml.autor.repository;
 
+import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.utils.AuthenticationUtilities;
 import ftn.xml.autor.utils.PrettyPrint;
 import org.exist.xmldb.EXistResource;
 import org.springframework.stereotype.Repository;
 import org.xmldb.api.DatabaseManager;
-import org.xmldb.api.base.Collection;
-import org.xmldb.api.base.Database;
-import org.xmldb.api.base.XMLDBException;
+import org.xmldb.api.base.*;
 import org.xmldb.api.modules.CollectionManagementService;
 import org.xmldb.api.modules.XMLResource;
+import org.xmldb.api.modules.XQueryService;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.OutputKeys;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class AutorRepository {
     private AuthenticationUtilities.ConnectionProperties conn;
-    private final String collectionId = "/db/autor";
-
-    AutorRepository() throws IOException {
+    private final String COLLECTION_ID = "/db/autor";
+    private final Unmarshaller unmarshaller;
+    AutorRepository() throws IOException, JAXBException {
         this.conn = AuthenticationUtilities.loadProperties();
+        JAXBContext context = JAXBContext.newInstance("ftn.xml.autor.model");
+        this.unmarshaller = context.createUnmarshaller();
+    }
+
+    public List<ZahtevZaIntelektualnuSvojinu> retrieveAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    public List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnTerm(String term) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[contains(., \"" + term + "\")]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    public List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnTermList(String[] termList) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        StringBuilder xquery = new StringBuilder("let $files := collection(\""+COLLECTION_ID+"\") return $files[");
+        for (int i = 0; i < termList.length; i++) {
+            if (i == 0) {
+                xquery.append("contains(., \"").append(termList[i]).append("\")");
+            } else {
+                xquery.append(" and contains(., \"").append(termList[i]).append("\")");
+            }
+        }
+        xquery.append("]");
+        return retrieveBasedOnXQuery(xquery.toString());
+    }
+
+
+    public List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[ZahtevZaIntelektualnuSvojinu/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+
+    private List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnXQuery(String xquery) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException {
+        createConnection();
+        Collection col = null;
+        List<XMLResource> resources = new ArrayList<>();
+        try {
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
+            col.setProperty(OutputKeys.INDENT, "yes");
+            XQueryService xqs = (XQueryService) col.getService("XQueryService", "1.0");
+
+            ResourceSet result = xqs.query(xquery);
+            for (ResourceIterator i = result.getIterator(); i.hasMoreResources(); ) {
+                Resource resource = i.nextResource();
+                resources.add((XMLResource) resource);
+            }
+        } finally {
+            closeConnection(col, resources);
+        }
+        List<ZahtevZaIntelektualnuSvojinu> list = resources.stream().map(res -> {
+            try {
+                return (ZahtevZaIntelektualnuSvojinu) unmarshaller.unmarshal(res.getContentAsDOM());
+            } catch (JAXBException | XMLDBException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
+        return list;
     }
 
     public ZahtevZaIntelektualnuSvojinu retrieve(String documentId) throws Exception {
@@ -31,23 +93,38 @@ public class AutorRepository {
         Collection col = null;
         XMLResource res = null;
         try {
-            col = DatabaseManager.getCollection(conn.uri + collectionId);
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
             col.setProperty(OutputKeys.INDENT, "yes");
             res = (XMLResource) col.getResource(documentId);
             if (res == null) {
-                System.out.println("[WARNING] Document '" + documentId + "' can not be found!");
+                return null;
             } else {
-                JAXBContext context = JAXBContext.newInstance("ftn.xml.autor.model");
-                Unmarshaller unmarshaller = context.createUnmarshaller();
-                ZahtevZaIntelektualnuSvojinu zahtev = (ZahtevZaIntelektualnuSvojinu) unmarshaller.unmarshal(res.getContentAsDOM());
-                System.out.println("[INFO] Showing the document as JAXB instance: ");
-                PrettyPrint.printZahtev(zahtev);
-                return zahtev;
+
+                return (ZahtevZaIntelektualnuSvojinu) unmarshaller.unmarshal(res.getContentAsDOM());
             }
         } finally {
             closeConnection(col, res);
         }
-        return null;
+    }
+
+    public void remove(String documentName) throws Exception {
+        createConnection();
+        Collection col = null;
+        XMLResource res = null;
+        try {
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
+            col.setProperty(OutputKeys.INDENT, "yes");
+            res = (XMLResource) col.getResource(documentName);
+            col.removeResource(res);
+            if (res == null) {
+                throw new RuntimeException("No document with given name.");
+            } else {
+                col.removeResource(res);
+
+            }
+        } finally {
+            closeConnection(col, res);
+        }
     }
 
     public void store(String documentId, OutputStream os) throws Exception {
@@ -55,12 +132,10 @@ public class AutorRepository {
         Collection col = null;
         XMLResource res = null;
         try {
-            col = getOrCreateCollection(collectionId);
+            col = getOrCreateCollection(COLLECTION_ID);
             res = (XMLResource) col.createResource(documentId, XMLResource.RESOURCE_TYPE);
             res.setContent(os);
-            System.out.println("[INFO] Storing the document: " + res.getId());
             col.storeResource(res);
-            System.out.println("[INFO] Done.");
         } finally {
             closeConnection(col, res);
         }
@@ -79,6 +154,25 @@ public class AutorRepository {
                 ((EXistResource) res).freeResources();
             } catch (XMLDBException xe) {
                 xe.printStackTrace();
+            }
+        }
+        if (col != null) {
+            try {
+                col.close();
+            } catch (XMLDBException xe) {
+                xe.printStackTrace();
+            }
+        }
+    }
+
+    private static void closeConnection(Collection col, List<XMLResource> resources) {
+        for (XMLResource res : resources) {
+            if (res != null) {
+                try {
+                    ((EXistResource) res).freeResources();
+                } catch (XMLDBException xe) {
+                    xe.printStackTrace();
+                }
             }
         }
         if (col != null) {
@@ -118,14 +212,11 @@ public class AutorRepository {
 
                 if (startCol == null) {
 
-                    // child collection does not exist
-
                     String parentPath = path.substring(0, path.lastIndexOf("/"));
                     Collection parentCol = DatabaseManager.getCollection(conn.uri + parentPath, conn.user, conn.password);
 
                     CollectionManagementService mgt = (CollectionManagementService) parentCol.getService("CollectionManagementService", "1.0");
 
-                    System.out.println("[INFO] Creating the collection: " + pathSegments[pathSegmentOffset]);
                     col = mgt.createCollection(pathSegments[pathSegmentOffset]);
 
                     col.close();

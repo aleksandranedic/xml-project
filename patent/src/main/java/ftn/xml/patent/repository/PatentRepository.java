@@ -37,17 +37,17 @@ public class PatentRepository {
 
 
     public List<ZahtevZaPriznanjePatenta> retrieveAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\"/db/patent\") return $files";
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files";
         return retrieveBasedOnXQuery(xquery);
     }
 
     public List<ZahtevZaPriznanjePatenta> retrieveBasedOnTerm(String term) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\"/db/patent\") return $files[contains(., \"" + term + "\")]";
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[contains(., \"" + term + "\")]";
         return retrieveBasedOnXQuery(xquery);
     }
 
     public List<ZahtevZaPriznanjePatenta> retrieveBasedOnTermList(String[] termList) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        StringBuilder xquery = new StringBuilder("let $files := collection(\"/db/patent\") return $files[");
+        StringBuilder xquery = new StringBuilder("let $files := collection(\""+COLLECTION_ID+"\") return $files[");
         for (int i = 0; i < termList.length; i++) {
             if (i == 0) {
                 xquery.append("contains(., \"").append(termList[i]).append("\")");
@@ -61,9 +61,10 @@ public class PatentRepository {
 
 
     public List<ZahtevZaPriznanjePatenta> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\"/db/patent\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
         return retrieveBasedOnXQuery(xquery);
     }
+
 
     private List<ZahtevZaPriznanjePatenta> retrieveBasedOnXQuery(String xquery) throws ClassNotFoundException, InstantiationException, IllegalAccessException, XMLDBException {
         createConnection();
