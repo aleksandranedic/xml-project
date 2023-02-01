@@ -1,6 +1,19 @@
-import { Adresa, Lice } from "../types";
+import { Adresa, InformacijeOResenju, Lice } from "../types";
 
-export class Pronalazac extends Lice {}
+export class ZahtevZaPriznanjePatenta {
+  public podnosilac: Podnosilac = new Podnosilac();
+  public punomocnik: Punomocnik = new Punomocnik();
+  public pronalazac: Pronalazac[] = [];
+  public nazivPatent: NazivPatent = new NazivPatent();
+  public prvobitnaPrijava: PrvobitnaPrijava = new PrvobitnaPrijava();
+  public ranijePrijave: RanijaPrijava[] = [];
+  public dostavljanje: Dostavljanje = new Dostavljanje();
+  public prilozeniDokumenti: PrilozeniDokumenti = new PrilozeniDokumenti();
+
+  public informacijeOResenju: InformacijeOResenju = new InformacijeOResenju();
+  public datumPodnosenja: Date = new Date();
+  public sifraZahteva: string = "";
+}
 
 export class Podnosilac extends Lice {
   public pronalazac: boolean;
@@ -21,19 +34,27 @@ export class Punomocnik extends Lice {
     this.zajednickiPredstavnik = false;
   }
 
-  public static validate(punomocnik:Punomocnik) {
-    if (!punomocnik.zaPrijem && !punomocnik.zaZastupanje && !punomocnik.zajednickiPredstavnik && Lice.isEmpty(punomocnik)) {
+  public static validate(punomocnik: Punomocnik) {
+    if (
+      !punomocnik.zaPrijem &&
+      !punomocnik.zaZastupanje &&
+      !punomocnik.zajednickiPredstavnik &&
+      Lice.isEmpty(punomocnik)
+    ) {
       return true;
-    }
-    else if (Lice.validate(punomocnik)) {
-      if ((punomocnik.zaZastupanje && !punomocnik.zajednickiPredstavnik) || (punomocnik.zajednickiPredstavnik && punomocnik.zaZastupanje)) {
+    } else if (Lice.validate(punomocnik)) {
+      if (
+        (punomocnik.zaZastupanje && !punomocnik.zajednickiPredstavnik) ||
+        (punomocnik.zajednickiPredstavnik && punomocnik.zaZastupanje)
+      ) {
         return true;
       }
     }
     return false;
-
   }
 }
+
+export class Pronalazac extends Lice {}
 
 export class NazivPatent {
   public srpski: string;
@@ -66,13 +87,12 @@ export class PrvobitnaPrijava {
   static validate(prijava: PrvobitnaPrijava) {
     if (this.isEmpty(prijava)) {
       return true;
-    }
-    else {
+    } else {
       return prijava.brojPrijave && prijava.datum;
     }
   }
 
-  static isEmpty(prijava:PrvobitnaPrijava) {
+  static isEmpty(prijava: PrvobitnaPrijava) {
     return !prijava.datum && !prijava.brojPrijave;
   }
 }
@@ -90,13 +110,12 @@ export class RanijaPrijava {
   static validate(prijava: RanijaPrijava) {
     if (this.isEmpty(prijava)) {
       return true;
-    }
-    else {
+    } else {
       return prijava.brojPrijave && prijava.datum && prijava.oznaka;
     }
   }
 
-  static isEmpty(prijava:RanijaPrijava) {
+  static isEmpty(prijava: RanijaPrijava) {
     return !prijava.datum && !prijava.brojPrijave && !prijava.oznaka;
   }
 }
@@ -110,8 +129,11 @@ export class Dostavljanje extends Adresa {
     this.elektronski = false;
   }
 
-  public static validate(dostavljanje:Dostavljanje):boolean {
-    if ((dostavljanje.pisano && !dostavljanje.elektronski) || (dostavljanje.elektronski && !dostavljanje.pisano)) {
+  public static validate(dostavljanje: Dostavljanje): boolean {
+    if (
+      (dostavljanje.pisano && !dostavljanje.elektronski) ||
+      (dostavljanje.elektronski && !dostavljanje.pisano)
+    ) {
       return Adresa.isEmpty(dostavljanje) || Adresa.validate(dostavljanje);
     }
     return false;

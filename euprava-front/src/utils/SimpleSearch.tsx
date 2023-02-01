@@ -2,6 +2,12 @@ import {useContext, useState} from "react"
 import RequestTypeContext from "../store/request-type-context";
 import axios from "axios";
 import {toast} from "react-toastify";
+import PatentContext from "../store/patent-zahtevi-context";
+import { ZahtevZaPriznanjePatenta } from "../components/patent/types";
+import ZigContext from "../store/zig-zahtevi-context";
+import { ZahtevZaPriznanjeZiga } from "../components/zig/types";
+import AutorskaContext from "../store/autorska-zahtevi-context";
+import { ZahtevZaPriznanjeAutorska } from "../components/autorska/types";
 
 interface SimpleSearchProps {
     
@@ -9,6 +15,9 @@ interface SimpleSearchProps {
  
 const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
     const {type} = useContext(RequestTypeContext);
+    const {setPatentZahtevi} = useContext(PatentContext);
+    const {setZigZahtevi} = useContext(ZigContext);
+    const {setAutorskaZahtevi} = useContext(AutorskaContext);
 
     const [keywords, setKeywords] = useState<string[]>([]);
 
@@ -31,8 +40,18 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
         let terms:string = keywords.join(";");
 
         axios.get(`http://localhost:${port}/search/basic?terms=${terms}`).then(response => {
+            switch (type) {
+                case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
+                case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
+                case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
+            }
             console.log(response.data);
         }).catch(() => {
+            switch (type) {
+                case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
+                case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
+                case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
+            }
             toast.error("Greška pri pretrazi.")
         })
     }

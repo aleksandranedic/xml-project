@@ -22,6 +22,7 @@ module.exports = {
       },
       boxShadow: {
         around: '0px 5px 20px 10px rgb(0 0 0 / 0.25)',
+        aroundLess: '0px 5px 20px 10px rgb(0 0 0 / 0.1)',
         big: 'inset 0 3px 5px 0 rgba(0,0,0,0.1)'
       },
     },

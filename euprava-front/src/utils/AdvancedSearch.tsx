@@ -3,6 +3,12 @@ import { IoIosAddCircle, IoIosCloseCircle } from 'react-icons/io'
 import RequestTypeContext from "../store/request-type-context";
 import axios from "axios";
 import {toast} from "react-toastify";
+import PatentContext from "../store/patent-zahtevi-context";
+import { ZahtevZaPriznanjePatenta } from "../components/patent/types";
+import ZigContext from "../store/zig-zahtevi-context";
+import { ZahtevZaPriznanjeZiga } from "../components/zig/types";
+import AutorskaContext from "../store/autorska-zahtevi-context";
+import { ZahtevZaPriznanjeAutorska } from "../components/autorska/types";
 
 
 enum Operator {
@@ -27,6 +33,10 @@ const AdvancedSearch: React.FunctionComponent = () => {
     const initialSearchParam = {logicalOperator: LogicalOperator.I ,meta: "Broj_prijave", operator: Operator.EQUALS, value:''};
     const [searchParams, setSearchParams] = useState<Params[]>([initialSearchParam]);
     const {type} = useContext(RequestTypeContext);
+    const {setPatentZahtevi} = useContext(PatentContext);
+    const {setZigZahtevi} = useContext(ZigContext);
+    const {setAutorskaZahtevi} = useContext(AutorskaContext);
+
     const allParams = getAllParams()
     function getAllParams() {
         if (type === "patent") {
@@ -98,7 +108,17 @@ const AdvancedSearch: React.FunctionComponent = () => {
         }
         axios.post(`http://localhost:${port}/search/advanced`, {metadata:searchParams}).then(response => {
             console.log(response.data);
+            switch (type) {
+                case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
+                case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
+                case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
+            }
         }).catch(() => {
+            switch (type) {
+                case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
+                case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
+                case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
+            }
             toast.error("Greška pri pretrazi.")
         })
 
