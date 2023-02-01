@@ -1,8 +1,8 @@
 package ftn.xml.patent.controller;
 
+import ftn.xml.patent.dto.Resenje;
 import ftn.xml.patent.dto.Zahtev;
 import ftn.xml.patent.dto.ZahtevData;
-import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +26,16 @@ public class PatentController {
     @GetMapping
     public List<ZahtevData> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         return service.getAll();
+    }
+
+    @GetMapping("/resolved")
+    public List<ZahtevData> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAllResolved();
+    }
+
+    @GetMapping("/unresolved")
+    public List<ZahtevData> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAllUnresolved();
     }
 
     @GetMapping("/{broj}")
@@ -63,10 +73,10 @@ public class PatentController {
         }
     }
 
-    @PutMapping
-    public String updateRequest(@RequestParam("broj") int brojPrijave, ZahtevZaPriznanjePatenta zahtev) {
+    @PutMapping("/update")
+    public String updateRequest(@RequestParam("broj") String brojPrijave, @RequestBody Resenje resenje) {
         try {
-            //service.updateRequest(brojPrijave, zahtev);
+            service.updateRequest(brojPrijave, resenje);
             return "Uspešno ste ažurirali zahtev.";
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -74,7 +84,7 @@ public class PatentController {
     }
 
     @DeleteMapping
-    public String deleteRequest(@RequestParam("broj") int brojPrijave) {
+    public String deleteRequest(@RequestParam("broj") String brojPrijave) {
         try {
             service.deleteRequest(brojPrijave);
             return "Uspešno ste obrisali zahtev.";

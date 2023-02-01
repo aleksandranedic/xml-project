@@ -33,6 +33,17 @@ public class ZahtevMapper {
     }
 
 
+    public ZahtevZaPriznanjePatenta.Resenje parseResenje(Resenje resenje) throws DatatypeConfigurationException {
+        ZahtevZaPriznanjePatenta.Resenje novoResenje = new ZahtevZaPriznanjePatenta.Resenje();
+        novoResenje.setStatus(resenje.getStatus());
+        novoResenje.setDatum(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
+        novoResenje.setIme(resenje.getIme());
+        novoResenje.setPrezime(resenje.getPrezime());
+        novoResenje.setObrazlozenje(resenje.getObrazlozenje());
+        novoResenje.setBrojPrijave(resenje.getBrojPrijave());
+        return novoResenje;
+    }
+
     public ZahtevData parseZahtev(ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta, String html) {
         ZahtevData data = new ZahtevData();
 

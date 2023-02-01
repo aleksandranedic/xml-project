@@ -37,17 +37,42 @@ public class PatentRepository {
 
 
     public List<ZahtevZaPriznanjePatenta> retrieveAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files";
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files";
         return retrieveBasedOnXQuery(xquery);
     }
 
     public List<ZahtevZaPriznanjePatenta> retrieveBasedOnTerm(String term) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[contains(., \"" + term + "\")]";
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[contains(., \"" + term + "\")]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    public List<ZahtevZaPriznanjePatenta> retrieveAllWithoutResenje() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[not(exists(Zahtev_za_priznanje_patenta/Resenje))]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    public List<ZahtevZaPriznanjePatenta> retrieveAllWithResenje() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[exists(Zahtev_za_priznanje_patenta/Resenje)]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    public List<ZahtevZaPriznanjePatenta> retrieveAllWithResenjeStatus(String startDate, String endDate, String status) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        //Date format is yyyy-MM-dd (example: 2023-02-01)
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_priznanje_patenta/Resenje/Status='" + status +
+                "' and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema >= xs:date('" + startDate
+                + "') and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema <= xs:date('" + endDate + "')]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    private List<ZahtevZaPriznanjePatenta> retrieveAllWithinDatePeriod(String startDate, String endDate) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        //Date format is yyyy-MM-dd (example: 2023-02-01)
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema >= xs:date('" + startDate
+                + "') and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema <= xs:date('" + endDate + "')]";
         return retrieveBasedOnXQuery(xquery);
     }
 
     public List<ZahtevZaPriznanjePatenta> retrieveBasedOnTermList(String[] termList) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        StringBuilder xquery = new StringBuilder("let $files := collection(\""+COLLECTION_ID+"\") return $files[");
+        StringBuilder xquery = new StringBuilder("let $files := collection(\"" + COLLECTION_ID + "\") return $files[");
         for (int i = 0; i < termList.length; i++) {
             if (i == 0) {
                 xquery.append("contains(., \"").append(termList[i]).append("\")");
@@ -61,7 +86,7 @@ public class PatentRepository {
 
 
     public List<ZahtevZaPriznanjePatenta> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
         return retrieveBasedOnXQuery(xquery);
     }
 

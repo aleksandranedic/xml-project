@@ -1,5 +1,6 @@
 package ftn.xml.patent.service;
 
+import ftn.xml.patent.dto.Resenje;
 import ftn.xml.patent.dto.Zahtev;
 import ftn.xml.patent.dto.ZahtevData;
 import ftn.xml.patent.dto.ZahtevMapper;
@@ -17,6 +18,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -111,8 +113,10 @@ public class PatentService {
 
     private void addRdf(ZahtevZaPriznanjePatenta zahtev) throws JAXBException, TransformerException {
         ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshal(zahtev);
+
         InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
         ByteArrayOutputStream zahtev_output = new ByteArrayOutputStream();
+
         rdfRepository.extractMetadata(zahtev_input, zahtev_output);
         rdfRepository.writeRdf(zahtev_output.toString());
     }
@@ -123,7 +127,7 @@ public class PatentService {
         }).toList();
     }
 
-    public void deleteRequest(int brojPrijave) throws Exception {
+    public void deleteRequest(String brojPrijave) throws Exception {
         repository.remove(brojPrijave + ".xml");
     }
 
@@ -163,5 +167,27 @@ public class PatentService {
             return getHtmlString(brojPrijave);
         }
         return content;
+    }
+
+    public void updateRequest(String brojPrijave, Resenje resenje) {
+        ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = getZahtev(brojPrijave);
+        try {
+            zahtevZaPriznanjePatenta.setResenje(mapper.parseResenje(resenje));
+            save(zahtevZaPriznanjePatenta);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ZahtevData> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return repository.retrieveAllWithResenje().stream().map(zahtevZaPriznanjePatenta -> {
+            return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
+        }).toList();
+    }
+
+    public List<ZahtevData> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return repository.retrieveAllWithoutResenje().stream().map(zahtevZaPriznanjePatenta -> {
+            return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
+        }).toList();
     }
 }
