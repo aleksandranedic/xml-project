@@ -1,64 +1,65 @@
 package ftn.xml.autor.controller;
 
+import ftn.xml.autor.dto.Zahtev;
+import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.xmldb.api.base.XMLDBException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "autor")
 public class AutorController {
+    private final AutorService service;
+
     @Autowired
-    public AutorService autorService;
-
-
-    @GetMapping(value = "")
-    public boolean findAll() {
-        return true;
+    public AutorController(AutorService service) {
+        this.service = service;
     }
 
-    @GetMapping(value = "unmarshal")
-    public void unmarshal() {
-        autorService.unmarshalling();
+
+    @GetMapping
+    public List<ZahtevZaIntelektualnuSvojinu> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAll();
     }
 
-    @GetMapping(value = "marshal")
-    public void marshal() {
-        autorService.marshalling();
+    @GetMapping("/{broj}")
+    public ZahtevZaIntelektualnuSvojinu getRequest(@PathVariable("broj") String brojPrijave) {
+        return this.service.getZahtev(brojPrijave);
     }
 
-    @GetMapping(value = "pdf")
-    public void toPdf() {
-        autorService.toPDF();
+
+    @PostMapping(value = "/create")
+    public String createRequest(@RequestBody Zahtev zahtev) {
+        try {
+            service.save(zahtev);
+            return "Uspešno ste dodali zahtev.";
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @GetMapping(value = "xhtml")
-    public void toXHTML() {
-        autorService.toXHTML();
-    }
-    @GetMapping(value = "rdf")
-    public void createRdf() {
-        autorService.createRdf();
-    }
-
-    @GetMapping(path = "{documentId}")
-    public boolean findRequest(@PathVariable("documentId") String documentId) {
-        this.autorService.getZahtev(documentId);
-        return true;
+    @PutMapping
+    public String updateRequest(@RequestParam("broj") int brojPrijave, ZahtevZaIntelektualnuSvojinu zahtev) {
+        try {
+            //service.updateRequest(brojPrijave, zahtev);
+            return "Uspešno ste ažurirali zahtev.";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @PostMapping(value = "")
-    public boolean createRequest(@RequestBody() int requestDto) {
-        return true;
-    }
-
-    @PutMapping(value = ":id")
-    public boolean updateRequest(@RequestParam() int id) {
-        return true;
-    }
-
-    @DeleteMapping(value = ":id")
-    public boolean deleteRequest(@RequestParam() int id) {
-        return true;
+    @DeleteMapping
+    public String deleteRequest(@RequestParam("broj") int brojPrijave) {
+        try {
+            service.deleteRequest(brojPrijave);
+            return "Uspešno ste obrisali zahtev.";
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

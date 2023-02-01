@@ -78,17 +78,17 @@ public class ZigRepository {
 
 
     public List<ZahtevZaPriznanjeZiga> retrieveAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\"/db/zig\") return $files";
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files";
         return retrieveBasedOnXQuery(xquery);
     }
 
     public List<ZahtevZaPriznanjeZiga> retrieveBasedOnTerm(String term) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\"/db/zig\") return $files[contains(., \"" + term + "\")]";
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[contains(., \"" + term + "\")]";
         return retrieveBasedOnXQuery(xquery);
     }
 
     public List<ZahtevZaPriznanjeZiga> retrieveBasedOnTermList(String[] termList) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        StringBuilder xquery = new StringBuilder("let $files := collection(\"/db/zig\") return $files[");
+        StringBuilder xquery = new StringBuilder("let $files := collection(\""+COLLECTION_ID+"\") return $files[");
         for (int i = 0; i < termList.length; i++) {
             if (i == 0) {
                 xquery.append("contains(., \"").append(termList[i]).append("\")");
@@ -102,7 +102,7 @@ public class ZigRepository {
 
 
     public List<ZahtevZaPriznanjeZiga> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\"/db/zig\") return $files[Zahtev_za_priznanje_ziga/Broj_prijave_ziga = \"" + Broj_prijave + "\"]";
+        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[Zahtev_za_priznanje_ziga/Broj_prijave_ziga = \"" + Broj_prijave + "\"]";
         return retrieveBasedOnXQuery(xquery);
     }
 
@@ -142,9 +142,7 @@ public class ZigRepository {
             col = getOrCreateCollection(COLLECTION_ID);
             res = (XMLResource) col.createResource(documentId, XMLResource.RESOURCE_TYPE);
             res.setContent(os);
-            System.out.println("[INFO] Storing the document: " + res.getId());
             col.storeResource(res);
-            System.out.println("[INFO] Done.");
         } finally {
             closeConnection(col, res);
         }
@@ -221,17 +219,10 @@ public class ZigRepository {
                 Collection startCol = DatabaseManager.getCollection(conn.uri + path, conn.user, conn.password);
 
                 if (startCol == null) {
-
-                    // child collection does not exist
-
                     String parentPath = path.substring(0, path.lastIndexOf("/"));
                     Collection parentCol = DatabaseManager.getCollection(conn.uri + parentPath, conn.user, conn.password);
-
                     CollectionManagementService mgt = (CollectionManagementService) parentCol.getService("CollectionManagementService", "1.0");
-
-                    System.out.println("[INFO] Creating the collection: " + pathSegments[pathSegmentOffset]);
                     col = mgt.createCollection(pathSegments[pathSegmentOffset]);
-
                     col.close();
                     parentCol.close();
 
