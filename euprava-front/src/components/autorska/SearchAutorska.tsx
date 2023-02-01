@@ -1,10 +1,17 @@
 import Search from "../../page/Search";
+import {useState} from "react";
+import RequestTypeContext from "../../store/request-type-context";
 
 const SearchAutorska: React.FunctionComponent = () => {
-    return ( 
-    <div className="p-8 h-full">
-        <Search/>
-    </div> 
+    const [type, setType] = useState<"patent" | "autor" | "zig" | null>("autor");
+
+    return (
+        <RequestTypeContext.Provider value={{type, setType}}>
+            <div className="p-8 h-full">
+                <Search/>
+            </div>
+        </RequestTypeContext.Provider>
+
     );
 }
  
