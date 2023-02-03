@@ -64,7 +64,7 @@ public class PatentRepository {
         return retrieveBasedOnXQuery(xquery);
     }
 
-    private List<ZahtevZaPriznanjePatenta> retrieveAllWithinDatePeriod(String startDate, String endDate) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaPriznanjePatenta> retrieveAllWithinDatePeriod(String startDate, String endDate) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         //Date format is yyyy-MM-dd (example: 2023-02-01)
         String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema >= xs:date('" + startDate
                 + "') and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema <= xs:date('" + endDate + "')]";

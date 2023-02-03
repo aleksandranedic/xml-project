@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
+import javax.xml.bind.JAXBException;
 import java.util.List;
 
 @RestController
@@ -92,5 +93,16 @@ public class PatentController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("/izvestaj")
+    public String getIzvestaj(@RequestParam("start") String startDate, @RequestParam("end") String endDate) {
+        try {
+            return service.getIzvestajPdf(startDate, endDate);
+        } catch (JAXBException | IllegalAccessException | XMLDBException | ClassNotFoundException |
+                 InstantiationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 }

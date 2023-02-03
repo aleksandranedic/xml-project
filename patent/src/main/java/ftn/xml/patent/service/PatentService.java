@@ -5,6 +5,7 @@ import ftn.xml.patent.dto.Zahtev;
 import ftn.xml.patent.dto.ZahtevData;
 import ftn.xml.patent.dto.ZahtevMapper;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
+import ftn.xml.patent.model.izvestaj.Izvestaj;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.repository.RdfRepository;
 import ftn.xml.patent.utils.SchemaValidationEventHandler;
@@ -18,7 +19,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -40,13 +40,15 @@ public class PatentService {
     private final Unmarshaller unmarshaller;
     private final Marshaller marshaller;
     private final ZahtevMapper mapper;
+    private final IzvestajService izvestajService;
 
     @Autowired
-    public PatentService(PatentRepository repository, RdfRepository rdfRepository, TransformationService trasformationService, ZahtevMapper mapper) throws SAXException, JAXBException {
+    public PatentService(PatentRepository repository, RdfRepository rdfRepository, TransformationService trasformationService, ZahtevMapper mapper, IzvestajService izvestajService) throws SAXException, JAXBException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.trasformationService = trasformationService;
         this.mapper = mapper;
+        this.izvestajService = izvestajService;
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -189,5 +191,14 @@ public class PatentService {
         return repository.retrieveAllWithoutResenje().stream().map(zahtevZaPriznanjePatenta -> {
             return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
         }).toList();
+    }
+
+    public String getIzvestajPdf(String startDate, String endDate) throws JAXBException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Izvestaj izvestaj = new Izvestaj();
+        izvestaj.setBrojPodnetihZahteva(String.valueOf(repository.retrieveAllWithinDatePeriod(startDate, endDate).size()));
+        izvestaj.setBrojOdobrenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(startDate, endDate, "Odobreno").size()));
+        izvestaj.setBrojOdbijenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(startDate, endDate, "Odbijeno").size()));
+        izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", startDate, endDate));
+        return izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + startDate + "_" + endDate + ".pdf");
     }
 }
