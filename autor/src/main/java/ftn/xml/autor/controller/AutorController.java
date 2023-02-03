@@ -4,6 +4,7 @@ import ftn.xml.autor.dto.Zahtev;
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
@@ -20,29 +21,29 @@ public class AutorController {
     }
 
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public List<ZahtevZaIntelektualnuSvojinu> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         return service.getAll();
     }
 
-    @GetMapping("/{broj}")
+    @GetMapping(path = "/{broj}", produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
     public ZahtevZaIntelektualnuSvojinu getRequest(@PathVariable("broj") String brojPrijave) {
         return this.service.getZahtev(brojPrijave);
     }
 
 
-    @PostMapping(value = "/create")
+    @PostMapping(path = "/create", produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
     public String createRequest(@RequestBody Zahtev zahtev) {
         try {
+            System.out.println(zahtev);
             service.save(zahtev);
             return "Uspešno ste dodali zahtev.";
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @PutMapping
+    @PutMapping(produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
     public String updateRequest(@RequestParam("broj") int brojPrijave, ZahtevZaIntelektualnuSvojinu zahtev) {
         try {
             //service.updateRequest(brojPrijave, zahtev);
@@ -52,7 +53,7 @@ public class AutorController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping(consumes = MediaType.APPLICATION_XML_VALUE)
     public String deleteRequest(@RequestParam("broj") int brojPrijave) {
         try {
             service.deleteRequest(brojPrijave);

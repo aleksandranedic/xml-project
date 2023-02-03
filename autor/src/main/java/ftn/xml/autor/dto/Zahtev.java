@@ -1,21 +1,43 @@
 package ftn.xml.autor.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import ftn.xml.autor.model.AutorskoDelo;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class Zahtev {
+    private Lice podnosilac;
+    private Lice punomocnik;
+    private boolean jeAutor;
+    private Lice punomocknik;
+    private ArrayList<Autor> autori;
+    private ArrayList<String> prilozi;
+    private AutorskoDeloDTO autorskoDelo;
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    static class AutorskoDeloDTO {
+        public boolean radniOdnos;
+        public String naslov;
+        public String vrstaDela;
+        public String drugaVrsta;
+        public String forma;
+        public String naslovPrerade;
+        public String imeAutoraPrerade;
+        public String nacinKoriscenja;
+    }
 
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     static
-    class Info{
+    class Info {
         String ime;
         String prezime;
         String drzavljanstvo;
@@ -24,6 +46,7 @@ public class Zahtev {
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     static
     class Adresa {
         String ulica;
@@ -36,8 +59,9 @@ public class Zahtev {
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     static
-    class Kontakt{
+    class Kontakt {
         String telefon;
         String eposta;
         String faks;
@@ -46,11 +70,26 @@ public class Zahtev {
     @Getter
     @Setter
     @NoArgsConstructor
+    @AllArgsConstructor
     static
-    public class Lice{
+    public class Lice {
         Info info;
         Adresa adresa;
         Kontakt kontakt;
+    }
+
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static
+    public class Autor {
+        Info info;
+        Adresa adresa;
+        Kontakt kontakt;
+        String pseudonim;
+        String godinaSmrti;
     }
 
 }

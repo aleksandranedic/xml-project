@@ -2,6 +2,7 @@ package ftn.xml.autor.service;
 
 import ftn.xml.autor.dto.Zahtev;
 import ftn.xml.autor.dto.ZahtevMapper;
+import ftn.xml.autor.model.EmailDataDTO;
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.repository.AutorRepository;
 import ftn.xml.autor.repository.RdfRepository;
@@ -31,12 +32,14 @@ public class AutorService {
     private final Unmarshaller unmarshaller;
     private final Marshaller marshaller;
     private final ZahtevMapper mapper;
+    private final EmailService emailService;
 
     @Autowired
-    public AutorService(AutorRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper) throws SAXException, JAXBException {
+    public AutorService(AutorRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, EmailService emailService) throws SAXException, JAXBException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.mapper = mapper;
+        this.emailService = emailService;
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -111,5 +114,10 @@ public class AutorService {
         ZahtevZaIntelektualnuSvojinu zahtevZaIntelektualnuSvojinu = mapper.parseZahtev(zahtev);
         save(zahtevZaIntelektualnuSvojinu);
         addRdf(zahtevZaIntelektualnuSvojinu);
+        //TODO pitaj dunju za documentPath
+        String email="";
+        String documentPath="";
+        EmailDataDTO emailDataDTO= EmailService.buildEmailDTO(email,documentPath);
+        emailService.sendEmail(emailDataDTO);
     }
 }
