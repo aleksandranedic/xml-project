@@ -85,54 +85,35 @@ const AutorskaForm: React.FunctionComponent = () => {
 
         console.log("upada")
         // if (validate()) {
-        let p = podnosilac;
-        p.kontakt.eposta = "milos2000.mm@gmail.com"
-        // lista auutorjson = []
-        // za svakog autora
-        // autorijson.push({autor:autori})
-
-        let autori_list=[]
-        for (const autoriListElement of autori) {
-            autori_list.push({Autor:autoriListElement})
-        }
-
-        // for (let i = 0; i < autori.length; i++) {
-        //     autori_list.push({Autor:autori[i]})
-        // }
-
-        let Zahtev = {
-            prilozi: getPrilozi(),
-            podnosilac: podnosilac,
-            podnosilacJeAutor: jeAutor,
-            punomocnik: punomocnik,
-            autori: autori_list,
-            autorskoDelo: autorskoDelo
-        }
-
-        console.log("--------------------------------")
-        console.log(autori_list)
-        console.log("--------------------------------")
-        const xml2js = require("xml2js");
-        const builder = new xml2js.Builder();
-        Zahtev = builder.buildObject(Zahtev);
-        autori_list=builder.buildObject(autori_list);
-        console.log(Zahtev);
-        // console.log(autori_list)
-        console.log("--------------------------------")
-
-
-
-        axios.post("http://localhost:8003/autor/create", Zahtev, {
-            headers: {
-                "Content-Type": "application/xml",
-                "Accept": "*/*",
+            let p = podnosilac;
+            p.kontakt.eposta = "milos2000.mm@gmail.com"
+            let autori_list = []
+            for (const autoriListElement of autori) {
+                autori_list.push({Autor: autoriListElement})
             }
-        }).then(response => {
-            console.log(response)
-            toast.success(response.data);
-        }).catch(() => {
-            toast.error("Greška pri čuvanju zahteva.")
-        })
+            let Zahtev = {
+                prilozi: getPrilozi(),
+                podnosilac: podnosilac,
+                podnosilacJeAutor: jeAutor,
+                punomocnik: punomocnik,
+                autori: autori_list,
+                autorskoDelo: autorskoDelo
+            }
+            const xml2js = require("xml2js");
+            const builder = new xml2js.Builder();
+            Zahtev = builder.buildObject(Zahtev);
+            console.log(Zahtev)
+            // axios.post("http://localhost:8003/autor/create", Zahtev, {
+            //     headers: {
+            //         "Content-Type": "application/xml",
+            //         "Accept": "*/*",
+            //     }
+            // }).then(response => {
+            //     console.log(response)
+            //     toast.success(response.data);
+            // }).catch(() => {
+            //     toast.error("Greška pri čuvanju zahteva.")
+            // })
         // }
     }
     const uploadFile = (file: File): string => {

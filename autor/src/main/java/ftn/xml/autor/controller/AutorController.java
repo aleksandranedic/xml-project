@@ -35,7 +35,6 @@ public class AutorController {
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
     public String createRequest(@RequestBody Zahtev zahtev) {
         try {
-//            System.out.println(zahtev);
             service.save(zahtev);
             return "Uspešno ste dodali zahtev.";
         } catch (Exception e) {

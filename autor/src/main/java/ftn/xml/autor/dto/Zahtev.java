@@ -2,6 +2,7 @@ package ftn.xml.autor.dto;
 
 import ftn.xml.autor.model.AutorskoDelo;
 import lombok.*;
+import org.checkerframework.checker.units.qual.N;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class Zahtev {
     private Lice punomocnik;
     private boolean jeAutor;
     private List<Autor> autori;
-    private List<String> prilozi;
+    private Prilozi prilozi;
     private AutorskoDeloDTO autorskoDelo;
 
     @NoArgsConstructor
@@ -75,6 +76,7 @@ public class Zahtev {
         Info info;
         Adresa adresa;
         Kontakt kontakt;
+        String pseudonim;
     }
 
 
@@ -89,6 +91,19 @@ public class Zahtev {
         Kontakt kontakt;
         String pseudonim;
         String godinaSmrti;
+        boolean anoniman;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static public class Prilozi {
+        String punomocje;
+        String zajednickiPredstavnik;
+        String pravniOsnov;
+        String uplataTakse;
+        String primerDela;
+        String opisDela;
     }
 
 }

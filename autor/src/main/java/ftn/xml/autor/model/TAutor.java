@@ -40,8 +40,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "godinaSmrti",
     "znakAutora"
 })
-public class TAutor
-    extends TFizickoLice
+public class TAutor extends TFizickoLice
 {
 
     @XmlElement(name = "Godina_smrti", required = true)
