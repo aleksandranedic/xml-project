@@ -1,8 +1,6 @@
 package ftn.xml.patent.repository;
 
-import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.utils.AuthenticationUtilities;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.exist.xmldb.EXistResource;
 import org.springframework.stereotype.Repository;
 import org.xmldb.api.DatabaseManager;

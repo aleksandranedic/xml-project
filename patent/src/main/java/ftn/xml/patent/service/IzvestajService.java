@@ -1,6 +1,5 @@
 package ftn.xml.patent.service;
 
-import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.model.izvestaj.Izvestaj;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.fop.apps.*;
