@@ -1,6 +1,6 @@
-package ftn.xml.patent.controller;
+package ftn.xml.autor.controller;
 
-import ftn.xml.patent.service.StorageService;
+import ftn.xml.autor.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class StorageController {
-    public static final String FILES = "http://localhost:8002/files/";
     private final StorageService storageService;
 
     @Autowired
@@ -22,6 +21,6 @@ public class StorageController {
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file) {
         String fileName = storageService.storeFile(file);
 
-        return ResponseEntity.ok().body(FILES + fileName);
+        return ResponseEntity.ok().body("http://localhost:8002/prilozi/" + fileName);
     }
 }

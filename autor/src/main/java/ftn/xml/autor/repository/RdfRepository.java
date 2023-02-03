@@ -25,7 +25,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 @Repository
-public class RdfAutorRepository {
+public class RdfRepository {
 
     private TransformerFactory transformerFactory;
     private static final String XSLT_FILE = "./src/main/resources/data/xslt/autor.xsl";
@@ -33,7 +33,7 @@ public class RdfAutorRepository {
     private static final String SPARQL_NAMED_GRAPH_URI = "/autor/metadata";
     AuthenticationUtilitiesMetadata.ConnectionProperties conn;
 
-    public RdfAutorRepository() {
+    public RdfRepository() {
         transformerFactory = new TransformerFactoryImpl();
         try {
             conn = AuthenticationUtilitiesMetadata.loadProperties();

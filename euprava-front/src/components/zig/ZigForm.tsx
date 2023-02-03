@@ -1,6 +1,8 @@
 import {useRef, useState, useContext} from 'react';
 import UserContext from '../../store/user-context';
 import { InformacijeOZigu, PlaceneTakse, Podnosilac, PrilozeniDokumenti, Punomocnik, VrstaA, VrstaB } from './types';
+import {Lice} from "../types";
+import {toast} from "react-toastify";
 
 interface ZigFormProps {
     
@@ -55,6 +57,25 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
         name.current!.classList.add("flex");
         surname.current!.classList.remove("flex");
         surname.current!.classList.add("hidden");
+    }
+
+
+    const validate = ():boolean => {
+        if (!Podnosilac.validate(podnosilac)) {
+            toast.error("Morate popuniti sve podatke o podnosiocu.")
+            return false;
+        }
+        if (!Punomocnik.validate(punomocnik)) {
+            toast.error("Morate popuniti sve podatke o punomćniku.")
+        }
+
+        if (!PlaceneTakse.validate(placeneTakse)) {
+            toast.error("Morate popuniti naziv takse.")
+        }
+
+
+
+        return true;
     }
     
     const onSubmit = (e: any) => {

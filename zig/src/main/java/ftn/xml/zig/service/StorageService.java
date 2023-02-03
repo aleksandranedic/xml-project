@@ -1,4 +1,4 @@
-package ftn.xml.patent.service;
+package ftn.xml.zig.service;
 
 import org.apache.jena.dboe.base.StorageException;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class StorageService {
-    private final Path rootLocation = Paths.get("src/main/resources/data/files");
+    private final Path rootLocation = Paths.get("src/main/resources/data/prilozi");
 
     public String storeFile(MultipartFile file) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
