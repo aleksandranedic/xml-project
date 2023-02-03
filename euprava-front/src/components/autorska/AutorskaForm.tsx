@@ -87,33 +87,45 @@ const AutorskaForm: React.FunctionComponent = () => {
         // if (validate()) {
         let p = podnosilac;
         p.kontakt.eposta = "milos2000.mm@gmail.com"
+        // lista auutorjson = []
+        // za svakog autora
+        // autorijson.push({autor:autori})
 
+        let autori_list=[]
+        for (const autoriListElement of autori) {
+            autori_list.push({Autor:autoriListElement})
+        }
 
-        autori.forEach(autor => {
-            return {autor};
-        })
-        console.log(autori)
-        let sviAutori={autori}
-        console.log(sviAutori)
+        // for (let i = 0; i < autori.length; i++) {
+        //     autori_list.push({Autor:autori[i]})
+        // }
 
-        let dto = {
+        let Zahtev = {
             prilozi: getPrilozi(),
             podnosilac: podnosilac,
             podnosilacJeAutor: jeAutor,
             punomocnik: punomocnik,
-            autori: sviAutori,
+            autori: autori_list,
             autorskoDelo: autorskoDelo
         }
 
+        console.log("--------------------------------")
+        console.log(autori_list)
+        console.log("--------------------------------")
         const xml2js = require("xml2js");
         const builder = new xml2js.Builder();
-        let xml = builder.buildObject(dto);
+        Zahtev = builder.buildObject(Zahtev);
+        autori_list=builder.buildObject(autori_list);
+        console.log(Zahtev);
+        // console.log(autori_list)
+        console.log("--------------------------------")
 
-        console.log(xml)
-        axios.post("http://localhost:8003/autor/create", dto,{
-            headers:{
-                "Content-Type":"application/xml",
-                "Accept":"*/*",
+
+
+        axios.post("http://localhost:8003/autor/create", Zahtev, {
+            headers: {
+                "Content-Type": "application/xml",
+                "Accept": "*/*",
             }
         }).then(response => {
             console.log(response)

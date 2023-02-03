@@ -13,9 +13,8 @@ public class Zahtev {
     private Lice podnosilac;
     private Lice punomocnik;
     private boolean jeAutor;
-    private Lice punomocknik;
-    private ArrayList<Autor> autori;
-    private ArrayList<String> prilozi;
+    private List<Autor> autori;
+    private List<String> prilozi;
     private AutorskoDeloDTO autorskoDelo;
 
     @NoArgsConstructor
