@@ -2,8 +2,6 @@ package ftn.xml.patent.dto;
 
 import ftn.xml.patent.model.*;
 import ftn.xml.patent.repository.PatentRepository;
-import ftn.xml.patent.service.PatentService;
-import ftn.xml.patent.service.TransformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xmldb.api.base.XMLDBException;
@@ -134,9 +132,13 @@ public class ZahtevMapper {
 
     private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = format.parse(dateString);
+        if (dateString != null) {
+            Date date = format.parse(dateString);
 
-        return parseToXMLGregorianCalendar(date);
+            return parseToXMLGregorianCalendar(date);
+        }
+        return null;
+
     }
 
     private static XMLGregorianCalendar parseToXMLGregorianCalendar(Date date) throws DatatypeConfigurationException {
@@ -223,7 +225,7 @@ public class ZahtevMapper {
     }
 
     private static Adresa getAdresa(Zahtev.Adresa a) {
-        if (a.getUlica() == "") {
+        if (Objects.equals(a.getUlica(), "")) {
             return null;
         }
 

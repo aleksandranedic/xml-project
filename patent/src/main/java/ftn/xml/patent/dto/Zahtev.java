@@ -29,7 +29,7 @@ public class Zahtev {
         String prvobitnaPrijava;
         List<String> ranijePrijave;
         String izjavaOSticanjuPrava;
-        String izajavaPronalazaca;
+        String izjavaPronalazaca;
         String opis;
         String nacrt;
         String apstrakt;

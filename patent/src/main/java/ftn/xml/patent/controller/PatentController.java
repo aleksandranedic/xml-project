@@ -5,6 +5,7 @@ import ftn.xml.patent.dto.Zahtev;
 import ftn.xml.patent.dto.ZahtevData;
 import ftn.xml.patent.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
@@ -12,7 +13,7 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "patent")
+@RequestMapping(path = "/patent")
 public class PatentController {
 
     private final PatentService service;
@@ -63,18 +64,18 @@ public class PatentController {
     }
 
 
-    @PostMapping(value = "/create")
+    @PostMapping(path = "/create", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
     public String createRequest(@RequestBody Zahtev zahtev) {
         try {
             service.save(zahtev);
-            return "Uspešno ste dodali zahtev.";
+            return "Zahtev je dodat.";
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping(path= "/update", consumes = MediaType.APPLICATION_XML_VALUE)
     public String updateRequest(@RequestParam("broj") String brojPrijave, @RequestBody Resenje resenje) {
         try {
             service.updateRequest(brojPrijave, resenje);
