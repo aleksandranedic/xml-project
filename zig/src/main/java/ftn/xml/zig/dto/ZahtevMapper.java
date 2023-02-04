@@ -1,6 +1,5 @@
 package ftn.xml.zig.dto;
 
-import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -4,7 +4,6 @@ import ftn.xml.patent.dto.Resenje;
 import ftn.xml.patent.dto.Zahtev;
 import ftn.xml.patent.dto.ZahtevData;
 import ftn.xml.patent.dto.ZahtevMapper;
-import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.model.izvestaj.Izvestaj;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.repository.RdfRepository;

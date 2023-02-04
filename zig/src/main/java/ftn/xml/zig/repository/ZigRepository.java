@@ -1,6 +1,5 @@
 package ftn.xml.zig.repository;
 
-import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.utils.AuthenticationUtilities;
 import ftn.xml.zig.utils.PrettyPrint;
 import org.springframework.stereotype.Repository;

@@ -1,6 +1,5 @@
 package ftn.xml.zig.controller;
 import ftn.xml.zig.dto.Zahtev;
-import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.service.ZigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

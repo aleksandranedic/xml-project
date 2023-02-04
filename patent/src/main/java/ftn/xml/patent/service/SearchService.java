@@ -2,7 +2,6 @@ package ftn.xml.patent.service;
 
 import ftn.xml.patent.dto.Metadata;
 import ftn.xml.patent.dto.MetadataList;
-import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.utils.AuthenticationUtilitiesMetadata;
 import org.apache.jena.query.QueryExecution;
