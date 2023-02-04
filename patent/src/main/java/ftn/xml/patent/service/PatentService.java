@@ -135,8 +135,10 @@ public class PatentService {
 
     public void save(Zahtev zahtev) throws Exception {
         ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = mapper.parseZahtev(zahtev);
-        save(zahtevZaPriznanjePatenta);
-        addRdf(zahtevZaPriznanjePatenta);
+
+        System.out.println("Ovde");
+        //save(zahtevZaPriznanjePatenta);
+        //addRdf(zahtevZaPriznanjePatenta);
     }
 
     public String getPdf(String brojPrijave) throws JAXBException {
@@ -151,7 +153,7 @@ public class PatentService {
 
         String filePath = FILE_FOLDER + brojPrijave + ".html";
 
-        String content = "";
+        String content;
         File file = new File(filePath);
         if (file.exists() && file.isFile()) {
             try {
@@ -182,15 +184,11 @@ public class PatentService {
     }
 
     public List<ZahtevData> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return repository.retrieveAllWithResenje().stream().map(zahtevZaPriznanjePatenta -> {
-            return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
-        }).toList();
+        return repository.retrieveAllWithResenje().stream().map(zahtevZaPriznanjePatenta -> mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()))).toList();
     }
 
     public List<ZahtevData> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return repository.retrieveAllWithoutResenje().stream().map(zahtevZaPriznanjePatenta -> {
-            return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
-        }).toList();
+        return repository.retrieveAllWithoutResenje().stream().map(zahtevZaPriznanjePatenta -> mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()))).toList();
     }
 
     public String getIzvestajPdf(String startDate, String endDate) throws JAXBException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
