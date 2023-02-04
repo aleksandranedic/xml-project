@@ -2,6 +2,7 @@ package ftn.xml.zig.service;
 
 import ftn.xml.zig.dto.Metadata;
 import ftn.xml.zig.dto.MetadataList;
+import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.repository.ZigRepository;
 import ftn.xml.zig.utils.AuthenticationUtilitiesMetadata;
 import org.apache.jena.query.QueryExecution;

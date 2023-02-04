@@ -2,6 +2,7 @@ package ftn.xml.zig.service;
 
 import ftn.xml.zig.dto.Zahtev;
 import ftn.xml.zig.dto.ZahtevMapper;
+import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.repository.RdfRepository;
 import ftn.xml.zig.repository.ZigRepository;
 import ftn.xml.zig.utils.SchemaValidationEventHandler;

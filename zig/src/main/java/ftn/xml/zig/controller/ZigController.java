@@ -1,7 +1,9 @@
 package ftn.xml.zig.controller;
 import ftn.xml.zig.dto.Zahtev;
+import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.service.ZigService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
@@ -28,7 +30,7 @@ public class ZigController {
     }
 
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_XML_VALUE)
     public String createRequest(@RequestBody Zahtev zahtev) {
         try {
             service.save(zahtev);

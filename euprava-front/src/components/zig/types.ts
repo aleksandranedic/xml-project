@@ -37,7 +37,6 @@ export class InformacijeOZigu {
   public transliteracija: string;
   public prevod: string;
   public opis: string;
-  public izgledZnaka?: FileList;
   public klasifikacija: number[];
   public pravo: string;
 
@@ -69,16 +68,21 @@ export class PlaceneTakse {
     this.ukupno = 0;
   }
 
-  static validate(placeneTakse:PlaceneTakse):boolean {
-    return placeneTakse.naziv !== "";
+  static validate(placeneTakse: PlaceneTakse): boolean {
+    return (
+      placeneTakse.naziv !== "" &&
+      placeneTakse.osnovna !== 0 &&
+      placeneTakse.zaKlasa !== 0 &&
+      placeneTakse.grafickoResenje !== 0 &&
+      placeneTakse.ukupno !== 0
+    );
   }
 }
 
 export class PrilozeniDokumenti {
+  public izgledZnaka?: FileList;
   public spisakRobeIUsluga?: FileList;
   public punomocje?: FileList;
-  public generalnoPunomocje?: FileList;
-  public punomocjeNaknadnoDostavljeno?: FileList;
   public opstiAkt?: FileList;
   public pravoPrvenstva?: FileList;
   public uplataTakse?: FileList;

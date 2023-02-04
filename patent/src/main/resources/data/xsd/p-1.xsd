@@ -188,7 +188,6 @@
                                 name="Patentni_zahtevi_za_zastitu_pronalaska" type="xs:string"/>
                             <xs:element name="Nacrt_na_koji_se_poziva_opis" type="xs:string"/>
                             <xs:element name="Apstrakt" type="xs:string"/>
-                            <xs:element minOccurs="0" name="Resenje" type="xs:string"/>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
