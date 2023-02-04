@@ -60,7 +60,8 @@ public class AutorRepository {
 
 
     public List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[ZahtevZaIntelektualnuSvojinu/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_intelektualnu_svojinu/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
+        //TODO ovo baca exception
         return retrieveBasedOnXQuery(xquery);
     }
 

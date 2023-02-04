@@ -9,6 +9,7 @@ import ZigContext from "../store/zig-zahtevi-context";
 import {ZahtevZaPriznanjeZiga} from "../components/zig/types";
 import AutorskaContext from "../store/autorska-zahtevi-context";
 import {ZahtevZaPriznanjeAutorska} from "../components/autorska/types";
+import convert from "xml-js";
 
 
 enum Operator {
@@ -124,13 +125,39 @@ const AdvancedSearch: React.FunctionComponent = () => {
         if (type === "autor") {
             port = "8003"
         }
-        axios.post(`http://localhost:${port}/search/advanced`, {metadata: searchParams}, {
+        let metadataList = [];
+        for (const searchParam of searchParams) {
+            metadataList.push({
+                metadata: searchParam
+            })
+        }
+        console.log(metadataList)
+
+        const xml2js = require("xml2js");
+        const builder = new xml2js.Builder();
+
+        let metadata=metadataList;
+        if (metadataList.length === 1) {
+            metadata = builder.buildObject({metadata});
+        } else {
+            metadata = builder.buildObject(metadata);
+        }
+        console.log(metadata)
+        axios.post(`http://localhost:${port}/search/advanced`, metadata, {
             headers: {
                 "Content-Type": "application/xml",
                 Accept: "*/*"
             }
         }).then(response => {
-            console.log(response.data);
+            const convert = require("xml-js");
+            const jsonData = convert.xml2js(response.data, {
+                compact: true,
+                alwaysChildren: true,
+            });
+            console.log("AAAAAAAAAAA")
+            console.log(jsonData);
+            console.log("AAAAAAAAAAA")
+
             switch (type) {
                 case 'patent':
                     setPatentZahtevi([new ZahtevZaPriznanjePatenta()]);
