@@ -1,5 +1,6 @@
 package ftn.xml.autor.controller;
 
+import ftn.xml.autor.dto.ResenjeDTO;
 import ftn.xml.autor.dto.Zahtev;
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.service.AutorService;
@@ -43,9 +44,9 @@ public class AutorController {
     }
 
     @PutMapping(produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
-    public String updateRequest(@RequestParam("broj") int brojPrijave, ZahtevZaIntelektualnuSvojinu zahtev) {
+    public String updateRequest(@RequestBody ResenjeDTO resenje) {
         try {
-            //service.updateRequest(brojPrijave, zahtev);
+            service.updateRequest(resenje);
             return "Uspešno ste ažurirali zahtev.";
         } catch (Exception e) {
             throw new RuntimeException(e);

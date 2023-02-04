@@ -36,6 +36,17 @@ public class ZahtevMapper {
         return zahtevZaIntelektualnuSvojinu;
     }
 
+    public ZahtevZaIntelektualnuSvojinu.Resenje parseResenje(ResenjeDTO resenje) throws DatatypeConfigurationException {
+        ZahtevZaIntelektualnuSvojinu.Resenje novoResenje = new ZahtevZaIntelektualnuSvojinu.Resenje();
+        novoResenje.setStatus(resenje.getStatus());
+        novoResenje.setDatum(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
+        novoResenje.setIme(resenje.getIme());
+        novoResenje.setPrezime(resenje.getPrezime());
+        novoResenje.setObrazlozenje(resenje.getObrazlozenje());
+        novoResenje.setBrojPrijave(resenje.getBrojPrijave());
+        return novoResenje;
+    }
+
     private ZahtevZaIntelektualnuSvojinu.PopunjavaZavod getPopunjavaZavod(Zahtev zahtev) throws DatatypeConfigurationException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         ZahtevZaIntelektualnuSvojinu.PopunjavaZavod popunjavaZavod = new ZahtevZaIntelektualnuSvojinu.PopunjavaZavod();
         popunjavaZavod.setDatumPodnosenja(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));

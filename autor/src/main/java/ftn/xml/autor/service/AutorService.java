@@ -1,8 +1,8 @@
 package ftn.xml.autor.service;
 
+import ftn.xml.autor.dto.ResenjeDTO;
 import ftn.xml.autor.dto.Zahtev;
 import ftn.xml.autor.dto.ZahtevMapper;
-import ftn.xml.autor.model.EmailDataDTO;
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.repository.AutorRepository;
 import ftn.xml.autor.repository.RdfRepository;
@@ -120,5 +120,15 @@ public class AutorService {
 //        String documentPath="D:\\Fourth Year\\XML_WebServices\\XML_PROJEKAT_GIT\\xml-project\\autor\\src\\main\\resources\\data\\gen\\autor.pdf";
 //        EmailDataDTO emailDataDTO= EmailService.buildEmailDTO(email,documentPath);
 //        emailService.sendEmail(emailDataDTO);
+    }
+
+    public void updateRequest(ResenjeDTO resenje) {
+        ZahtevZaIntelektualnuSvojinu zahtev = getZahtev(resenje.getBrojPrijave());
+        try {
+            zahtev.setResenje(mapper.parseResenje(resenje));
+            save(zahtev);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
