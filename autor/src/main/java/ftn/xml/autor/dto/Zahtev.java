@@ -17,6 +17,7 @@ public class Zahtev {
     private List<Autor> autori;
     private Prilozi prilozi;
     private AutorskoDeloDTO autorskoDelo;
+    private int brojAnonimnihAutora;
 
     @NoArgsConstructor
     @AllArgsConstructor

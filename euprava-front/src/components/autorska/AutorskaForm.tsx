@@ -3,7 +3,7 @@ import {AiOutlineClose} from 'react-icons/ai';
 import UserContext from '../../store/user-context';
 import {Autor, AutorskoDelo, Podnosilac, PrilozeniDokumenti, Punomocnik, VrstaDela} from './types';
 import axios from "axios";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import {Lice} from "../types";
 import {Dostavljanje, NazivPatent, Pronalazac, PrvobitnaPrijava, RanijaPrijava} from "../patent/types";
 
@@ -70,7 +70,7 @@ const AutorskaForm: React.FunctionComponent = () => {
             toast.error("Niste uneli naslov autorskog dela.");
             return false;
         }
-        if (autorskoDelo.drugaVrsta === "" || autorskoDelo.vrstaDela === null) {
+        if (autorskoDelo.drugaVrsta === "" && autorskoDelo.vrstaDela === null) {
             toast.error("Niste uneli vrstu autorskog dela.");
             return false;
         }
@@ -83,18 +83,27 @@ const AutorskaForm: React.FunctionComponent = () => {
     const onSubmit = async (e: any) => {
         e.preventDefault();
 
-        console.log("upada")
-        // if (validate()) {
+        let p = podnosilac;
+        p.kontakt.eposta = "milos2000.mm@gmail.com"
+        if (validate()) {
             let p = podnosilac;
             p.kontakt.eposta = "milos2000.mm@gmail.com"
             let autori_list = []
+            let anonimni_autori: number = 0;
             for (const autoriListElement of autori) {
-                autori_list.push({Autor: autoriListElement})
+                if (autoriListElement.anoniman) {
+                    anonimni_autori += 1;
+                } else {
+                    autori_list.push({Autor: autoriListElement})
+                }
             }
+
+            console.log(getPrilozi())
             let Zahtev = {
                 prilozi: getPrilozi(),
                 podnosilac: podnosilac,
                 podnosilacJeAutor: jeAutor,
+                brojAnonimnihAutora: anonimni_autori,
                 punomocnik: punomocnik,
                 autori: autori_list,
                 autorskoDelo: autorskoDelo
@@ -102,19 +111,18 @@ const AutorskaForm: React.FunctionComponent = () => {
             const xml2js = require("xml2js");
             const builder = new xml2js.Builder();
             Zahtev = builder.buildObject(Zahtev);
-            console.log(Zahtev)
-            // axios.post("http://localhost:8003/autor/create", Zahtev, {
-            //     headers: {
-            //         "Content-Type": "application/xml",
-            //         "Accept": "*/*",
-            //     }
-            // }).then(response => {
-            //     console.log(response)
-            //     toast.success(response.data);
-            // }).catch(() => {
-            //     toast.error("Greška pri čuvanju zahteva.")
-            // })
-        // }
+            axios.post("http://localhost:8003/autor/create", Zahtev, {
+                headers: {
+                    "Content-Type": "application/xml",
+                    "Accept": "*/*",
+                }
+            }).then(response => {
+                console.log(response)
+                toast.success(response.data);
+            }).catch(() => {
+                toast.error("Greška pri čuvanju zahteva.")
+            })
+        }
     }
     const uploadFile = (file: File): string => {
         let formData = new FormData();
@@ -665,7 +673,7 @@ const AutorskaForm: React.FunctionComponent = () => {
                     <div className="form-input-container">
                         <div className="flex justify-between w-full items-center">
                             <p>Opis autorskog dela:</p>
-                            <input type="file" name='opis-dela-fajl' className="!border-none"
+                            <input type="file" name='opis-dela-fajl' className="!border-none" size={10485760}
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        opisDela: e.target.files as FileList
@@ -673,7 +681,7 @@ const AutorskaForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Primer autorskog dela:</p>
-                            <input type="file" name='primer-fajl' className="!border-none"
+                            <input type="file" name='primer-fajl' className="!border-none" size={10485760}
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        primerDela: e.target.files as FileList
@@ -681,7 +689,7 @@ const AutorskaForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Dokaz o uplati takse:</p>
-                            <input type="file" name='dokaz-o-uplati-takse-fajl' className="!border-none"
+                            <input type="file" name='dokaz-o-uplati-takse-fajl' className="!border-none" size={10485760}
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        uplataTakse: e.target.files as FileList
@@ -689,7 +697,7 @@ const AutorskaForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Izjava o pravnom osnovu za podnošenje prijave:</p>
-                            <input type="file" name='izjava-pravni-osnov-fajl' className="!border-none"
+                            <input type="file" name='izjava-pravni-osnov-fajl' className="!border-none" size={10485760}
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        pravniOsnov: e.target.files as FileList
@@ -698,6 +706,7 @@ const AutorskaForm: React.FunctionComponent = () => {
                         <div className="flex justify-between w-full items-center">
                             <p>Izjava o zajedničkom predstavniku:</p>
                             <input type="file" name='zajednicki-predstavnik-fajl' className="!border-none"
+                                   size={10485760}
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        zajednickiPredstavnik: e.target.files as FileList
@@ -705,7 +714,7 @@ const AutorskaForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Punomoćje:</p>
-                            <input type="file" name='punomocje-fajl' className="!border-none"
+                            <input type="file" name='punomocje-fajl' className="!border-none" size={10485760}
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        punomocje: e.target.files as FileList
@@ -719,6 +728,7 @@ const AutorskaForm: React.FunctionComponent = () => {
                 </button>
 
             </form>
+            <ToastContainer position="top-center" draggable={false}/>
         </div>);
 }
 

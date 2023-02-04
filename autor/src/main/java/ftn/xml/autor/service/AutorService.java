@@ -114,10 +114,11 @@ public class AutorService {
         ZahtevZaIntelektualnuSvojinu zahtevZaIntelektualnuSvojinu = mapper.parseZahtev(zahtev);
         save(zahtevZaIntelektualnuSvojinu);
         addRdf(zahtevZaIntelektualnuSvojinu);
-        //TODO pitaj dunju za documentPath
-        String email="";
-        String documentPath="";
-        EmailDataDTO emailDataDTO= EmailService.buildEmailDTO(email,documentPath);
-        emailService.sendEmail(emailDataDTO);
+        System.out.println(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave());
+        //TODO slanje radi samo treba na update
+//        String email=zahtevZaIntelektualnuSvojinu.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta();
+//        String documentPath="D:\\Fourth Year\\XML_WebServices\\XML_PROJEKAT_GIT\\xml-project\\autor\\src\\main\\resources\\data\\gen\\autor.pdf";
+//        EmailDataDTO emailDataDTO= EmailService.buildEmailDTO(email,documentPath);
+//        emailService.sendEmail(emailDataDTO);
     }
 }

@@ -21,6 +21,7 @@ public class SearchController {
 
     }
 
+    //proveri
     @PostMapping(value = "advanced")
     public ResponseEntity<?> advanced(@RequestBody MetadataList metadata) {
         try {
@@ -30,7 +31,7 @@ public class SearchController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    //basic
     @GetMapping("/basic")
     public ResponseEntity<?> basic(@RequestParam("terms") String terms) {
         try {

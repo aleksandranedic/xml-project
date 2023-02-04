@@ -116,7 +116,9 @@ public class ZahtevMapper {
         for (Zahtev.Autor autor : zahtev.getAutori()) {
             autori.getAnonimanOrAutor().add(getAutorZaZahtevZaIntelektualnuSvojinu(autor));
         }
-
+        for (int i = 0; i < zahtev.getBrojAnonimnihAutora(); i++) {
+            autori.getAnonimanOrAutor().add(new TEmpty());
+        }
         return autori;
     }
 
@@ -159,7 +161,7 @@ public class ZahtevMapper {
     }
 
     private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat format = new SimpleDateFormat("yyyy");
         Date date = format.parse(dateString);
 
         return parseToXMLGregorianCalendar(date);
