@@ -97,16 +97,15 @@ const AutorskaForm: React.FunctionComponent = () => {
                     autori_list.push({Autor: autoriListElement})
                 }
             }
-
             console.log(getPrilozi())
             let Zahtev = {
-                prilozi: getPrilozi(),
                 podnosilac: podnosilac,
                 podnosilacJeAutor: jeAutor,
                 brojAnonimnihAutora: anonimni_autori,
                 punomocnik: punomocnik,
                 autori: autori_list,
-                autorskoDelo: autorskoDelo
+                autorskoDelo: autorskoDelo,
+                prilozi: await getPrilozi()
             }
             const xml2js = require("xml2js");
             const builder = new xml2js.Builder();
@@ -124,27 +123,23 @@ const AutorskaForm: React.FunctionComponent = () => {
             })
         }
     }
-    const uploadFile = (file: File): string => {
+    const uploadFile = async (file: File): Promise<string> => {
         let formData = new FormData();
-
         formData.append('file', file);
 
-        axios.post('http://localhost:8003/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-
-            }
-        })
-            .then(response => {
-                toast.success("Uspešno je poslata datoteka: " + file.name);
-                return "http://localhost:8003" + response.data;
+        try {
+            let fileName = await axios.post('http://localhost:8003/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
-            .catch(() => {
-                toast.error("Greška pri prilaganju datoteke: " + file.name);
-                return "";
-            });
-
-        return "";
+            toast.success("Uspešno je poslata datoteka: " + file.name);
+            return fileName.data
+        }
+        catch {
+            toast.error("Greška pri prilaganju datoteke: " + file.name);
+            return "";
+        }
     }
 
 
@@ -155,23 +150,23 @@ const AutorskaForm: React.FunctionComponent = () => {
         }
 
         if (prilozeniDokumenti.punomocje) {
-            prilozi.punomocje = uploadFile(prilozeniDokumenti.punomocje[0]);
+            prilozi.punomocje = await uploadFile(prilozeniDokumenti.punomocje[0]);
             console.log(prilozi.punomocje)
         }
         if (prilozeniDokumenti.zajednickiPredstavnik) {
-            prilozi.zajednickiPredstavnik = uploadFile(prilozeniDokumenti.zajednickiPredstavnik[0]);
+            prilozi.zajednickiPredstavnik = await uploadFile(prilozeniDokumenti.zajednickiPredstavnik[0]);
         }
         if (prilozeniDokumenti.pravniOsnov) {
-            prilozi.pravniOsnov = uploadFile(prilozeniDokumenti.pravniOsnov[0]);
+            prilozi.pravniOsnov = await uploadFile(prilozeniDokumenti.pravniOsnov[0]);
         }
         if (prilozeniDokumenti.uplataTakse) {
-            prilozi.uplataTakse = uploadFile(prilozeniDokumenti.uplataTakse[0])
+            prilozi.uplataTakse = await uploadFile(prilozeniDokumenti.uplataTakse[0])
         }
         if (prilozeniDokumenti.primerDela) {
-            prilozi.primerDela = uploadFile(prilozeniDokumenti.primerDela[0])
+            prilozi.primerDela = await uploadFile(prilozeniDokumenti.primerDela[0])
         }
         if (prilozeniDokumenti.opisDela) {
-            prilozi.opisDela = uploadFile(prilozeniDokumenti.opisDela[0])
+            prilozi.opisDela = await uploadFile(prilozeniDokumenti.opisDela[0])
         }
 
         return prilozi;
