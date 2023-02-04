@@ -87,8 +87,8 @@ public class SearchService {
                 varValue = querySolution.get(varName);
                 if (Objects.equals(varName, "Broj_prijave")) {
                     try {
-                        zahtevi.addAll(repository.retrieveBasedOnBrojPrijave(varValue.toString()));
-                    } catch (XMLDBException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                        zahtevi.add(repository.retrieve(varValue.toString() + ".xml"));
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
 
@@ -100,7 +100,7 @@ public class SearchService {
     }
 
     private String getSparqlQuery(List<Metadata> metadata) {
-        String FUSEKI = "http://localhost:8080/fuseki/patentDataset/data/patent/metadata";
+        String FUSEKI = "http://localhost:8080/fuseki-patent/patentDataset/data/patent/metadata";
 
         return "SELECT * FROM <" + FUSEKI + ">" +
                 "WHERE {" +
