@@ -1,9 +1,7 @@
 package ftn.xml.patent.service;
 
-import ftn.xml.patent.dto.Resenje;
-import ftn.xml.patent.dto.Zahtev;
-import ftn.xml.patent.dto.ZahtevData;
-import ftn.xml.patent.dto.ZahtevMapper;
+import ftn.xml.patent.dto.*;
+import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.model.izvestaj.Izvestaj;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.repository.RdfRepository;
@@ -61,13 +59,6 @@ public class PatentService {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
     }
 
-    public ZahtevData getZahtevData(String brojPrijave) {
-        try {
-            return mapper.parseZahtev(repository.retrieve(brojPrijave + ".xml"), getHtmlString(brojPrijave));
-        } catch (Exception e) {
-            throw new RuntimeException("Ne postoji zahtev za zadatim brojem prijave.");
-        }
-    }
 
     public ZahtevZaPriznanjePatenta getZahtev(String brojPrijave) {
         try {
@@ -122,20 +113,20 @@ public class PatentService {
         rdfRepository.writeRdf(zahtev_output.toString());
     }
 
-    public List<ZahtevData> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return repository.retrieveAll().stream().map(zahtevZaPriznanjePatenta -> {
-            return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
-        }).toList();
+    public List<ZahtevZaPriznanjePatenta> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return repository.retrieveAll();
     }
 
     public void deleteRequest(String brojPrijave) throws Exception {
         repository.remove(brojPrijave + ".xml");
     }
 
-    public void save(Zahtev zahtev) throws Exception {
+    public String save(Zahtev zahtev) throws Exception {
         ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = mapper.parseZahtev(zahtev);
+
         save(zahtevZaPriznanjePatenta);
         addRdf(zahtevZaPriznanjePatenta);
+        return zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave();
     }
 
     public String getPdf(String brojPrijave) throws JAXBException {
@@ -150,7 +141,7 @@ public class PatentService {
 
         String filePath = FILE_FOLDER + brojPrijave + ".html";
 
-        String content = "";
+        String content;
         File file = new File(filePath);
         if (file.exists() && file.isFile()) {
             try {
@@ -180,16 +171,16 @@ public class PatentService {
         }
     }
 
-    public List<ZahtevData> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return repository.retrieveAllWithResenje().stream().map(zahtevZaPriznanjePatenta -> {
-            return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
-        }).toList();
+    public List<ZahtevZaPriznanjePatenta> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
+        //TODO:Filtriraj da li ima resenje
+        return list;
     }
 
-    public List<ZahtevData> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return repository.retrieveAllWithoutResenje().stream().map(zahtevZaPriznanjePatenta -> {
-            return mapper.parseZahtev(zahtevZaPriznanjePatenta, getHtmlString(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave()));
-        }).toList();
+    public List<ZahtevZaPriznanjePatenta> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
+        //TODO:Filtriraj da nema resenje
+        return list;
     }
 
     public String getIzvestajPdf(String startDate, String endDate) throws JAXBException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {

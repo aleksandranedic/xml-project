@@ -3,8 +3,10 @@ package ftn.xml.patent.controller;
 import ftn.xml.patent.dto.Resenje;
 import ftn.xml.patent.dto.Zahtev;
 import ftn.xml.patent.dto.ZahtevData;
+import ftn.xml.patent.dto.ZahtevDataMapper;
 import ftn.xml.patent.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
@@ -12,36 +14,39 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "patent")
+@RequestMapping(path = "/patent")
 public class PatentController {
 
     private final PatentService service;
+    private final ZahtevDataMapper zahtevDataMapper;
+    //TODO: Dodaj streamovanje
     public static final String FILES = "http://localhost:8002/files/";
 
 
     @Autowired
-    public PatentController(PatentService service) {
+    public PatentController(PatentService service, ZahtevDataMapper zahtevDataMapper) {
         this.service = service;
+        this.zahtevDataMapper = zahtevDataMapper;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public List<ZahtevData> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return service.getAll();
+        return service.getAll().stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
     @GetMapping("/resolved")
     public List<ZahtevData> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return service.getAllResolved();
+        return service.getAllResolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
     @GetMapping("/unresolved")
     public List<ZahtevData> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return service.getAllUnresolved();
+        return service.getAllUnresolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
     @GetMapping("/{broj}")
     public ZahtevData getRequest(@PathVariable("broj") String brojPrijave) {
-        return this.service.getZahtevData(brojPrijave);
+        return zahtevDataMapper.convertToZahtevData(this.service.getZahtev(brojPrijave));
     }
 
     @GetMapping("/pdf/{broj}")
@@ -63,18 +68,18 @@ public class PatentController {
     }
 
 
-    @PostMapping(value = "/create")
+    @PostMapping(path = "/create", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
     public String createRequest(@RequestBody Zahtev zahtev) {
         try {
-            service.save(zahtev);
-            return "Uspešno ste dodali zahtev.";
+            String brojPrijave = service.save(zahtev);
+            return "Zahtev je dodat pod brojem prijave " + brojPrijave + ".";
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    @PutMapping("/update")
+    @PutMapping(path= "/update", consumes = MediaType.APPLICATION_XML_VALUE)
     public String updateRequest(@RequestParam("broj") String brojPrijave, @RequestBody Resenje resenje) {
         try {
             service.updateRequest(brojPrijave, resenje);

@@ -19,7 +19,7 @@ public class Zahtev {
     Adresa adresaZaDostavljanje;
     String nacinDostavljanja;
     PrvobitnaPrijava prvobitnaPrijava;
-    List<RanijaPrijava> ranijaPrijave;
+    List<RanijaPrijava> ranijePrijave;
     Prilozi prilozi;
     @Getter
     @Setter
@@ -29,7 +29,7 @@ public class Zahtev {
         String prvobitnaPrijava;
         List<String> ranijePrijave;
         String izjavaOSticanjuPrava;
-        String izajavaPronalazaca;
+        String izjavaPronalazaca;
         String opis;
         String nacrt;
         String apstrakt;

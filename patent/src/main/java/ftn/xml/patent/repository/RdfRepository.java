@@ -57,7 +57,7 @@ public class RdfRepository {
 
     public void writeRdf(String rdf) {
         ResultSet results = getRdfResultSet(rdf);
-        ResultSetFormatter.out(System.out, results);
+       // ResultSetFormatter.out(System.out, results);
     }
 
     public String writeRdfToFile(String rdf, String brojPrijave) {

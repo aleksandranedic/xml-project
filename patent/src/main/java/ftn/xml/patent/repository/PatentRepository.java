@@ -106,13 +106,18 @@ public class PatentRepository {
         } finally {
             closeConnection(col, resources);
         }
-        List<ZahtevZaPriznanjePatenta> list = resources.stream().map(res -> {
+
+        List<ZahtevZaPriznanjePatenta> list = new ArrayList<>();
+
+        //TODO: Kopiraj ovo
+        for (XMLResource resource: resources) {
             try {
-                return (ZahtevZaPriznanjePatenta) unmarshaller.unmarshal(res.getContentAsDOM());
+                ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = (ZahtevZaPriznanjePatenta) unmarshaller.unmarshal(resource.getContentAsDOM());
+                list.add(zahtevZaPriznanjePatenta);
             } catch (JAXBException | XMLDBException e) {
-                throw new RuntimeException(e);
+                continue;
             }
-        }).toList();
+        }
         return list;
     }
 
