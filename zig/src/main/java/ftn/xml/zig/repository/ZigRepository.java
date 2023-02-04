@@ -1,5 +1,6 @@
 package ftn.xml.zig.repository;
 
+import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.utils.AuthenticationUtilities;
 import ftn.xml.zig.utils.PrettyPrint;
 import org.springframework.stereotype.Repository;
@@ -18,7 +19,10 @@ import javax.xml.transform.OutputKeys;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 @Repository
 public class ZigRepository {
@@ -74,6 +78,37 @@ public class ZigRepository {
             closeConnection(col, res);
         }
     }
+
+    public String getNextBrojPrijave() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Collection col = null;
+        XMLResource res = null;
+        createConnection();
+        try {
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
+            col.setProperty(OutputKeys.INDENT, "yes");
+            List<String> brojeviPrijave = Arrays.stream(col.listResources()).toList();
+
+            String brojPrijave = null;
+
+            while (brojPrijave == null || brojeviPrijave.contains(brojPrijave)) {
+                brojPrijave = getRandomBrojPrijave();
+            }
+            return brojPrijave.split(Pattern.quote("."))[0];
+
+        } finally {
+            closeConnection(col, res);
+        }
+    }
+
+    private String getRandomBrojPrijave() {
+        Random random = new Random();
+        StringBuilder randomString = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            randomString.append(random.nextInt(10));
+        }
+        return "Z-" + randomString.toString() + ".xml";
+    }
+
 
 
     public List<ZahtevZaPriznanjeZiga> retrieveAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {

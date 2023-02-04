@@ -58,14 +58,20 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                       <option value="pdf">JSON</option>
                     </select>
                     <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded w-fit" type="button">
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-semibold px-4 py-1 rounded w-fit text-sm" type="button">
                       Preuzmi
                     </button>
                   </div>
+                  <div className="flex gap-3">
                   <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded w-fit" type="button">
-                    Podnesi rešenje
-                  </button>
+                      className="bg-red-500 hover:bg-red-700 text-white font-semibold px-4 py-1 rounded w-fit text-sm" type="button">
+                        Odbij zahtev
+                    </button>
+                    <button
+                      className="bg-green-500 hover:bg-green-700 text-white font-semibold px-4 py-1 rounded w-fit text-sm" type="button">
+                      Odobri zahtev
+                    </button>
+                  </div>
                 </div>
                 }
               </div>

@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 export enum Role {
   CLIENT = "Gradjanin",
-  WORKER = "Sluzbenik",
+  WORKER = "Službenik",
 }
 
 export interface User {

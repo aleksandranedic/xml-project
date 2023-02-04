@@ -19,17 +19,15 @@ export class Lice {
   }
   public static validate(lice: Lice): boolean {
     return (
-      Kontakt.validate(lice.kontakt) &&
-      Adresa.validate(lice.adresa) &&
-      Info.validate(lice.info)
+      Kontakt.validate(lice.kontakt) && Adresa.validate(lice.adresa)
+      // Info.validate(lice.info)
     );
   }
 
   public static isEmpty(lice: Lice): boolean {
     return (
-      Kontakt.isEmpty(lice.kontakt) &&
-      Adresa.isEmpty(lice.adresa) &&
-      Info.isEmpty(lice.info)
+      Kontakt.isEmpty(lice.kontakt) && Adresa.isEmpty(lice.adresa)
+      //  Info.isEmpty(lice.info)
     );
   }
 }
