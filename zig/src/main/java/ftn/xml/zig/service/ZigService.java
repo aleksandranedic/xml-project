@@ -37,11 +37,14 @@ public class ZigService {
 
     private final ZahtevMapper mapper;
 
+    private final TransformationService trasformationService;
+
     @Autowired
-    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper) throws SAXException, JAXBException {
+    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, TransformationService trasformationService) throws SAXException, JAXBException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.mapper = mapper;
+        this.trasformationService = trasformationService;
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -65,6 +68,14 @@ public class ZigService {
 
     public void unmarshall() throws JAXBException {
         unmarshall("./src/main/resources/data/xml/p-1.xml");
+    }
+
+    public String getPdf(String brojPrijave) throws JAXBException {
+        return trasformationService.toPDF(marshal(getZahtev(brojPrijave)), brojPrijave + ".pdf");
+    }
+
+    public String getHtml(String brojPrijave) throws JAXBException {
+        return trasformationService.toXHTML(marshal(getZahtev(brojPrijave)), brojPrijave + ".html");
     }
 
     public ZahtevZaPriznanjeZiga unmarshall(String path) throws JAXBException{

@@ -2,21 +2,25 @@ package ftn.xml.zig.dto;
 
 import ftn.xml.zig.model.*;
 import ftn.xml.zig.repository.ZigRepository;
+import net.glxn.qrgen.javase.QRCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xmldb.api.base.XMLDBException;
 
+import java.sql.Timestamp;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.*;
 import java.math.BigInteger;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.sql.Timestamp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +37,34 @@ public class ZahtevMapper {
         zahtevZaPriznanjeZiga.setPopunjavaPodnosilac(getPopunjavaPodnosioc(zahtev));
         zahtevZaPriznanjeZiga.setPriloziUzZahtev(getPriloziUzZahtev(zahtev.getPrilozi()));
         zahtevZaPriznanjeZiga.setDatumPodnosenja(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
-        zahtevZaPriznanjeZiga.setBrojPrijaveZiga(zigRepository.getNextBrojPrijave());
+        String brojPrijave = zigRepository.getNextBrojPrijave();
+        zahtevZaPriznanjeZiga.setBrojPrijaveZiga(brojPrijave);
+        zahtevZaPriznanjeZiga.setQRKod(generateQR(brojPrijave));
         return zahtevZaPriznanjeZiga;
+    }
+
+    private final Path qrLocation = Paths.get("src/main/resources/data/qr/");
+    private final String showZahtevHTMLEndPoint = "http://localhost:8080/zig/html/";
+    public String generateQR(String brojPrijaveZiga){
+        String httpBrojPrijaveZiga = brojPrijaveZiga.replace('/', '-');
+        String fileNameBrojPrijaveZiga = brojPrijaveZiga.replace('/', '_').concat("_").concat("QR");
+        String filename = null;
+        try {
+            filename = fileNameBrojPrijaveZiga + ".jpg";
+            File file = new File(qrLocation + filename);
+            ByteArrayOutputStream stream = QRCode
+                    .from(showZahtevHTMLEndPoint + httpBrojPrijaveZiga)
+                    .withSize(250, 250)
+                    .stream();
+            FileOutputStream fos = new FileOutputStream(file);
+            stream.writeTo(fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            return filename;
+        }
     }
 
     private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {

@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping(path="zig")
 public class ZigController {
     private final ZigService service;
+    public static final String FILES = "http://localhost:8002/files/";
 
     @Autowired
     public ZigController(ZigService service) {
@@ -65,4 +66,23 @@ public class ZigController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("/pdf/{broj}")
+    public String getPdf(@PathVariable("broj") String brojPrijave) {
+        try {
+            return FILES + this.service.getPdf(brojPrijave);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("/html/{broj}")
+    public String getHtml(@PathVariable("broj") String brojPrijave) {
+        try {
+            return FILES + this.service.getHtml(brojPrijave);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
