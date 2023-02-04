@@ -142,9 +142,13 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
         }
     }
 
-    const loadInfo = (info: Info) => {
-        if (info.ime && !info.prezime) return {Poslovno_ime : info.ime}
-        return {Ime: info.ime, Prezime: info.prezime}
+    const loadInfo = (info: Info, type: string) => {
+        if (type === 'punomocnik') {
+            if (info.ime && surnamePunomocnik.current!.classList.contains('hidden')) return {Ime : info.ime}
+            return {Ime: info.ime, Prezime: info.prezime}
+        }
+        if (info.ime && surnamePodnosilac.current!.classList.contains('hidden')) return {Ime : info.ime}
+            return {Ime: info.ime, Prezime: info.prezime}
     }
 
     const loadZigInfo = () => {
@@ -160,7 +164,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
     const loadPlaceneTakse = () => {
         return {
             Osnovna_taksa: placeneTakse.osnovna,
-            Za_klasa: {Naziv_Klase: placeneTakse.naziv, Suma: placeneTakse.zaKlasa},
+            Za_klasa: {Naziv_klase: placeneTakse.naziv, Suma: placeneTakse.zaKlasa},
             Za_graficko_resenje: placeneTakse.grafickoResenje,
             Ukupno: placeneTakse.ukupno
         }
@@ -173,8 +177,8 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
     }
     const loadPopunjavaPodnosilac = () => {
         return {
-            Podnosilac: {Adresa:loadAdresa(podnosilac.adresa), Kontakt: loadKontakt(podnosilac.kontakt), ...loadInfo(podnosilac.info)},
-            Punomocnik: Punomocnik.validate(punomocnik) ? {Adresa:loadAdresa(punomocnik.adresa), Kontakt: loadKontakt(punomocnik.kontakt), ...loadInfo(punomocnik.info)} : null,
+            Podnosilac: {Adresa:loadAdresa(podnosilac.adresa), Kontakt: loadKontakt(podnosilac.kontakt), ...loadInfo(podnosilac.info, 'podnosilac')},
+            Punomocnik: Punomocnik.validate(punomocnik) ? {Adresa:loadAdresa(punomocnik.adresa), Kontakt: loadKontakt(punomocnik.kontakt), ...loadInfo(punomocnik.info, 'punomocnik')} : null,
             Zig: {...loadZigInfo()},
             Dodatne_informacije: {klasa: loadKlasa(), zatrazenoPravoPrvenstaIOsnov: informacijeOZigu.pravo},
             Placene_takse: {...loadPlaceneTakse()}
@@ -247,11 +251,18 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
             let xml = builder.buildObject(dto);
 
             console.log(dto)
-            await axios.post("http://localhost:8000/zig/create", xml, {
-                headers: {
-                  "Content-Type": "application/xml",
-                },
-            });
+            try{
+                const result = await axios.post("http://localhost:8000/zig/create", xml, {
+                    headers: {
+                      "Content-Type": "application/xml",
+                    },
+                });
+                console.log(result);
+                toast.success(result.data)
+            } catch (e: any) {
+                console.log(e);
+                toast.error(e.message)
+            }
         }
     }
 
@@ -296,7 +307,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Poštanski broj</p>
-                                <input type="text"  name="postanskiBroj" className='w-full' value={podnosilac.adresa.postanskiBroj} onChange = {e => setPodnosilac({...podnosilac, adresa:{...podnosilac.adresa, postanskiBroj:e.target.value}})}/>
+                                <input type="number"  name="postanskiBroj" className='w-full' value={podnosilac.adresa.postanskiBroj} onChange = {e => setPodnosilac({...podnosilac, adresa:{...podnosilac.adresa, postanskiBroj:e.target.value}})}/>
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Grad</p>
@@ -360,7 +371,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Poštanski broj</p>
-                                <input type="text" name="postanskiBroj-punomocnik" className='w-full' value={punomocnik.adresa.postanskiBroj} onChange = {e => setPunomocnik({...punomocnik, adresa:{...punomocnik.adresa, postanskiBroj:e.target.value}})}/>
+                                <input type="number" name="postanskiBroj-punomocnik" className='w-full' value={punomocnik.adresa.postanskiBroj} onChange = {e => setPunomocnik({...punomocnik, adresa:{...punomocnik.adresa, postanskiBroj:e.target.value}})}/>
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Grad</p>

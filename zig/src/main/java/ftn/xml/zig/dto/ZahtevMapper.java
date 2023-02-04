@@ -1,30 +1,66 @@
 package ftn.xml.zig.dto;
 
 import ftn.xml.zig.model.*;
-import org.checkerframework.checker.units.qual.A;
+import ftn.xml.zig.repository.ZigRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.xmldb.api.base.XMLDBException;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.sql.Timestamp;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class ZahtevMapper {
-    public ZahtevZaPriznanjeZiga parseZahtev(Zahtev zahtev) {
+
+    @Autowired
+    ZigRepository zigRepository;
+
+    public ZahtevZaPriznanjeZiga parseZahtev(Zahtev zahtev) throws DatatypeConfigurationException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         ZahtevZaPriznanjeZiga zahtevZaPriznanjeZiga = new ZahtevZaPriznanjeZiga();
         zahtevZaPriznanjeZiga.setInformacijeOUstanovi(getInformacijeOUstanovi());
         zahtevZaPriznanjeZiga.setPopunjavaPodnosilac(getPopunjavaPodnosioc(zahtev));
-       /*
-
-        zahtevZaPriznanjePatenta.setPopunjavaPodnosioc(getPopunjavaPodnosioc(zahtev));
-        ZahtevZaPriznanjePatenta.PopunjavaZavod popunjavaZavod = new ZahtevZaPriznanjePatenta.PopunjavaZavod();
-        popunjavaZavod.setDatumPrijema(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
-        popunjavaZavod.setBrojPrijave(patentRepository.getNextBrojPrijave());
-        zahtevZaPriznanjePatenta.setPopunjavaZavod(popunjavaZavod);
-
-        return zahtevZaPriznanjePatenta;
-       * */
-        return new ZahtevZaPriznanjeZiga();
+        zahtevZaPriznanjeZiga.setPriloziUzZahtev(getPriloziUzZahtev(zahtev.getPrilozi()));
+        zahtevZaPriznanjeZiga.setDatumPodnosenja(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
+        zahtevZaPriznanjeZiga.setBrojPrijaveZiga(zigRepository.getNextBrojPrijave());
+        return zahtevZaPriznanjeZiga;
     }
 
+    private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = format.parse(dateString);
+
+        return parseToXMLGregorianCalendar(date);
+    }
+
+    private static XMLGregorianCalendar parseToXMLGregorianCalendar(Date date) throws DatatypeConfigurationException {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+    }
+
+    private static ZahtevZaPriznanjeZiga.PriloziUzZahtev getPriloziUzZahtev(PriloziDTO priloziDTO) {
+        ZahtevZaPriznanjeZiga.PriloziUzZahtev priloziUzZahtev = new ZahtevZaPriznanjeZiga.PriloziUzZahtev();
+        priloziUzZahtev.setDokazOPravuPrvenstva(priloziDTO.getDokaz_o_pravu_prvenstva());
+        priloziUzZahtev.setOpstiAkt(priloziDTO.getOpsti_akt());
+        priloziUzZahtev.setPunomocje(priloziDTO.getPunomocje());
+        priloziUzZahtev.setPrimerakZnaka(priloziDTO.getPrimerak_znaka());
+        priloziUzZahtev.setSpisakRobeIUsluga(priloziDTO.getSpisak_robe_i_usluga());
+        priloziUzZahtev.setDokazOUplatiTakse(priloziDTO.getDokaz_o_uplati_takse());
+        return priloziUzZahtev;
+    }
     private static ZahtevZaPriznanjeZiga.PopunjavaPodnosilac getPopunjavaPodnosioc(Zahtev zahtev) {
         ZahtevZaPriznanjeZiga.PopunjavaPodnosilac popunjavaPodnosilac = new ZahtevZaPriznanjeZiga.PopunjavaPodnosilac();
         PodnosilacDTO podnosilacDTO = zahtev.getPodnosilac();
@@ -34,9 +70,35 @@ public class ZahtevMapper {
             popunjavaPodnosilac.setPunomocnik(getPunomocnik(punomocnikDTO));
         }
         popunjavaPodnosilac.setZig(getZig(zahtev.getZig()));
+        popunjavaPodnosilac.setDodatneInformacije(getDodatneInformacije(zahtev.getDodatne_informacije()));
+        popunjavaPodnosilac.setPlaceneTakse(getPlaceneTakse(zahtev.getPlacene_takse()));
         return popunjavaPodnosilac;
     }
 
+    private static ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.PlaceneTakse getPlaceneTakse(PlaceneTakseDTO placeneTakseDTO) {
+        ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.PlaceneTakse placeneTakse = new ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.PlaceneTakse();
+        placeneTakse.setUkupno(BigInteger.valueOf(Long.parseLong(placeneTakseDTO.getUkupno())));
+        placeneTakse.setOsnovnaTaksa(BigInteger.valueOf(Long.parseLong(placeneTakseDTO.getOsnovna_taksa())));
+        placeneTakse.setZaGrafickoResenje(BigInteger.valueOf(Long.parseLong(placeneTakseDTO.getZa_graficko_resenje())));
+        ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.PlaceneTakse.ZaKlasa zaKlasa = new ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.PlaceneTakse.ZaKlasa();
+        zaKlasa.setSuma(BigInteger.valueOf(Long.parseLong(placeneTakseDTO.getZa_klasa().getSuma())));
+        zaKlasa.setNazivKlase(placeneTakseDTO.getZa_klasa().getNaziv_klase());
+        placeneTakse.setZaKlasa(zaKlasa);
+        return placeneTakse;
+    }
+    private static ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije getDodatneInformacije(DodatneInformacijeDTO dodatneInformacijeDTO) {
+        ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije dodatneInformacije = new ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije();
+        dodatneInformacije.setZatrazenoPravoPrvenstaIOsnov(dodatneInformacijeDTO.getZatrazenoPravoPrvenstaIOsnov());
+
+        ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije.KlasaRobeIUslaga klasaRobeIUslaga = new ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije.KlasaRobeIUslaga();
+        List<Integer> klase = new ArrayList<>();
+        for (klasaRobeIUslaga kl : dodatneInformacijeDTO.getKlasa()) {
+            klase.add(Integer.parseInt(kl.getKlasaRobeIUslaga()));
+        }
+        klasaRobeIUslaga.setKlasa(klase);
+        dodatneInformacije.setKlasaRobeIUslaga(klasaRobeIUslaga);
+        return dodatneInformacije;
+    }
     private static ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig getZig(ZigDTO zigDTO) {
         ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig zig = new ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig();
         zig.setNaznacenjeBoje(zigDTO.getNaznacenje_boje());
@@ -44,7 +106,8 @@ public class ZahtevMapper {
         zig.setTransliteracijaZnak(zigDTO.getTransliteracija_znaka());
         zig.setPrevodZnaka(zigDTO.getPrevod_znaka());
         ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig.Vrsta vrsta = new ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig.Vrsta();
-        vrsta.setTipA(new ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig.Vrsta.TipA(zigDTO.getVrsta().Tip_a));
+        vrsta.setTipA(zigDTO.getVrsta().getTip_a());
+        vrsta.setTipB(zigDTO.getVrsta().getTip_b());
         zig.setVrsta(vrsta);
         return zig;
     }

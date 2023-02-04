@@ -3,7 +3,10 @@ import ftn.xml.zig.dto.Zahtev;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.service.ZigService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
@@ -30,11 +33,13 @@ public class ZigController {
     }
 
 
-    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_XML_VALUE)
-    public String createRequest(@RequestBody Zahtev zahtev) {
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<?> createRequest(@RequestBody Zahtev zahtev) {
         try {
             service.save(zahtev);
-            return "Uspešno ste dodali zahtev.";
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add("Content-Type", "application/xml; charset=utf-8");
+            return new ResponseEntity<>("Uspešno ste dodali zahtev.", responseHeaders, HttpStatus.OK);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

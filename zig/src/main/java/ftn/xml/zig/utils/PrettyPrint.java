@@ -66,32 +66,12 @@ public class PrettyPrint {
 
     private static String getZig(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig zig) {
         String info = "";
-        info += "\t-Tip A: " + getTipA(zig.getVrsta().getTipA());
-        info += "\n\t-Tip B: " + getTipB(zig.getVrsta().getTipB());
+        info += "\t-Tip A: " + zig.getVrsta().getTipA();
+        info += "\n\t-Tip B: " + zig.getVrsta().getTipB();
         info += "\n\t-Naznacenje boje: " + zig.getNaznacenjeBoje();
         info += "\n\t-Transliteracija znaka: " + zig.getTransliteracijaZnak();
         info += "\n\t-Prevod znaka: " + zig.getPrevodZnaka();
         return info;
-    }
-
-    private static String getTipA(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig.Vrsta.TipA tipA) {
-        if (tipA.getIndividualniZig() != null)
-            return "Individualni zig";
-        else if (tipA.getKolektivniZig() != null)
-            return "Kolektivni zig";
-        return "Zig garancije";
-    }
-
-    private static String getTipB(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.Zig.Vrsta.TipB tipB) {
-        if (tipB.getGrafickiZnak() != null)
-            return "Graficki znak";
-        else if (tipB.getKombinovaniZnak() != null)
-            return "Kombinovani znak";
-        else if (tipB.getTrodimenzionalniZnak() != null)
-            return "Trodimenzionalni znak";
-        else if (tipB.getDrugaVrsta() != null)
-            return tipB.getDrugaVrsta();
-        return "Verbalni znak";
     }
 
     private static String getDodatneInformacije(ZahtevZaPriznanjeZiga.PopunjavaPodnosilac.DodatneInformacije info) {
