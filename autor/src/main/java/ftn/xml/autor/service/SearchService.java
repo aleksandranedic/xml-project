@@ -1,7 +1,7 @@
 package ftn.xml.autor.service;
 
 import ftn.xml.autor.dto.Metadata;
-import ftn.xml.autor.dto.MetadataList;
+import ftn.xml.autor.dto.ZahtevData;
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.repository.AutorRepository;
 import ftn.xml.autor.utils.AuthenticationUtilitiesMetadata;
@@ -20,7 +20,9 @@ import java.util.*;
 @Service
 public class SearchService {
     private static final String PRED = "http://www.ftn.uns.ac.rs/jaxb/autor/pred";
-    private final List<String> METAS = List.of("Broj_prijave", "Datum_podnosenja");
+    private final List<String> METAS = List.of("Broj_prijave", "Datum_podnosenja"
+//            ,"Naslov","Vrsta","Forma","Naziv","Status"
+    );
     private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
     private final AutorRepository repository;
 
@@ -72,9 +74,9 @@ public class SearchService {
         return value;
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> advancedSearch(MetadataList metadataList) {
+    public List<ZahtevData> advancedSearch(List<Metadata> metadataList) {
         List<ZahtevZaIntelektualnuSvojinu> zahtevi = new ArrayList<>();
-        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, getSparqlQuery(metadataList.getMetadata()));
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, getSparqlQuery(metadataList));
         ResultSet results = query.execSelect();
         String varName;
         RDFNode varValue;
@@ -87,8 +89,9 @@ public class SearchService {
                 varValue = querySolution.get(varName);
                 if (Objects.equals(varName, "Broj_prijave")) {
                     try {
-                        zahtevi.addAll(repository.retrieveBasedOnBrojPrijave(varValue.toString()));
-                    } catch (XMLDBException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+//                        zahtevi.addAll(repository.retrieveBasedOnBrojPrijave(varValue.toString()));
+                        zahtevi.add(repository.retrieve(varValue.toString()+".xml"));
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
 
@@ -96,11 +99,11 @@ public class SearchService {
             }
         }
         query.close();
-        return zahtevi;
+        return mapZahtevEntityToZahtevData(zahtevi);
     }
 
     private String getSparqlQuery(List<Metadata> metadata) {
-        String FUSEKI = "http://localhost:8080/fuseki/patentDataset/data/patent/metadata";
+        String FUSEKI = "http://localhost:8080/fuseki/autorDataset/data/autor/metadata";
 
         return "SELECT * FROM <" + FUSEKI + ">" +
                 "WHERE {" +
@@ -112,18 +115,26 @@ public class SearchService {
     }
 
     private String getMetaString() {
+
         StringBuilder builder = new StringBuilder();
         for (String meta : METAS) {
-            builder.append(String.format("?patent <%s/%s> ?%s .", PRED, meta, meta));
+            builder.append(String.format("?autor <%s/%s> ?%s. ", PRED, meta, meta));
         }
         return builder.toString();
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> basicSearch(String terms) throws Exception {
+    public List<ZahtevData> basicSearch(String terms) throws Exception {
         Set<ZahtevZaIntelektualnuSvojinu> zahtevi = new HashSet<>(repository.retrieveBasedOnTermList(terms.split(";")));
-        return zahtevi.stream().toList();
+        return mapZahtevEntityToZahtevData(zahtevi.stream().toList());
 
     }
 
+    public List<ZahtevData> mapZahtevEntityToZahtevData(List<ZahtevZaIntelektualnuSvojinu> list){
+        List<ZahtevData> zahtevi=new ArrayList<>();
+        list.stream().toList().forEach(zahtevZaIntelektualnuSvojinu -> {
+            zahtevi.add(new ZahtevData(zahtevZaIntelektualnuSvojinu));
+        });
+        return zahtevi;
+    }
 
 }

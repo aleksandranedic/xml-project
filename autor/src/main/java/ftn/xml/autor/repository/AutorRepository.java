@@ -18,13 +18,17 @@ import javax.xml.transform.OutputKeys;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+import java.util.regex.Pattern;
 
 @Repository
 public class AutorRepository {
     private AuthenticationUtilities.ConnectionProperties conn;
     private final String COLLECTION_ID = "/db/autor";
     private final Unmarshaller unmarshaller;
+
     AutorRepository() throws IOException, JAXBException {
         this.conn = AuthenticationUtilities.loadProperties();
         JAXBContext context = JAXBContext.newInstance("ftn.xml.autor.model");
@@ -32,17 +36,17 @@ public class AutorRepository {
     }
 
     public List<ZahtevZaIntelektualnuSvojinu> retrieveAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files";
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files";
         return retrieveBasedOnXQuery(xquery);
     }
 
     public List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnTerm(String term) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[contains(., \"" + term + "\")]";
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[contains(., \"" + term + "\")]";
         return retrieveBasedOnXQuery(xquery);
     }
 
     public List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnTermList(String[] termList) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        StringBuilder xquery = new StringBuilder("let $files := collection(\""+COLLECTION_ID+"\") return $files[");
+        StringBuilder xquery = new StringBuilder("let $files := collection(\"" + COLLECTION_ID + "\") return $files[");
         for (int i = 0; i < termList.length; i++) {
             if (i == 0) {
                 xquery.append("contains(., \"").append(termList[i]).append("\")");
@@ -56,7 +60,8 @@ public class AutorRepository {
 
 
     public List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String xquery = "let $files := collection(\""+COLLECTION_ID+"\") return $files[ZahtevZaIntelektualnuSvojinu/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_intelektualnu_svojinu/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
+        //TODO ovo baca exception
         return retrieveBasedOnXQuery(xquery);
     }
 
@@ -230,5 +235,35 @@ public class AutorRepository {
         } else {
             return col;
         }
+    }
+
+    public String getNextBrojPrijave() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        createConnection();
+        Collection col = null;
+        XMLResource res = null;
+        try {
+            col = DatabaseManager.getCollection(conn.uri + COLLECTION_ID);
+            col.setProperty(OutputKeys.INDENT, "yes");
+            List<String> brojeviPrijave = Arrays.stream(col.listResources()).toList();
+
+            String brojPrijave = null;
+
+            while (brojPrijave == null || brojeviPrijave.contains(brojPrijave)) {
+                brojPrijave = getRandomBrojPrijave();
+            }
+            return brojPrijave.split(Pattern.quote("."))[0];
+
+        } finally {
+            closeConnection(col, res);
+        }
+    }
+
+    private String getRandomBrojPrijave() {
+        Random random = new Random();
+        StringBuilder randomString = new StringBuilder();
+        for (int i = 0; i < 5; i++) {
+            randomString.append(random.nextInt(10));
+        }
+        return "A-" + randomString.toString() + ".xml";
     }
 }

@@ -1,5 +1,7 @@
 package ftn.xml.zig.controller;
 import ftn.xml.zig.dto.Zahtev;
+import ftn.xml.zig.dto.ZahtevData;
+import ftn.xml.zig.dto.ZahtevDataMapper;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.service.ZigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +18,13 @@ import java.util.List;
 @RequestMapping(path="zig")
 public class ZigController {
     private final ZigService service;
+    private final ZahtevDataMapper zahtevDataMapper;
     public static final String FILES = "http://localhost:8002/files/";
 
     @Autowired
-    public ZigController(ZigService service) {
+    public ZigController(ZigService service, ZahtevDataMapper zahtevDataMapper) {
         this.service = service;
-    }
-
-    @GetMapping
-    public List<ZahtevZaPriznanjeZiga> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return service.getAll();
+        this.zahtevDataMapper = zahtevDataMapper;
     }
 
     @GetMapping("/{broj}")
@@ -84,5 +83,20 @@ public class ZigController {
             throw new RuntimeException(e);
         }
     }
+    @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
+    public List<ZahtevData> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAll().stream().map(zahtevDataMapper::convertToZahtevData).toList();
+    }
+
+    @GetMapping("/resolved")
+    public List<ZahtevData> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAllResolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
+    }
+
+    @GetMapping("/unresolved")
+    public List<ZahtevData> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAllUnresolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
+    }
+
 
 }

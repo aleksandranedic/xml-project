@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class StorageService {
-    private final Path rootLocation = Paths.get("src/main/resources/data/prilozi");
+    private final Path rootLocation = Paths.get("src/main/resources/data/files");
 
     public String storeFile(MultipartFile file) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
