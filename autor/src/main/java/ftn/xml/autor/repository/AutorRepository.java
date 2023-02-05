@@ -264,7 +264,7 @@ public class AutorRepository {
         for (int i = 0; i < 5; i++) {
             randomString.append(random.nextInt(10));
         }
-        return "A-" + randomString.toString() + ".xml";
+        return randomString.toString() + ".xml";
     }
 
 

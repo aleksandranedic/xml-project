@@ -25,7 +25,6 @@ export function ZigRequests() {
                 compact: true,
                 alwaysChildren: true,
             });
-            console.log(jsonData)
             let json = jsonData.List.item;
             let zahtevi: ZahtevData[] = [];
             if (json.status) {

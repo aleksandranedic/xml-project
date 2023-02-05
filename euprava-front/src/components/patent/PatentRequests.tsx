@@ -14,7 +14,7 @@ export function PatentRequests() {
 
     const path = user?.role === Role.WORKER ? "" : "/resolved/" + user?.email;
     useEffect(() => {
-        axios.get('http://localhost:8002/patent'+path, {
+        axios.get('http://localhost:8002/patent' + path, {
             headers: {
                 "Content-Type": "application/xml",
                 Accept: "application/xml",
@@ -27,15 +27,17 @@ export function PatentRequests() {
             });
             let json = jsonData.List.item;
             let zahtevi: ZahtevData[] = [];
-            for (let jsonData of json) {
+            if (json.status) {
                 let zahtev: ZahtevData = new ZahtevData();
-                zahtev.status = jsonData.status["_text"]
-                zahtev.brojPrijave = jsonData.brojPrijave["_text"]
-                zahtev.html = jsonData.html["_text"]
-                zahtev.datum = jsonData.datum["_text"]
+                zahtev.status = json.status["_text"]
+                zahtev.brojPrijave = json.brojPrijave["_text"]
+                zahtev.html = json.html["_text"]
+                zahtev.datum = json.datum["_text"]
+
                 let prilozi: Prilog[] = [];
-                if (jsonData.prilozi.prilozi) {
-                    for (let prilog of jsonData.prilozi.prilozi) {
+
+                if (json.prilozi.prilozi) {
+                    for (let prilog of json.prilozi.prilozi) {
                         prilozi.push({
                             putanja: prilog.putanja["_text"],
                             naslov: prilog.naslov["_text"]
@@ -44,6 +46,25 @@ export function PatentRequests() {
                 }
                 zahtev.prilozi = prilozi;
                 zahtevi.push(zahtev);
+            } else {
+                for (let jsonData of json) {
+                    let zahtev: ZahtevData = new ZahtevData();
+                    zahtev.status = jsonData.status["_text"]
+                    zahtev.brojPrijave = jsonData.brojPrijave["_text"]
+                    zahtev.html = jsonData.html["_text"]
+                    zahtev.datum = jsonData.datum["_text"]
+                    let prilozi: Prilog[] = [];
+                    if (jsonData.prilozi.prilozi) {
+                        for (let prilog of jsonData.prilozi.prilozi) {
+                            prilozi.push({
+                                putanja: prilog.putanja["_text"],
+                                naslov: prilog.naslov["_text"]
+                            })
+                        }
+                    }
+                    zahtev.prilozi = prilozi;
+                    zahtevi.push(zahtev);
+                }
             }
             setPatentZahtevi(zahtevi);
         })
@@ -98,6 +119,7 @@ export function PatentRequests() {
             </>
             }
             <Zahtevi zahtevi={patentZahtevi}/>
+            {patentZahtevi.length === 0 && <p className="flex w-full justify-center text-xl mt-5">Korisnik nema nijedan razrešen zahtev.</p>}
         </RequestTypeContext.Provider>
     )
 }

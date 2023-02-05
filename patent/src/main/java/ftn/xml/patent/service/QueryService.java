@@ -10,14 +10,12 @@ import java.util.Objects;
 public class QueryService {
 
 
-    private final List<String> METAS = List.of("Broj_prijave", "Datum_podnosenja"
-            , "Naslov", "Vrsta", "Forma", "Naziv", "Status"
-    );
+    private final List<String> METAS = List.of("Broj_prijave", "Datum_podnosenja", "Naziv_na_srpskom", "Naziv_na_engleskom", "Datum_prijema", "Email", "Podnosioc");
 
-    private static final String PRED = "http://www.ftn.uns.ac.rs/jaxb/autor/pred";
+    private static final String PRED = "http://www.ftn.uns.ac.rs/jaxb/patent/pred";
 
     public String getSparqlQuery(List<Metadata> metadata) {
-        String FUSEKI = "http://localhost:8080/fuseki-autor/autorDataset/data/autor/metadata";
+        String FUSEKI = "http://localhost:8080/fuseki-patent/patentDataset/data/patent/metadata";
         return "SELECT * FROM <" + FUSEKI + ">" +
                 "WHERE {" +
                 getMetaString() +
@@ -31,7 +29,7 @@ public class QueryService {
 
         StringBuilder builder = new StringBuilder();
         for (String meta : METAS) {
-            builder.append(String.format("?autor <%s/%s> ?%s. ", PRED, meta, meta));
+            builder.append(String.format("?patent <%s/%s> ?%s. ", PRED, meta, meta));
         }
         return builder.toString();
     }
@@ -54,12 +52,12 @@ public class QueryService {
     private static String getPositiveValue(int i, Metadata m) {
         String value;
         if (i == 0) {
-            value = String.format("?%s = \"%s\"", m.getMeta(), m.getValue());
+            value = String.format("?%s = \"%s\" ", m.getMeta(), m.getValue());
         } else {
             if (Objects.equals(m.getLogicalOperator(), "")) {
                 throw new IllegalArgumentException("Only last parameter can be without operator.");
             }
-            value = String.format(" %s ?%s = \"%s\"", m.getLogicalOperator(), m.getMeta(), m.getValue());
+            value = String.format("%s ?%s = \"%s\" ", m.getLogicalOperator(), m.getMeta(), m.getValue());
         }
         return value;
     }
@@ -67,12 +65,12 @@ public class QueryService {
     private static String getNegativeValue(int i, Metadata m) {
         String value;
         if (i == 0) {
-            value = String.format("NOT EXISTS {?autor <%s> \"%s\"}", m.getMeta(), m.getValue());
+            value = String.format("?%s != \"%s\" ", m.getMeta(), m.getValue());
         } else {
             if (Objects.equals(m.getLogicalOperator(), "")) {
                 throw new IllegalArgumentException("Only last parameter can be without operator.");
             }
-            value = String.format(" %s NOT EXISTS {?autor <%s> \"%s\"}", m.getLogicalOperator(), m.getMeta(), m.getValue());
+            value = String.format("%s ?%s != \"%s\" ", m.getLogicalOperator(), m.getMeta(), m.getValue());
         }
         return value;
     }

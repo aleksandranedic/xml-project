@@ -88,7 +88,6 @@ public class SearchService {
                 varValue = querySolution.get(varName);
 
                 try {
-//                        zahtevi.addAll(repository.retrieveBasedOnBrojPrijave(varValue.toString()));
                     zahtevi.add(repository.retrieve(varValue.toString()+".xml"));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
