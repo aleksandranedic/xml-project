@@ -11,6 +11,9 @@ import PatentForm from "./components/patent/PatentForm";
 import AutorskaForm from "./components/autorska/AutorskaForm";
 import {PatentRequests} from "./components/patent/PatentRequests";
 import PatentRichEdit from "./components/patent/PatentRichEdit";
+import {AutorskaRequests} from "./components/autorska/AutorskaRequests";
+import {ZigRequests} from "./components/zig/ZigRequests";
+import Zig from "./components/zig/Zig";
 
 const App: React.FunctionComponent = () => {
     const [user, setUser] = useState<User | null>(JSON.parse(localStorage.getItem('user')!) || null);
@@ -25,6 +28,7 @@ const App: React.FunctionComponent = () => {
                 <Router>
                     <div className="max-h-[45rem] overflow-auto">
                         <Routes>
+                            <Route path='/zig/:broj' element={<Zig/>}/>
                             <Route path='/' element={<HomePage/>}/>
                             <Route path='/zahtevi/pretraga/autorska' element={<SearchAutorska/>}/>
                             <Route path='/zahtevi/pretraga/zig' element={<SearchZig/>}/>
@@ -34,6 +38,11 @@ const App: React.FunctionComponent = () => {
                             <Route path='/zahtevi/podnesi/patent' element={<PatentForm/>}/>
                             <Route path='/zahtevi/detaljno/patent' element={<PatentRichEdit/>}/>
                             <Route path='/zahtevi/moji/patent' element={<PatentRequests/>}/>
+                            <Route path='/zahtevi/moji/autorska' element={<AutorskaRequests/>}/>
+                            <Route path='/zahtevi/moji/zig' element={<ZigRequests/>}/>
+                            <Route path='/zahtevi/podneti/patent' element={<PatentRequests/>}/>
+                            <Route path='/zahtevi/podneti/zig' element={<ZigRequests/>}/>
+                            <Route path='/zahtevi/podneti/autorska' element={<AutorskaRequests/>}/>
                         </Routes>
                     </div>
                 </Router>

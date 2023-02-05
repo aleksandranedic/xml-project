@@ -2,6 +2,7 @@ package ftn.xml.zig.service;
 
 import ftn.xml.zig.dto.Metadata;
 import ftn.xml.zig.dto.MetadataList;
+import ftn.xml.zig.dto.ZahtevData;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.repository.ZigRepository;
 import ftn.xml.zig.utils.AuthenticationUtilitiesMetadata;
@@ -20,7 +21,7 @@ import java.util.*;
 @Service
 public class SearchService {
     private static final String PRED = "http://www.ftn.uns.ac.rs/jaxb/zig/pred";
-    private final List<String> METAS = List.of("Broj_prijave", "Datum_podnosenja", "Naziv_na_srpskom", "Naziv_na_engleskom", "Datum_prijema", "Email", "Podnosioc");
+    private final List<String> METAS = List.of("Broj_prijave", "Datum_podnosenja", "Takse", "Vrsta_a", "Vrsta_b","Podnosilac", "Podnosilac_email");
     private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
     private final ZigRepository repository;
 
@@ -49,12 +50,12 @@ public class SearchService {
     private static String getPositiveValue(int i, Metadata m) {
         String value;
         if (i == 0) {
-            value = String.format("?%s = \"%s\"", m.getMeta(), m.getValue());
+            value = String.format("?%s = \"%s\" ", m.getMeta(), m.getValue());
         } else {
             if (Objects.equals(m.getLogicalOperator(), "")) {
                 throw new IllegalArgumentException("Only last parameter can be without operator.");
             }
-            value = String.format(" %s ?%s = \"%s\"", m.getLogicalOperator(), m.getMeta(), m.getValue());
+            value = String.format("%s ?%s = \"%s\" ", m.getLogicalOperator(), m.getMeta(), m.getValue());
         }
         return value;
     }
@@ -62,19 +63,19 @@ public class SearchService {
     private static String getNegativeValue(int i, Metadata m) {
         String value;
         if (i == 0) {
-            value = String.format("NOT EXISTS {?zig <%s> \"%s\"}", m.getMeta(), m.getValue());
+            value = String.format("?%s != \"%s\" ", m.getMeta(), m.getValue());
         } else {
             if (Objects.equals(m.getLogicalOperator(), "")) {
                 throw new IllegalArgumentException("Only last parameter can be without operator.");
             }
-            value = String.format(" %s NOT EXISTS {?zig <%s> \"%s\"}", m.getLogicalOperator(), m.getMeta(), m.getValue());
+            value = String.format("%s ?%s != \"%s\" ", m.getLogicalOperator(), m.getMeta(), m.getValue());
         }
         return value;
     }
 
-    public List<ZahtevZaPriznanjeZiga> advancedSearch(MetadataList metadataList) {
+    public List<ZahtevZaPriznanjeZiga> advancedSearch(List<Metadata> metadataList) {
         List<ZahtevZaPriznanjeZiga> zahtevi = new ArrayList<>();
-        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, getSparqlQuery(metadataList.getMetadata()));
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, getSparqlQuery(metadataList));
         ResultSet results = query.execSelect();
         String varName;
         RDFNode varValue;
@@ -85,13 +86,12 @@ public class SearchService {
             while (variableBindings.hasNext()) {
                 varName = variableBindings.next();
                 varValue = querySolution.get(varName);
-                if (Objects.equals(varName, "Broj_prijave")) {
-                    try {
-                        zahtevi.addAll(repository.retrieveBasedOnBrojPrijave(varValue.toString()));
-                    } catch (XMLDBException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
 
+                try {
+//                        zahtevi.addAll(repository.retrieveBasedOnBrojPrijave(varValue.toString()));
+                    zahtevi.add(repository.retrieve(varValue.toString()+".xml"));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
@@ -100,21 +100,22 @@ public class SearchService {
     }
 
     private String getSparqlQuery(List<Metadata> metadata) {
-        String FUSEKI = "http://localhost:8080/fuseki/zigDataset/data/zig/metadata";
+        String FUSEKI = "http://localhost:8080/fuseki-zig/zigDataset/data/zig/metadata";
 
         return "SELECT * FROM <" + FUSEKI + ">" +
-                "WHERE {" +
+                " WHERE {" +
                 getMetaString() +
-                "FILTER (" +
+                " FILTER (" +
                 getFilterValue(metadata) +
                 ")" +
-                "}";
+                "}" +
+                " GROUP BY ?Broj_prijave";
     }
 
     private String getMetaString() {
         StringBuilder builder = new StringBuilder();
         for (String meta : METAS) {
-            builder.append(String.format("?zig <%s/%s> ?%s .", PRED, meta, meta));
+            builder.append(String.format("?zig <%s/%s> ?%s . ", PRED, meta, meta));
         }
         return builder.toString();
     }

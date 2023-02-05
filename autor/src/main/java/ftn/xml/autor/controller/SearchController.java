@@ -23,6 +23,7 @@ public class SearchController {
 
     }
 
+
     //TODO proveri da li advanced search radi
     @PostMapping(path = "/advanced", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> advanced(@RequestBody List<Metadata> metadata) {

@@ -2,12 +2,13 @@ import {useContext, useState} from "react";
 import {IoIosAddCircle, IoIosCloseCircle} from 'react-icons/io'
 import RequestTypeContext from "../store/request-type-context";
 import axios from "axios";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import PatentContext from "../store/patent-zahtevi-context";
 import ZigContext from "../store/zig-zahtevi-context";
 import AutorskaContext from "../store/autorska-zahtevi-context";
 import {ZahtevData} from "../components/types";
 import convert from "xml-js";
+import { ConvertToZahtevi } from "./search.service";
 
 enum Operator {
     EQUALS = '=',
@@ -57,6 +58,16 @@ const AdvancedSearch: React.FunctionComponent = () => {
                 {value: "Vrsta", name: "Vrsta"},
                 {value: "Forma", name: "Naziv na srpskom jeziku"},
                 {value: "Datum_podnosenja", name: "Priznati datum podnošenja"},
+            ]
+        } if (type === 'zig') {
+            return [
+                {value: "Broj_prijave", name: "Broj prijave"},
+                {value: "Podnosilac", name: "Ime i prezime/poslovno ime podnosioca"},
+                {value: "Podnosilac_email", name: "Email podnosioca"},
+                {value: "Takse", name: "Ukupna suma plaćenih taksi"},
+                {value: "Vrsta_a", name: "Vrsta žiga po prvom tipu"},
+                {value: "Vrsta_b", name: "Vrsta žiga po drugom tipu"},
+                {value: "Datum_podnosenja", name: "Priznati datum podnošenja"}
             ]
         }
         return []
@@ -115,6 +126,8 @@ const AdvancedSearch: React.FunctionComponent = () => {
         }
         if (type === "autor") {
             port = "8003"
+        } if (type === 'zig') {
+            port = "8000"
         }
         let metadataList = [];
         for (const searchParam of searchParams) {
@@ -122,8 +135,7 @@ const AdvancedSearch: React.FunctionComponent = () => {
                 metadata: searchParam
             })
         }
-        console.log(metadataList)
-
+       
         const xml2js = require("xml2js");
         const builder = new xml2js.Builder();
 
@@ -133,7 +145,6 @@ const AdvancedSearch: React.FunctionComponent = () => {
         } else {
             metadata = builder.buildObject(metadata);
         }
-        console.log(metadata)
         axios.post(`http://localhost:${port}/search/advanced`, metadata, {
             headers: {
                 "Content-Type": "application/xml",
@@ -141,20 +152,21 @@ const AdvancedSearch: React.FunctionComponent = () => {
             }
         }).then(response => {
             const convert = require("xml-js");
-            const jsonData = convert.xml2js(response.data, {
+            const jsonDataRes = convert.xml2js(response.data, {
                 compact: true,
                 alwaysChildren: true,
             });
-            console.log("AAAAAAAAAAA")
-            console.log(jsonData);
-            console.log("AAAAAAAAAAA")
-
+          
+            const zahtevi: ZahtevData[] = ConvertToZahtevi(jsonDataRes);
+            console.log("advanced")
+            console.log(zahtevi)
+            if (zahtevi.length === 0) toast.error("Nema zahteva koji odgovaraju kriterijuma.")
             switch (type) {
-                case 'patent': setPatentZahtevi([new ZahtevData()]); break;
-                case 'zig': setZigZahtevi([new ZahtevData()]); break;
-                case 'autor': setAutorskaZahtevi([new ZahtevData()]);
+                case 'patent': setPatentZahtevi(zahtevi); break;
+                case 'zig': setZigZahtevi(zahtevi); break;
+                case 'autor': setAutorskaZahtevi(zahtevi);
             }
-        }).catch(() => {
+        }).catch((e) => {
             toast.error("Greška pri pretrazi.")
         })
 
@@ -219,6 +231,7 @@ const AdvancedSearch: React.FunctionComponent = () => {
                 </tr>
             )}
             </tbody>
+            <ToastContainer position="top-center" draggable={false}/>
         </table>
 
         <div className="flex items-center justify-center mt-6">

@@ -1,12 +1,17 @@
 package ftn.xml.autor.service;
 
-import ftn.xml.autor.dto.ResenjeDTO;
-import ftn.xml.autor.dto.Zahtev;
-import ftn.xml.autor.dto.ZahtevMapper;
+import ftn.xml.autor.dto.*;
+import ftn.xml.autor.model.EmailDataDTO;
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
+import ftn.xml.autor.model.izvestaj.Izvestaj;
 import ftn.xml.autor.repository.AutorRepository;
 import ftn.xml.autor.repository.RdfRepository;
+import ftn.xml.autor.utils.AuthenticationUtilitiesMetadata;
 import ftn.xml.autor.utils.SchemaValidationEventHandler;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -23,6 +28,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,6 +36,10 @@ public class AutorService {
     public static final String CONTEXT_PATH = "ftn.xml.autor.model";
     private static final String SCHEMA_PATH = "./src/main/resources/data/xsd/autor.xsd";
     private static final String FILE_FOLDER = "./src/main/resources/data/files/";
+    private static final String TARGET_FOLDER = "./target/classes/data/files/";
+
+
+    private static final String FUSEKI_DATASET_PATH = "/autorDataset";
     private final AutorRepository repository;
     private final RdfRepository rdfRepository;
     private final Unmarshaller unmarshaller;
@@ -37,17 +47,22 @@ public class AutorService {
     private final ZahtevMapper mapper;
     private final EmailService emailService;
     private final TransformationService transformationService;
+    private final QueryService queryService;
+
+    private final IzvestajService izvestajService;
+    private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
 
     @Autowired
-    public AutorService(AutorRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, EmailService emailService, TransformationService transformationService) throws SAXException, JAXBException {
+    public AutorService(AutorRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, EmailService emailService, TransformationService transformationService, QueryService queryService, IzvestajService izvestajService) throws SAXException, JAXBException, IOException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.mapper = mapper;
         this.emailService = emailService;
         this.transformationService = transformationService;
-
+        this.queryService = queryService;
+        this.izvestajService = izvestajService;
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
-
+        conn = AuthenticationUtilitiesMetadata.loadProperties();
         unmarshaller = context.createUnmarshaller();
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema = schemaFactory.newSchema(new File(SCHEMA_PATH));
@@ -105,7 +120,7 @@ public class AutorService {
     }
 
 
-    private void addRdf(ZahtevZaIntelektualnuSvojinu zahtev) throws JAXBException, TransformerException {
+    private void addRdf(ZahtevZaIntelektualnuSvojinu zahtev) throws JAXBException, TransformerException, IOException {
         ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshal(zahtev);
         InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
         ByteArrayOutputStream zahtev_output = new ByteArrayOutputStream();
@@ -125,7 +140,10 @@ public class AutorService {
         ZahtevZaIntelektualnuSvojinu zahtevZaIntelektualnuSvojinu = mapper.parseZahtev(zahtev);
         save(zahtevZaIntelektualnuSvojinu);
         addRdf(zahtevZaIntelektualnuSvojinu);
-        System.out.println(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave());
+        createJsonFromRdf(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave());
+        createRdfFromRdf(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave());
+        this.transformationService.toXHTML(marshal(getZahtev(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave())), zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave() + ".html");
+        this.transformationService.toPDF(marshal(getZahtev(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave())), zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave() + ".pdf");
     }
 
     public void updateRequest(ResenjeDTO resenje) {
@@ -134,46 +152,42 @@ public class AutorService {
             zahtev.setResenje(mapper.parseResenje(resenje));
             save(zahtev);
             String email = zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta();
-            //TODO create new xsl for zahtev with resenje and pass the path here
-//        String documentPath="D:\\Fourth Year\\XML_WebServices\\XML_PROJEKAT_GIT\\xml-project\\autor\\src\\main\\resources\\data\\gen\\autor.pdf";
-//        EmailDataDTO emailDataDTO= EmailService.buildEmailDTO(email,documentPath);
-//        emailService.sendEmail(emailDataDTO);
+            String documentPath = "./src/main/resources/data/files/" + zahtev.getPopunjavaZavod().getBrojPrijave() + ".pdf";
+            EmailDataDTO emailDataDTO = EmailService.buildEmailDTO(email, documentPath);
+            emailService.sendEmail(emailDataDTO);
+            createJsonFromRdf(zahtev.getPopunjavaZavod().getBrojPrijave());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaIntelektualnuSvojinu> getAllResolvedForUser(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaIntelektualnuSvojinu> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return true;
-            } catch (Exception e) {
-                return false;
+        List<ZahtevZaIntelektualnuSvojinu> list1 = new ArrayList<>();
+        for (ZahtevZaIntelektualnuSvojinu zahtev :
+                list) {
+            if (email.equals(zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta()) && zahtev.getResenje() != null) {
+                list1.add(zahtev);
             }
-        });
-        //TODO:Filtriraj da li ima resenje
-        return list;
+        }
+        return list1;
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaIntelektualnuSvojinu> getAllUnresolvedForUser(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaIntelektualnuSvojinu> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return false;
-            } catch (Exception e) {
-                return true;
+        List<ZahtevZaIntelektualnuSvojinu> list1 = new ArrayList<>();
+        for (ZahtevZaIntelektualnuSvojinu zahtev : list) {
+            if (email.equals(zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta()) && zahtev.getResenje() == null) {
+                list1.add(zahtev);
             }
-        });
-        //TODO:Filtriraj da nema resenje
-        return list;
+        }
+        return list1;
     }
 
     public String getHtml(String brojPrijave) throws JAXBException {
         return this.transformationService.toXHTML(marshal(getZahtev(brojPrijave)), brojPrijave + ".html");
     }
+
     public String getHtmlString(String brojPrijave) {
 
         String filePath = FILE_FOLDER + brojPrijave + ".html";
@@ -197,4 +211,42 @@ public class AutorService {
         }
         return content;
     }
+
+
+    public void createJsonFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
+        ResultSetFormatter.outputAsJSON(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".json");
+        results = query.execSelect();
+        ResultSetFormatter.outputAsJSON(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
+    public void createRdfFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".rdf");
+        ResultSetFormatter.out(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".rdf");
+        results = query.execSelect();
+        ResultSetFormatter.out(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
+
+    public void createIzvestaj(DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
+        Izvestaj izvestaj = new Izvestaj();
+        izvestaj.setBrojPodnetihZahteva(String.valueOf(repository.retrieveAllWithinDatePeriod(dateRange.getStartDate(), dateRange.getEndDate()).size()));
+        izvestaj.setBrojOdobrenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(dateRange.getStartDate(), dateRange.getEndDate(), "Odobreno").size()));
+        izvestaj.setBrojOdbijenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(dateRange.getStartDate(), dateRange.getEndDate(), "Odbijeno").size()));
+        izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", dateRange.getStartDate(), dateRange.getEndDate()));
+        izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + dateRange.getStartDate() + "_" + dateRange.getEndDate() + ".pdf");
+    }
+
 }

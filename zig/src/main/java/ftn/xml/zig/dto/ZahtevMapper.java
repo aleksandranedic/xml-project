@@ -9,6 +9,7 @@ import org.xmldb.api.base.XMLDBException;
 
 import java.sql.Timestamp;
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.*;
@@ -19,11 +20,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class ZahtevMapper {
@@ -36,7 +33,7 @@ public class ZahtevMapper {
         zahtevZaPriznanjeZiga.setInformacijeOUstanovi(getInformacijeOUstanovi());
         zahtevZaPriznanjeZiga.setPopunjavaPodnosilac(getPopunjavaPodnosioc(zahtev));
         zahtevZaPriznanjeZiga.setPriloziUzZahtev(getPriloziUzZahtev(zahtev.getPrilozi()));
-        zahtevZaPriznanjeZiga.setDatumPodnosenja(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
+        zahtevZaPriznanjeZiga.setDatumPodnosenja(parseToXMLGregorianCalendar());
         String brojPrijave = zigRepository.getNextBrojPrijave();
         zahtevZaPriznanjeZiga.setBrojPrijaveZiga(brojPrijave);
         zahtevZaPriznanjeZiga.setQRKod(generateQR(brojPrijave));
@@ -45,7 +42,7 @@ public class ZahtevMapper {
 
     private final Path qrLocationFolder = Paths.get("src/main/resources/data/files/qr/");
     private final Path qrLocationTargetFolder = Paths.get("target/classes/data/files/qr/");
-    private final String showZahtevHTMLEndPoint = "http://localhost:8000/zig/html/";
+    private final String showZahtevHTMLEndPoint = "http://localhost:3000/zig/";
     public String generateQR(String brojPrijaveZiga){
         String httpBrojPrijaveZiga = brojPrijaveZiga.replace('/', '-');
         String fileNameBrojPrijaveZiga = brojPrijaveZiga.replace('/', '_').concat("_").concat("QR");
@@ -71,18 +68,18 @@ public class ZahtevMapper {
         }
     }
 
-    private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
+    /*private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = format.parse(dateString);
 
         return parseToXMLGregorianCalendar(date);
-    }
+    }*/
 
-    private static XMLGregorianCalendar parseToXMLGregorianCalendar(Date date) throws DatatypeConfigurationException {
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(date);
-
-        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+    private static XMLGregorianCalendar parseToXMLGregorianCalendar() throws DatatypeConfigurationException {
+        GregorianCalendar call = new GregorianCalendar();
+        call.setTime(new Date());
+        XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(call.get(Calendar.YEAR), call.get(Calendar.MONTH)+1, call.get(Calendar.DAY_OF_MONTH), DatatypeConstants.FIELD_UNDEFINED);
+        return xmlDate;
     }
 
     private static ZahtevZaPriznanjeZiga.PriloziUzZahtev getPriloziUzZahtev(PriloziDTO priloziDTO) {
