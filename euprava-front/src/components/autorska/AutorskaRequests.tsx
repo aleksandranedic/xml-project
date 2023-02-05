@@ -3,17 +3,18 @@ import Zahtevi from "../zahtevi/Zahtevi";
 import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
 import {Prilog, ZahtevData} from "../types";
-import UserContext from "../../store/user-context";
+import userContext from "../../store/user-context";
 
-export function PatentRequests() {
+export function AutorskaRequests() {
 
-    const {user} = useContext(UserContext)
-    const [patentZahtevi, setPatentZahtevi] = useState<ZahtevData[]>([]);
-    const [type, setType] = useState<"patent" | "autor" | "zig" | null>("patent");
+    const {user} = useContext(userContext)
+    const [autorZahtevi, setAutorZahtevi] = useState<ZahtevData[]>([]);
+    const [type, setType] = useState<"patent" | "autor" | "zig" | null>("autor");
 
-    const path = user?.role === "Sluzbenik" ? "" : "/resolved/" + user?.email;
+    const path = user?.role === "Službenik" ? "" : "/resolved/" + user?.email;
+    console.log(user?.role)
     useEffect(() => {
-        axios.get('http://localhost:8002/patent'+path, {
+        axios.get('http://localhost:8003/autor' + path, {
             headers: {
                 "Content-Type": "application/xml",
                 Accept: "application/xml",
@@ -27,12 +28,15 @@ export function PatentRequests() {
             let json = jsonData.List.item;
             let zahtevi: ZahtevData[] = [];
             for (let jsonData of json) {
+                console.log(json)
                 let zahtev: ZahtevData = new ZahtevData();
                 zahtev.status = jsonData.status["_text"]
                 zahtev.brojPrijave = jsonData.brojPrijave["_text"]
                 zahtev.html = jsonData.html["_text"]
                 zahtev.datum = jsonData.datum["_text"]
+
                 let prilozi: Prilog[] = [];
+
                 if (jsonData.prilozi.prilozi) {
                     for (let prilog of jsonData.prilozi.prilozi) {
                         prilozi.push({
@@ -45,14 +49,14 @@ export function PatentRequests() {
                 zahtevi.push(zahtev);
                 console.log(zahtev);
             }
-            setPatentZahtevi(zahtevi);
+            setAutorZahtevi(zahtevi);
         })
     }, [])
 
 
     return (
-        <RequestTypeContext.Provider value={{type, setType, port: "8002"}}>
-            <Zahtevi zahtevi={patentZahtevi}/>
+        <RequestTypeContext.Provider value={{type, setType, port: "8003"}}>
+            <Zahtevi zahtevi={autorZahtevi}/>
         </RequestTypeContext.Provider>
     )
 }

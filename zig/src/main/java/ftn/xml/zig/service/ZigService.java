@@ -15,6 +15,7 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
+import org.xmldb.api.base.XMLDBException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -25,14 +26,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.xmldb.api.base.XMLDBException;
 
 @Service
 public class ZigService {
@@ -185,30 +182,27 @@ public class ZigService {
         return content;
     }
 
-    public List<ZahtevZaPriznanjeZiga> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaPriznanjeZiga> getAllResolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return true;
-            } catch (Exception e) {
-                return false;
+        List<ZahtevZaPriznanjeZiga> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjeZiga zahtev :
+                list) {
+            if (email.equals(zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEmail()) && zahtev.getResenje() != null) {
+                list1.add(zahtev);
             }
-        });
-        return list;
+        }
+        return list1;
     }
 
-    public List<ZahtevZaPriznanjeZiga> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaPriznanjeZiga> getAllUnresolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return false;
-            } catch (Exception e) {
-                return true;
+        List<ZahtevZaPriznanjeZiga> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjeZiga zahtev : list) {
+            if (email.equals(zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEmail()) && zahtev.getResenje() == null) {
+                list1.add(zahtev);
             }
-        });
-        return list;
+        }
+        return list1;
     }
 
     public void createJsonFromRdf(String brojPrijave) throws IOException {

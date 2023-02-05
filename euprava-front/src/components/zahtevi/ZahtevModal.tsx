@@ -71,25 +71,25 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
     }
 
     let pdfPrilog: Prilog = new Prilog()
-    if(zahtev?.brojPrijave){
+    if (zahtev?.brojPrijave) {
         pdfPrilog.putanja = zahtev?.brojPrijave;
     }
     pdfPrilog.naslov = "pdf";
 
     let jsonPrilog: Prilog = new Prilog()
-    if(zahtev?.brojPrijave){
+    if (zahtev?.brojPrijave) {
         jsonPrilog.putanja = zahtev?.brojPrijave;
     }
     jsonPrilog.naslov = "json";
 
     let rdfPrilog: Prilog = new Prilog()
-    if(zahtev?.brojPrijave){
+    if (zahtev?.brojPrijave) {
         rdfPrilog.putanja = zahtev?.brojPrijave;
     }
     rdfPrilog.naslov = "rdf";
 
     let htmlPrilog: Prilog = new Prilog()
-    if(zahtev?.brojPrijave){
+    if (zahtev?.brojPrijave) {
         htmlPrilog.putanja = zahtev?.brojPrijave;
     }
     htmlPrilog.naslov = "html";
@@ -135,6 +135,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                                         <ZahtevButton prilog={htmlPrilog}></ZahtevButton>
                                         <ZahtevButton prilog={rdfPrilog}></ZahtevButton>
                                         <ZahtevButton prilog={jsonPrilog}></ZahtevButton>
+
                                         <div className="flex gap-3">
 
                                             <button

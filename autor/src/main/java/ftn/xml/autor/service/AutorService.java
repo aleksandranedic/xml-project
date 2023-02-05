@@ -30,6 +30,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -160,30 +161,27 @@ public class AutorService {
         }
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaIntelektualnuSvojinu> getAllResolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaIntelektualnuSvojinu> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return true;
-            } catch (Exception e) {
-                return false;
+        List<ZahtevZaIntelektualnuSvojinu> list1 = new ArrayList<>();
+        for (ZahtevZaIntelektualnuSvojinu zahtev :
+                list) {
+            if (email.equals(zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta()) && zahtev.getResenje() != null) {
+                list1.add(zahtev);
             }
-        });
-        return list;
+        }
+        return list1;
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaIntelektualnuSvojinu> getAllUnresolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaIntelektualnuSvojinu> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return false;
-            } catch (Exception e) {
-                return true;
+        List<ZahtevZaIntelektualnuSvojinu> list1 = new ArrayList<>();
+        for (ZahtevZaIntelektualnuSvojinu zahtev : list) {
+            if (email.equals(zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta()) && zahtev.getResenje() == null) {
+                list1.add(zahtev);
             }
-        });
-        return list;
+        }
+        return list1;
     }
 
     public String getHtml(String brojPrijave) throws JAXBException {

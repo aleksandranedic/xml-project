@@ -36,14 +36,14 @@ public class PatentController {
         return service.getAll().stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
-    @GetMapping("/resolved")
-    public List<ZahtevData> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return service.getAllResolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
+    @GetMapping(value = "/resolved/{email}", produces = MediaType.APPLICATION_XML_VALUE)
+    public List<ZahtevData> getAllResolved(@PathVariable String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAllResolved(email).stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
-    @GetMapping("/unresolved")
-    public List<ZahtevData> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return service.getAllUnresolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
+    @GetMapping(value = "/unresolved/{email}", produces = MediaType.APPLICATION_XML_VALUE)
+    public List<ZahtevData> getAllUnresolved(@PathVariable String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAllUnresolved(email).stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
     @GetMapping(path = "/{broj}", produces = MediaType.APPLICATION_XML_VALUE)

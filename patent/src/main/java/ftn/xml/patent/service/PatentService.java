@@ -30,6 +30,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -190,32 +191,28 @@ public class PatentService {
         }
     }
 
-    public List<ZahtevZaPriznanjePatenta> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaPriznanjePatenta> getAllResolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return true;
-            } catch (Exception e) {
-                return false;
+        List<ZahtevZaPriznanjePatenta> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjePatenta zahtev :
+                list) {
+            if (email.equals(zahtev.getPopunjavaPodnosioc().getPodaciOPodnosiocu().getPodnosioc().getKontakt().getEPosta()) && zahtev.getResenje() != null) {
+                list1.add(zahtev);
             }
-        });
-        //TODO:Filtriraj da li ima resenje
-        return list;
+        }
+        return list1;
     }
 
-    public List<ZahtevZaPriznanjePatenta> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaPriznanjePatenta> getAllUnresolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return false;
-            } catch (Exception e) {
-                return true;
+        List<ZahtevZaPriznanjePatenta> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjePatenta zahtev :
+                list) {
+            if (email.equals(zahtev.getPopunjavaPodnosioc().getPodaciOPodnosiocu().getPodnosioc().getKontakt().getEPosta()) && zahtev.getResenje() == null) {
+                list1.add(zahtev);
             }
-        });
-        //TODO:Filtriraj da nema resenje
-        return list;
+        }
+        return list1;
     }
 
     public String getIzvestajPdf(String startDate, String endDate) throws JAXBException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
