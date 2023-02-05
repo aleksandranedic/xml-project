@@ -1,6 +1,7 @@
 package ftn.xml.zig.service;
 
 import ftn.xml.zig.dto.Metadata;
+import ftn.xml.zig.dto.ResenjeDTO;
 import ftn.xml.zig.dto.Zahtev;
 import ftn.xml.zig.dto.ZahtevMapper;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
@@ -192,6 +193,17 @@ public class ZigService {
             }
         }
         return list1;
+    }
+
+    public void updateRequest(ResenjeDTO resenje) {
+        ZahtevZaPriznanjeZiga zahtev = getZahtev(resenje.getBrojPrijave());
+        try {
+            zahtev.setResenje(mapper.parseResenje(resenje));
+            save(zahtev);
+            createJsonFromRdf(zahtev.getBrojPrijaveZiga());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<ZahtevZaPriznanjeZiga> getAllUnresolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
