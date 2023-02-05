@@ -101,14 +101,6 @@ public class SearchService {
         return zahtevi;
     }
 
-    public List<ZahtevData> mapZahtevEntityToZahtevData(List<ZahtevZaPriznanjeZiga> list){
-        List<ZahtevData> zahtevi=new ArrayList<>();
-        list.stream().toList().forEach(zahtevZaPriznanjeZiga -> {
-            zahtevi.add(new ZahtevData(zahtevZaPriznanjeZiga));
-        });
-        return zahtevi;
-    }
-
     private String getSparqlQuery(List<Metadata> metadata) {
         String FUSEKI = "http://localhost:8080/fuseki-zig/zigDataset/data/zig/metadata";
 

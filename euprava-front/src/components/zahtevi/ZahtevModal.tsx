@@ -187,9 +187,14 @@ function PrilogCard(props: PrilogCardProps) {
     return (
 
         <div
-            className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
+            className={`w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow px-2 ${prilog.putanja? '' : "bg-red-400"}`}>
             <div className="flex flex-col items-center py-6">
                 <h5 className="mb-1 text-sm font-medium text-gray-900 text-center ">{prilog.naslov}</h5>
+                {
+                    !prilog.putanja && <p className="font-light text-sm mt-1">Korisnik nije podneo dokument.</p>
+                }
+                {prilog.putanja &&
+                    <>
                 <div className="flex space-x-3">
                     <a href={prilog.putanja} target="_blank"
                        className="inline-flex items-center px-4 py-2  text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200"
@@ -205,6 +210,7 @@ function PrilogCard(props: PrilogCardProps) {
                         <a ref={linkRef} style={{ display: 'none' }} />
                     </div>
                 </div>
+                </>}
             </div>
         </div>
 
