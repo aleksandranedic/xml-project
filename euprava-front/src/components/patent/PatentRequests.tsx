@@ -48,8 +48,9 @@ export function PatentRequests() {
         })
     }, [])
 
+
     return (
-        <RequestTypeContext.Provider value={{type, setType}}>
+        <RequestTypeContext.Provider value={{type, setType, port: "8002"}}>
             <Zahtevi zahtevi={patentZahtevi}/>
         </RequestTypeContext.Provider>
     )
