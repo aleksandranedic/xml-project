@@ -1,5 +1,6 @@
 package ftn.xml.patent.service;
 
+import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.model.izvestaj.Izvestaj;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.fop.apps.*;
@@ -50,6 +51,16 @@ public class IzvestajService {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
     }
 
+    public String getResnjePdf(ZahtevZaPriznanjePatenta.Resenje resenje, String fileName) throws JAXBException {
+        return toPDF(marshalResenje(resenje), fileName);
+    }
+
+
+    public OutputStream marshalResenje(ZahtevZaPriznanjePatenta.Resenje resenje) throws JAXBException {
+        OutputStream os = new ByteArrayOutputStream();
+        marshaller.marshal(resenje, os);
+        return os;
+    }
 
     public String getIzvestajPdf(Izvestaj izvestaj, String fileName) throws JAXBException {
         return toPDF(marshal(izvestaj), fileName);
