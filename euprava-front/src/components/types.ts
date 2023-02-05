@@ -140,13 +140,13 @@ export class Info {
 }
 
 export enum Status {
-  NA_CEKANJU = "NA ČEKANJU",
-  ODOBRENO = "ODOBRENO",
-  ODBIJENO = "ODBIJENO",
+  Prilozen = "Prilozen",
+  Odobreno = "Odobreno",
+  Odbijeno = "Odbijeno",
 }
 
 export class InformacijeOResenju {
-  public status = Status.NA_CEKANJU;
+  public status = Status.Prilozen;
   public datumKreiranjaResenja?: Date;
   public zavedenPodSifrom?: string;
   public sluzbenik?: Info;

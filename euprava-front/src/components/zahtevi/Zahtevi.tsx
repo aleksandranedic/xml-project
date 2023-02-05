@@ -14,8 +14,9 @@ const Zahtevi: React.FunctionComponent<ZahteviProps> = ({zahtevi}) => {
     const {type} = useContext(RequestTypeContext);
 
     const getColor = (status: string) => {
-        if (status === Status.NA_CEKANJU) return 'text-blue-700';
-        else if (status === Status.ODOBRENO) return 'text-green-700';
+        //alert(status + " " + Status.Prilozen)
+        if (status === Status.Prilozen) return 'text-blue-700';
+        else if (status === Status.Odobreno) return 'text-green-700';
         else return 'text-red-600';
     }
 
