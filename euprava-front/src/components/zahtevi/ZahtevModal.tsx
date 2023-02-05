@@ -99,9 +99,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                                         return (
                                             <PrilogCard prilog={prilog}></PrilogCard>
                                         )
-
                                     })}
-
                                 </div>
 
                                 {user?.role === Role.WORKER &&

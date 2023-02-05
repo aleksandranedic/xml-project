@@ -5,7 +5,12 @@ import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.model.izvestaj.Izvestaj;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.repository.RdfRepository;
+import ftn.xml.patent.utils.AuthenticationUtilitiesMetadata;
 import ftn.xml.patent.utils.SchemaValidationEventHandler;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -38,14 +43,19 @@ public class PatentService {
     private final Marshaller marshaller;
     private final ZahtevMapper mapper;
     private final IzvestajService izvestajService;
+    private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
+
+    private final QueryService queryService;
 
     @Autowired
-    public PatentService(PatentRepository repository, RdfRepository rdfRepository, TransformationService trasformationService, ZahtevMapper mapper, IzvestajService izvestajService) throws SAXException, JAXBException {
+    public PatentService(PatentRepository repository, RdfRepository rdfRepository, TransformationService trasformationService, ZahtevMapper mapper, IzvestajService izvestajService, QueryService queryService) throws SAXException, JAXBException, IOException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.trasformationService = trasformationService;
         this.mapper = mapper;
         this.izvestajService = izvestajService;
+        this.conn = AuthenticationUtilitiesMetadata.loadProperties();
+        this.queryService = queryService;
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -207,4 +217,15 @@ public class PatentService {
         izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", startDate, endDate));
         return izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + startDate + "_" + endDate + ".pdf");
     }
+
+    public void createJsonFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
+        ResultSetFormatter.outputAsJSON(outputStream, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
 }

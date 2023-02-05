@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -98,5 +99,8 @@ public class ZigController {
         return service.getAllUnresolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
-
+    @GetMapping(path = "/json",consumes = MediaType.APPLICATION_XML_VALUE)
+    public void rdfToJSON(@RequestBody String brojPrijave) throws IOException {
+        this.service.createJsonFromRdf(brojPrijave);
+    }
 }

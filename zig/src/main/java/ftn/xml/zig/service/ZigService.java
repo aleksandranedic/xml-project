@@ -1,12 +1,17 @@
 package ftn.xml.zig.service;
 
+import ftn.xml.zig.dto.Metadata;
 import ftn.xml.zig.dto.Zahtev;
-import ftn.xml.zig.dto.ZahtevData;
 import ftn.xml.zig.dto.ZahtevMapper;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.repository.RdfRepository;
 import ftn.xml.zig.repository.ZigRepository;
+import ftn.xml.zig.utils.AuthenticationUtilitiesMetadata;
 import ftn.xml.zig.utils.SchemaValidationEventHandler;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -44,12 +49,18 @@ public class ZigService {
 
     private final TransformationService trasformationService;
 
+    private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
+
+    private final QueryService queryService;
+
     @Autowired
-    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, TransformationService trasformationService) throws SAXException, JAXBException {
+    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, TransformationService trasformationService, QueryService queryService) throws SAXException, JAXBException, IOException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.mapper = mapper;
         this.trasformationService = trasformationService;
+        this.queryService = queryService;
+        this.conn = AuthenticationUtilitiesMetadata.loadProperties();
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -63,6 +74,7 @@ public class ZigService {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
     }
+
     public ZahtevZaPriznanjeZiga getZahtev(String brojPrijave) {
         try {
             return repository.retrieve(brojPrijave + ".xml");
@@ -83,7 +95,7 @@ public class ZigService {
         return trasformationService.toXHTML(marshal(getZahtev(brojPrijave)), brojPrijave + ".html");
     }
 
-    public ZahtevZaPriznanjeZiga unmarshall(String path) throws JAXBException{
+    public ZahtevZaPriznanjeZiga unmarshall(String path) throws JAXBException {
         return (ZahtevZaPriznanjeZiga) unmarshaller.unmarshal(new File(path));
     }
 
@@ -166,6 +178,7 @@ public class ZigService {
         }
         return content;
     }
+
     public List<ZahtevZaPriznanjeZiga> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
         list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
@@ -193,4 +206,15 @@ public class ZigService {
         //TODO:Filtriraj da nema resenje
         return list;
     }
+
+    public void createJsonFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
+        ResultSetFormatter.outputAsJSON(outputStream, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
 }

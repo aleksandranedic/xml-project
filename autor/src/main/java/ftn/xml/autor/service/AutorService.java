@@ -219,11 +219,4 @@ public class AutorService {
         outputStream.close();
         query.close();
     }
-
-    public void createRdfFile(ResultSet resultSet, String brojPrijave) throws IOException {
-        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
-        ResultSetFormatter.outputAsJSON(outputStream, resultSet);
-        outputStream.flush();
-        outputStream.close();
-    }
 }
