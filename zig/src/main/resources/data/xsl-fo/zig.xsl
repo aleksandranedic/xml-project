@@ -311,11 +311,12 @@
                             <fo:table-row>
                                 <fo:table-cell border="1px" font-family="sans-serif" padding="10px" font-weight="normal" number-columns-spanned="2">
                                     <fo:block>
-                                        <xsl:element name="img">
+                                        <img>
                                             <xsl:attribute name="src">
-                                                data\<xsl:value-of select="//zig:Primerak_znaka"/>
+                                                <xsl:value-of select="//zig:Primerak_znaka"/>
                                             </xsl:attribute>
-                                        </xsl:element>
+                                            <xsl:attribute name="style">width: 300px; height: 300px;</xsl:attribute>
+                                        </img>
                                     </fo:block>
                                 </fo:table-cell>
                             </fo:table-row>
@@ -461,11 +462,12 @@
                             </fo:table-cell>
                             <fo:table-cell border="1px" font-family="sans-serif">
                                 <fo:block>
-                                    <xsl:element name="img">
+                                    <img>
                                         <xsl:attribute name="src">
-                                            data\files\<xsl:value-of select="//zig:QR_kod"/>
+                                            <xsl:value-of select="//zig:QR_kod"/>
                                         </xsl:attribute>
-                                    </xsl:element>
+                                        <xsl:attribute name="style">width: 300px; height: 300px;</xsl:attribute>
+                                    </img>
                                 </fo:block>
                             </fo:table-cell>
                         </fo:table-row>
