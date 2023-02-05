@@ -9,6 +9,8 @@ import ftn.xml.zig.repository.RdfRepository;
 import ftn.xml.zig.repository.ZigRepository;
 import ftn.xml.zig.utils.AuthenticationUtilitiesMetadata;
 import ftn.xml.zig.utils.SchemaValidationEventHandler;
+import org.apache.fop.apps.FOPException;
+import org.apache.fop.apps.FOUserAgent;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
@@ -23,7 +25,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
@@ -205,6 +209,13 @@ public class ZigService {
             throw new RuntimeException(e);
         }
     }
+
+    public OutputStream marshalResenje(ZahtevZaPriznanjeZiga.Resenje resenje) throws JAXBException {
+        OutputStream os = new ByteArrayOutputStream();
+        marshaller.marshal(resenje, os);
+        return os;
+    }
+
 
     public List<ZahtevZaPriznanjeZiga> getAllUnresolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
