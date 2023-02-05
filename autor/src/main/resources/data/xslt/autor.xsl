@@ -11,6 +11,25 @@
                 <pred:Broj_prijave>
                     <xsl:value-of select="//aut:Broj_prijave"/>
                 </pred:Broj_prijave>
+                <pred:Naslov>
+                    <xsl:value-of select="//aut:Naslov"/>
+                </pred:Naslov>
+                <pred:Vrsta>
+                    <xsl:value-of select="//aut:Vrsta"/>
+                </pred:Vrsta>
+                <pred:Forma>
+                    <xsl:value-of select="//aut:Forma"/>
+                </pred:Forma>
+                <pred:Status>
+                    <xsl:choose>
+                        <xsl:when test="//aut:Resenje">
+                            <xsl:value-of select="//aut:Resenje/aut:Status"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:text>Na cekanju</xsl:text>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </pred:Status>
                 <pred:Naziv>
                     <xsl:choose>
                         <xsl:when test="//aut:Popunjava_podnosilac/aut:Podnosilac/aut:Poslovno_ime">

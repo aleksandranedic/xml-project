@@ -8,6 +8,7 @@ import ZigContext from "../store/zig-zahtevi-context";
 import { ZahtevZaPriznanjeZiga } from "../components/zig/types";
 import AutorskaContext from "../store/autorska-zahtevi-context";
 import { ZahtevZaPriznanjeAutorska } from "../components/autorska/types";
+import convert from "xml-js";
 
 interface SimpleSearchProps {
     
@@ -39,16 +40,33 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
         if (type === "zig") {
             port = "8000"
         }
-
+        if (type === "autor") {
+            port = "8003"
+        }
         let terms:string = keywords.join(";");
 
-        axios.get(`http://localhost:${port}/search/basic?terms=${terms}`).then(response => {
+        // const xml2js = require("xml2js");
+        // const builder = new xml2js.Builder();
+        // let xml_terms = builder.buildObject(terms);
+        // Ovo nece hteti
+
+        axios.get(`http://localhost:${port}/search/basic?terms=${terms}`,{
+            headers:{
+                "Content-Type":"application/xml",
+                Accept: "*/*"
+            }
+        }).then(response => {
+            const convert = require("xml-js");
+            const jsonData = convert.xml2js(response.data, {
+                compact: true,
+                alwaysChildren: true,
+            });
             switch (type) {
                 case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
                 case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
                 case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
             }
-            console.log(response.data);
+            console.log(jsonData);
         }).catch(() => {
             switch (type) {
                 case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
