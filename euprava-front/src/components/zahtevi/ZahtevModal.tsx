@@ -1,6 +1,6 @@
 import React, {Dispatch, SetStateAction, useContext, useRef, useState} from "react";
 import UserContext, {Role} from "../../store/user-context";
-import {Prilog, ZahtevData} from "../types";
+import {Prilog, Status, ZahtevData} from "../types";
 import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
 import {toast} from "react-toastify";
@@ -12,7 +12,7 @@ interface ZahtevModalProps {
     zahtev: ZahtevData | null;
 }
 
-const ZahtevBody: React.FunctionComponent<{ zahtev: ZahtevData }> = ({zahtev}) => {
+export const ZahtevBody: React.FunctionComponent<{ zahtev: ZahtevData }> = ({zahtev}) => {
     return (<div dangerouslySetInnerHTML={{__html: zahtev.html}}/>)
 }
 const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showModal, setShowModal}) => {
@@ -44,7 +44,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
             prezime: user?.surname,
             obrazlozenje: reason, //TODO treba ubaciti da dopuni
             status: status,
-            brojPrijave: "A-38169" //TODO treba izmeniti
+            brojPrijave: zahtev?.brojPrijave //TODO treba izmeniti
         }
         const xml2js = require("xml2js");
         const builder = new xml2js.Builder();
@@ -64,7 +64,6 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                 compact: true,
                 alwaysChildren: true,
             });
-            console.log(jsonData);
             toast.success(response.data)
         }).catch(() => {
             toast.error("Greška pri pretrazi.")
@@ -131,7 +130,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                                     })}
                                 </div>
 
-                                {user?.role === Role.WORKER &&
+                                {user?.role === Role.WORKER &&  zahtev.status === Status.Prilozen &&
                                     <div
                                         className="flex w-full items-center justify-between p-6 border-t border-solid border-slate-200 rounded-b">
                                         <ZahtevButton prilog={pdfPrilog}></ZahtevButton>
@@ -175,7 +174,7 @@ interface PrilogCardProps {
     prilog: Prilog;
 }
 
-function PrilogCard(props: PrilogCardProps) {
+export function PrilogCard(props: PrilogCardProps) {
     const {prilog} = props;
     const {type, port} = useContext(RequestTypeContext);
 

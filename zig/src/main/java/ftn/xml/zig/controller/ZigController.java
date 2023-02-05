@@ -1,5 +1,6 @@
 package ftn.xml.zig.controller;
 
+import ftn.xml.zig.dto.ResenjeDTO;
 import ftn.xml.zig.dto.Zahtev;
 import ftn.xml.zig.dto.ZahtevData;
 import ftn.xml.zig.dto.ZahtevDataMapper;
@@ -29,9 +30,9 @@ public class ZigController {
         this.zahtevDataMapper = zahtevDataMapper;
     }
 
-    @GetMapping("/{broj}")
-    public ZahtevZaPriznanjeZiga getRequest(@PathVariable("broj") String brojPrijave) {
-        return this.service.getZahtev(brojPrijave);
+    @GetMapping(value = "/{broj}", produces = MediaType.APPLICATION_XML_VALUE)
+    public ZahtevData getRequest(@PathVariable("broj") String brojPrijave) {
+        return zahtevDataMapper.convertToZahtevData(this.service.getZahtev(brojPrijave));
     }
 
 
@@ -48,10 +49,10 @@ public class ZigController {
         }
     }
 
-    @PutMapping
-    public String updateRequest(@RequestParam("broj") int brojPrijave, Zahtev zahtev) {
+    @PutMapping(produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
+    public String updateRequest(@RequestBody ResenjeDTO resenje) {
         try {
-            //service.updateRequest(brojPrijave, zahtev);
+            service.updateRequest(resenje);
             return "Uspešno ste ažurirali zahtev.";
         } catch (Exception e) {
             throw new RuntimeException(e);

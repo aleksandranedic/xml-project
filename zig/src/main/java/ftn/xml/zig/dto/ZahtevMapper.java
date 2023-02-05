@@ -33,16 +33,28 @@ public class ZahtevMapper {
         zahtevZaPriznanjeZiga.setInformacijeOUstanovi(getInformacijeOUstanovi());
         zahtevZaPriznanjeZiga.setPopunjavaPodnosilac(getPopunjavaPodnosioc(zahtev));
         zahtevZaPriznanjeZiga.setPriloziUzZahtev(getPriloziUzZahtev(zahtev.getPrilozi()));
-        zahtevZaPriznanjeZiga.setDatumPodnosenja(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
+        zahtevZaPriznanjeZiga.setDatumPodnosenja(parseToXMLGregorianCalendar());
         String brojPrijave = zigRepository.getNextBrojPrijave();
         zahtevZaPriznanjeZiga.setBrojPrijaveZiga(brojPrijave);
         zahtevZaPriznanjeZiga.setQRKod(generateQR(brojPrijave));
         return zahtevZaPriznanjeZiga;
     }
 
+    public ZahtevZaPriznanjeZiga.Resenje parseResenje(ResenjeDTO resenje) throws DatatypeConfigurationException {
+        ZahtevZaPriznanjeZiga.Resenje novoResenje = new ZahtevZaPriznanjeZiga.Resenje();
+        novoResenje.setStatus("Z-" + resenje.getStatus());
+        novoResenje.setDatum(parseToXMLGregorianCalendar());
+        novoResenje.setIme(resenje.getIme());
+        novoResenje.setPrezime(resenje.getPrezime());
+        novoResenje.setObrazlozenje(resenje.getObrazlozenje());
+        novoResenje.setBrojPrijave(resenje.getBrojPrijave());
+        return novoResenje;
+    }
+
+
     private final Path qrLocationFolder = Paths.get("src/main/resources/data/files/qr/");
     private final Path qrLocationTargetFolder = Paths.get("target/classes/data/files/qr/");
-    private final String showZahtevHTMLEndPoint = "http://localhost:8000/zig/html/";
+    private final String showZahtevHTMLEndPoint = "http://localhost:3000/zig/";
     public String generateQR(String brojPrijaveZiga){
         String httpBrojPrijaveZiga = brojPrijaveZiga.replace('/', '-');
         String fileNameBrojPrijaveZiga = brojPrijaveZiga.replace('/', '_').concat("_").concat("QR");
@@ -68,17 +80,14 @@ public class ZahtevMapper {
         }
     }
 
-    private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
+    /*private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = format.parse(dateString);
 
         return parseToXMLGregorianCalendar(date);
-    }
+    }*/
 
-    private static XMLGregorianCalendar parseToXMLGregorianCalendar(Date date) throws DatatypeConfigurationException {
-        //GregorianCalendar cal = new GregorianCalendar();
-       // cal.setTime(date);
-
+    private static XMLGregorianCalendar parseToXMLGregorianCalendar() throws DatatypeConfigurationException {
         GregorianCalendar call = new GregorianCalendar();
         call.setTime(new Date());
         XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(call.get(Calendar.YEAR), call.get(Calendar.MONTH)+1, call.get(Calendar.DAY_OF_MONTH), DatatypeConstants.FIELD_UNDEFINED);

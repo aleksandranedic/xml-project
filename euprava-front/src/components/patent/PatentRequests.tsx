@@ -43,7 +43,6 @@ export function PatentRequests() {
                 }
                 zahtev.prilozi = prilozi;
                 zahtevi.push(zahtev);
-                console.log(zahtev);
             }
             setPatentZahtevi(zahtevi);
         })

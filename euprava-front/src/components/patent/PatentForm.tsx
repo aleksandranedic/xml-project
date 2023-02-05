@@ -962,6 +962,11 @@ const PatentForm: React.FunctionComponent = () => {
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded w-fit self-center mt-10 text-lg">Pošalji
                 </button>
 
+                <a href="http://localhost:3000/zahtevi/detaljno/patent"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded w-fit self-center mt-2 text-lg">Detaljanije
+                </a>
+
+
             </form>
             <ToastContainer position="top-center" draggable={false}/>
         </div>

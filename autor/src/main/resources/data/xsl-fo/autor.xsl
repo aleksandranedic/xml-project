@@ -52,7 +52,7 @@
         <!ATTLIST fo:table-cell
                 background-color CDATA #IMPLIED
                 border CDATA #IMPLIED
-                border-top CDATA #IMPLIED
+                border CDATA #IMPLIED
                 color CDATA #IMPLIED
                 display-align CDATA #IMPLIED
                 font-family CDATA #IMPLIED
@@ -131,34 +131,34 @@
                             <fo:table-column column-width="15%"/>
                             <fo:table-column column-width="15%"/>
                             <fo:table-body>
-                                <fo:table-row border="1px solid darkgrey">
-                                    <fo:table-cell background-color="#3e87bc" color="white" font-family="sans-serif"
+                                <fo:table-row>
+                                    <fo:table-cell border="1px"  color="white" font-family="sans-serif"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Ime</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Adresa</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Telefon</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Email</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Faks</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Sediste</fo:block>
                                     </fo:table-cell>
                                 </fo:table-row>
-                                <fo:table-row border="1px solid darkgrey">
-                                    <fo:table-cell padding-left="5px" display-align="center" font-weight="bold">
+                                <fo:table-row>
+                                    <fo:table-cell border="1px" padding-left="5px" display-align="center" font-weight="bold">
                                         <xsl:choose>
                                             <xsl:when test="//aut:Popunjava_podnosilac/aut:Podnosilac/aut:Poslovno_ime">
                                                 <fo:block>
@@ -178,7 +178,7 @@
                                         </xsl:choose>
                                     </fo:table-cell>
 
-                                    <fo:table-cell padding-right="8px" padding-bottom="4px" display-align="center">
+                                    <fo:table-cell border="1px" padding-right="8px" padding-bottom="4px" display-align="center">
                                         <fo:block font-weight="bold">
                                             <fo:inline>
                                                 <xsl:value-of
@@ -207,28 +207,28 @@
                                         </fo:block>
                                     </fo:table-cell>
 
-                                    <fo:table-cell display-align="center">
+                                    <fo:table-cell border="1px" display-align="center">
                                         <fo:block font-weight="bold">
                                             <xsl:value-of
                                                     select="//aut:Popunjava_podnosilac/aut:Podnosilac/aut:Kontakt/aut:Telefon"/>
                                         </fo:block>
                                     </fo:table-cell>
 
-                                    <fo:table-cell display-align="center">
+                                    <fo:table-cell border="1px" display-align="center">
                                         <fo:block font-weight="bold">
                                             <xsl:value-of
                                                     select="//aut:Popunjava_podnosilac/aut:Podnosilac/aut:Kontakt/aut:E_posta"/>
                                         </fo:block>
                                     </fo:table-cell>
 
-                                    <fo:table-cell display-align="center">
+                                    <fo:table-cell border="1px" display-align="center">
                                         <fo:block font-weight="bold">
                                             <xsl:value-of
                                                     select="//aut:Popunjava_podnosilac/aut:Podnosilac/aut:Kontakt/aut:Faks"/>
                                         </fo:block>
                                     </fo:table-cell>
 
-                                    <fo:table-cell display-align="center">
+                                    <fo:table-cell border="1px" display-align="center">
                                         <xsl:choose>
                                             <xsl:when test="//aut:Popunjava_podnosilac/aut:Podnosilac/aut:Sediste">
                                                 <fo:block font-weight="bold">
@@ -263,34 +263,34 @@
                                 <fo:table-column column-width="15%"/>
                                 <fo:table-column column-width="15%"/>
                                 <fo:table-body>
-                                    <fo:table-row border="1px solid darkgrey">
-                                        <fo:table-cell background-color="#3e87bc" color="white" font-family="sans-serif"
+                                    <fo:table-row>
+                                        <fo:table-cell border="1px"  color="white" font-family="sans-serif"
                                                        padding="5px" font-weight="bold">
                                             <fo:block>Ime</fo:block>
                                         </fo:table-cell>
-                                        <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                        <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                        padding="5px" font-weight="bold">
                                             <fo:block>Adresa</fo:block>
                                         </fo:table-cell>
-                                        <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                        <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                        padding="5px" font-weight="bold">
                                             <fo:block>Telefon</fo:block>
                                         </fo:table-cell>
-                                        <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                        <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                        padding="5px" font-weight="bold">
                                             <fo:block>Email</fo:block>
                                         </fo:table-cell>
-                                        <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                        <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                        padding="5px" font-weight="bold">
                                             <fo:block>Faks</fo:block>
                                         </fo:table-cell>
-                                        <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                        <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                        padding="5px" font-weight="bold">
                                             <fo:block>Sediste</fo:block>
                                         </fo:table-cell>
                                     </fo:table-row>
-                                    <fo:table-row border="1px solid darkgrey">
-                                        <fo:table-cell padding-left="5px" display-align="center" font-weight="bold">
+                                    <fo:table-row>
+                                        <fo:table-cell border="1px" padding-left="5px" display-align="center" font-weight="bold">
                                             <xsl:choose>
                                                 <xsl:when
                                                         test="//aut:Popunjava_podnosilac/aut:Punomocnik/aut:Poslovno_ime">
@@ -311,7 +311,7 @@
                                             </xsl:choose>
                                         </fo:table-cell>
 
-                                        <fo:table-cell padding-right="8px" padding-bottom="4px" display-align="center">
+                                        <fo:table-cell border="1px" padding-right="8px" padding-bottom="4px" display-align="center">
                                             <fo:block font-weight="bold">
                                                 <fo:inline>
                                                     <xsl:value-of
@@ -340,28 +340,28 @@
                                             </fo:block>
                                         </fo:table-cell>
 
-                                        <fo:table-cell display-align="center">
+                                        <fo:table-cell border="1px" display-align="center">
                                             <fo:block font-weight="bold">
                                                 <xsl:value-of
                                                         select="//aut:Popunjava_podnosilac/aut:Punomocnik/aut:Kontakt/aut:Telefon"/>
                                             </fo:block>
                                         </fo:table-cell>
 
-                                        <fo:table-cell display-align="center">
+                                        <fo:table-cell border="1px" display-align="center">
                                             <fo:block font-weight="bold">
                                                 <xsl:value-of
                                                         select="//aut:Popunjava_podnosilac/aut:Punomocnik/aut:Kontakt/aut:E_posta"/>
                                             </fo:block>
                                         </fo:table-cell>
 
-                                        <fo:table-cell display-align="center">
+                                        <fo:table-cell border="1px" display-align="center">
                                             <fo:block font-weight="bold">
                                                 <xsl:value-of
                                                         select="//aut:Popunjava_podnosilac/aut:Punomocnik/aut:Kontakt/aut:Faks"/>
                                             </fo:block>
                                         </fo:table-cell>
 
-                                        <fo:table-cell display-align="center">
+                                        <fo:table-cell border="1px" display-align="center">
                                             <xsl:choose>
                                                 <xsl:when test="//aut:Popunjava_podnosilac/aut:Punomocnik/aut:Sediste">
                                                     <fo:block font-weight="bold">
@@ -396,32 +396,32 @@
                             <fo:table-column column-width="17%"/>
                             <fo:table-column column-width="10%"/>
                             <fo:table-body>
-                                <fo:table-row border="1px solid darkgrey">
-                                    <fo:table-cell background-color="#3e87bc" color="white" font-family="sans-serif"
+                                <fo:table-row>
+                                    <fo:table-cell border="1px"  color="white" font-family="sans-serif"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Ime</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Adresa</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Drzavljanstvo</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Telefon</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Email</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Faks</fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell background-color="#3e87bc" font-family="sans-serif" color="white"
+                                    <fo:table-cell border="1px"  font-family="sans-serif" color="white"
                                                    padding="5px" font-weight="bold">
                                         <fo:block>Godina smrti</fo:block>
                                     </fo:table-cell>
@@ -429,8 +429,8 @@
                                 <xsl:for-each select="//aut:Popunjava_podnosilac/aut:Autori/*">
                                     <xsl:choose>
                                         <xsl:when test="aut:Autor">
-                                            <fo:table-row border="1px solid darkgrey">
-                                                <fo:table-cell padding-left="5px" display-align="center"
+                                            <fo:table-row>
+                                                <fo:table-cell border="1px" padding-left="5px" display-align="center"
                                                                font-weight="bold">
                                                     <fo:block>
                                                         <xsl:value-of
@@ -441,7 +441,7 @@
                                                     </fo:block>
                                                 </fo:table-cell>
 
-                                                <fo:table-cell padding-right="8px" padding-bottom="4px"
+                                                <fo:table-cell border="1px" padding-right="8px" padding-bottom="4px"
                                                                display-align="center">
                                                     <fo:block font-weight="bold">
                                                         <fo:inline>
@@ -471,34 +471,34 @@
                                                     </fo:block>
                                                 </fo:table-cell>
 
-                                                <fo:table-cell display-align="center">
+                                                <fo:table-cell border="1px" display-align="center">
                                                     <fo:block font-weight="bold">
                                                         <xsl:value-of
                                                                 select="aut:Drzavljanstvo"/>
                                                     </fo:block>
                                                 </fo:table-cell>
-                                                <fo:table-cell display-align="center">
+                                                <fo:table-cell border="1px" display-align="center">
                                                     <fo:block font-weight="bold">
                                                         <xsl:value-of
                                                                 select="aut:Kontakt/aut:Telefon"/>
                                                     </fo:block>
                                                 </fo:table-cell>
 
-                                                <fo:table-cell display-align="center">
+                                                <fo:table-cell border="1px" display-align="center">
                                                     <fo:block font-weight="bold">
                                                         <xsl:value-of
                                                                 select="aut:Kontakt/aut:E_posta"/>
                                                     </fo:block>
                                                 </fo:table-cell>
 
-                                                <fo:table-cell display-align="center">
+                                                <fo:table-cell border="1px" display-align="center">
                                                     <fo:block font-weight="bold">
                                                         <xsl:value-of
                                                                 select="aut:Kontakt/aut:Faks"/>
                                                     </fo:block>
                                                 </fo:table-cell>
 
-                                                <fo:table-cell display-align="center">
+                                                <fo:table-cell border="1px" display-align="center">
                                                     <xsl:choose>
                                                         <xsl:when test="aut:Godina_smrti">
                                                             <fo:block font-weight="bold">
@@ -517,44 +517,44 @@
                                             </fo:table-row>
                                         </xsl:when>
                                         <xsl:otherwise>
-                                            <fo:table-row border="1px solid darkgrey">
-                                                <fo:table-cell padding-left="5px" display-align="center"
+                                            <fo:table-row>
+                                                <fo:table-cell border="1px" padding-left="5px" display-align="center"
                                                                font-weight="bold">
                                                     <fo:block font-weight="bold">
                                                         <xsl:text> Anonimni autor</xsl:text>
                                                     </fo:block>
                                                 </fo:table-cell>
-                                                <fo:table-cell padding-left="5px" display-align="center"
+                                                <fo:table-cell border="1px" padding-left="5px" display-align="center"
                                                                font-weight="bold">
                                                     <fo:block font-weight="bold">
                                                         <xsl:text> / </xsl:text>
                                                     </fo:block>
                                                 </fo:table-cell>
-                                                <fo:table-cell padding-left="5px" display-align="center"
+                                                <fo:table-cell border="1px" padding-left="5px" display-align="center"
                                                                font-weight="bold">
                                                     <fo:block font-weight="bold">
                                                         <xsl:text> / </xsl:text>
                                                     </fo:block>
                                                 </fo:table-cell>
-                                                <fo:table-cell padding-left="5px" display-align="center"
+                                                <fo:table-cell border="1px" padding-left="5px" display-align="center"
                                                                font-weight="bold">
                                                     <fo:block font-weight="bold">
                                                         <xsl:text> / </xsl:text>
                                                     </fo:block>
                                                 </fo:table-cell>
-                                                <fo:table-cell padding-left="5px" display-align="center"
+                                                <fo:table-cell border="1px" padding-left="5px" display-align="center"
                                                                font-weight="bold">
                                                     <fo:block font-weight="bold">
                                                         <xsl:text> / </xsl:text>
                                                     </fo:block>
                                                 </fo:table-cell>
-                                                <fo:table-cell padding-left="5px" display-align="center"
+                                                <fo:table-cell border="1px" padding-left="5px" display-align="center"
                                                                font-weight="bold">
                                                     <fo:block font-weight="bold">
                                                         <xsl:text> / </xsl:text>
                                                     </fo:block>
                                                 </fo:table-cell>
-                                                <fo:table-cell padding-left="5px" display-align="center"
+                                                <fo:table-cell border="1px" padding-left="5px" display-align="center"
                                                                font-weight="bold">
                                                     <fo:block font-weight="bold">
                                                         <xsl:text> / </xsl:text>
@@ -575,7 +575,7 @@
                         <fo:table font-family="serif" border="1px" margin-top="10px" font-size="13px">
                             <fo:table-body>
                                 <fo:table-row>
-                                    <fo:table-cell border-top="1px solid darkgrey" padding-top="10px"
+                                    <fo:table-cell border="1px" padding-top="10px"
                                                    font-family="sans-serif" font-weight="bold"
                                                    number-columns-spanned="2">
                                         <fo:block>
@@ -584,7 +584,7 @@
                                     </fo:table-cell>
                                 </fo:table-row>
                                 <fo:table-row>
-                                    <fo:table-cell font-family="sans-serif" padding="10px" font-weight="normal"
+                                    <fo:table-cell border="1px" font-family="sans-serif" padding="10px" font-weight="normal"
                                                    number-columns-spanned="2">
                                         <fo:block>
                                             <xsl:value-of select="//aut:AutorskoDelo/aut:Naslov"/>
@@ -593,7 +593,7 @@
                                 </fo:table-row>
 
                                 <fo:table-row>
-                                    <fo:table-cell border-top="1px solid darkgrey" padding-top="10px"
+                                    <fo:table-cell border="1px" padding-top="10px"
                                                    font-family="sans-serif" font-weight="bold"
                                                    number-columns-spanned="2">
                                         <fo:block>
@@ -602,7 +602,7 @@
                                     </fo:table-cell>
                                 </fo:table-row>
                                 <fo:table-row>
-                                    <fo:table-cell font-family="sans-serif" padding="10px" font-weight="normal"
+                                    <fo:table-cell border="1px" font-family="sans-serif" padding="10px" font-weight="normal"
                                                    number-columns-spanned="2">
                                         <fo:block>
                                             <xsl:value-of select="//aut:AutorskoDelo/aut:Vrsta"/>
@@ -611,7 +611,7 @@
                                 </fo:table-row>
 
                                 <fo:table-row>
-                                    <fo:table-cell border-top="1px solid darkgrey" padding-top="10px"
+                                    <fo:table-cell border="1px" padding-top="10px"
                                                    font-family="sans-serif" font-weight="bold"
                                                    number-columns-spanned="2">
                                         <fo:block>
@@ -620,7 +620,7 @@
                                     </fo:table-cell>
                                 </fo:table-row>
                                 <fo:table-row>
-                                    <fo:table-cell font-family="sans-serif" padding="10px" font-weight="normal"
+                                    <fo:table-cell border="1px" font-family="sans-serif" padding="10px" font-weight="normal"
                                                    number-columns-spanned="2">
                                         <fo:block>
                                             <xsl:value-of select="//aut:AutorskoDelo/aut:Forma"/>
@@ -631,7 +631,7 @@
 
                                 <xsl:if test="//aut:AutorskoDelo/aut:Podaci_o_naslovu_autorskog_dela">
                                     <fo:table-row>
-                                        <fo:table-cell border-top="1px solid darkgrey" padding-top="10px"
+                                        <fo:table-cell border="1px" padding-top="10px"
                                                        font-family="sans-serif" font-weight="bold"
                                                        number-columns-spanned="2">
                                             <fo:block>
@@ -640,7 +640,7 @@
                                         </fo:table-cell>
                                     </fo:table-row>
                                     <fo:table-row>
-                                        <fo:table-cell font-family="sans-serif" padding="10px" font-weight="normal"
+                                        <fo:table-cell border="1px" font-family="sans-serif" padding="10px" font-weight="normal"
                                                        number-columns-spanned="2">
                                             <fo:block>
                                                 <xsl:value-of select="//aut:AutorskoDelo/aut:Podaci_o_naslovu_autorskog_dela/aut:Naslov_autorskog_dela"/>
@@ -655,7 +655,7 @@
                                 <xsl:choose>
                                     <xsl:when test="//aut:AutorskoDelo/aut:Stvoreno_u_radnom_odnosu">
                                         <fo:table-row>
-                                            <fo:table-cell font-family="sans-serif" padding="10px" font-weight="normal"
+                                            <fo:table-cell border="1px" font-family="sans-serif" padding="10px" font-weight="normal"
                                                            number-columns-spanned="2">
                                                 <fo:block>
                                                     <xsl:text> Stvoreno u radnom odnosu</xsl:text>
@@ -665,7 +665,7 @@
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <fo:table-row>
-                                            <fo:table-cell font-family="sans-serif" padding="10px" font-weight="normal"
+                                            <fo:table-cell border="1px" font-family="sans-serif" padding="10px" font-weight="normal"
                                                            number-columns-spanned="2">
                                                 <fo:block>
                                                     <xsl:text> Nije stvoreno u radnom odnosu</xsl:text>
@@ -677,7 +677,7 @@
 
                                 <xsl:if test="//aut:AutorskoDelo/aut:Nacin_koriscenja">
                                     <fo:table-row>
-                                        <fo:table-cell border-top="1px solid darkgrey" padding-top="10px"
+                                        <fo:table-cell border="1px" padding-top="10px"
                                                        font-family="sans-serif" font-weight="bold"
                                                        number-columns-spanned="2">
                                             <fo:block>
@@ -686,7 +686,7 @@
                                         </fo:table-cell>
                                     </fo:table-row>
                                     <fo:table-row>
-                                        <fo:table-cell font-family="sans-serif" padding="10px" font-weight="normal"
+                                        <fo:table-cell border="1px" font-family="sans-serif" padding="10px" font-weight="normal"
                                                        number-columns-spanned="2">
                                             <fo:block>
                                                 <xsl:value-of select="//aut:AutorskoDelo/aut:Nacin_koriscenja"/>
@@ -705,7 +705,7 @@
                             <fo:table-column column-width="100%"/>
                             <fo:table-body>
                                 <fo:table-row>
-                                    <fo:table-cell border="1px solid darkgrey" color="white" background-color="#3e87bc"
+                                    <fo:table-cell border="1px" color="white"
                                                    padding-top="10px" font-family="sans-serif" font-weight="bold">
                                         <fo:block>
                                             Prilozi uz zahtev
@@ -713,7 +713,7 @@
                                     </fo:table-cell>
                                 </fo:table-row>
                                 <fo:table-row>
-                                    <fo:table-cell border="1px solid darkgrey" font-family="sans-serif"
+                                    <fo:table-cell border="1px" font-family="sans-serif"
                                                    padding="5px" font-weight="normal">
                                         <fo:block>
                                             <xsl:choose>
@@ -729,7 +729,7 @@
                                     <xsl:for-each
                                             select="//aut:Popunjava_zavod/aut:Prilozi_uz_zahtev/aut:Opis_autorskog_dela/*">
                                         <fo:table-row>
-                                            <fo:table-cell border="1px solid darkgrey" font-family="sans-serif"
+                                            <fo:table-cell border="1px" font-family="sans-serif"
                                                            padding="5px" font-weight="normal">
                                                 <fo:block>
                                                     <xsl:variable name="name" select="name(.)"/>
@@ -750,24 +750,24 @@
                             <fo:table-column column-width="50%"/>
                             <fo:table-body>
                                 <fo:table-row>
-                                    <fo:table-cell font-family="sans-serif" padding="5px" font-weight="bold">
+                                    <fo:table-cell border="1px" font-family="sans-serif" padding="5px" font-weight="bold">
                                         <fo:block>
                                             Broj prijave auta
                                         </fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell font-family="sans-serif" padding="5px" font-weight="bold">
+                                    <fo:table-cell border="1px" font-family="sans-serif" padding="5px" font-weight="bold">
                                         <fo:block>
                                             Datum podnosenja
                                         </fo:block>
                                     </fo:table-cell>
                                 </fo:table-row>
                                 <fo:table-row>
-                                    <fo:table-cell font-family="sans-serif">
+                                    <fo:table-cell border="1px" font-family="sans-serif">
                                         <fo:block>
                                             <xsl:value-of select="//aut:Broj_prijave"/>
                                         </fo:block>
                                     </fo:table-cell>
-                                    <fo:table-cell font-family="sans-serif">
+                                    <fo:table-cell border="1px" font-family="sans-serif">
                                         <fo:block>
                                             <xsl:value-of select="//aut:Datum_podnosenja"/>
                                         </fo:block>
