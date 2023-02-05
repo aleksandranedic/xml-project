@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useContext, useRef} from "react";
+import React, {Dispatch, SetStateAction, useContext, useRef, useState} from "react";
 import UserContext, {Role} from "../../store/user-context";
 import {Prilog, ZahtevData} from "../types";
 import RequestTypeContext from "../../store/request-type-context";
@@ -20,6 +20,8 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
 
     const {type, port} = useContext(RequestTypeContext);
 
+    const [reason, setReason] = useState("")
+
     const setType = () => {
 
         switch (type) {
@@ -34,12 +36,13 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
 
     const leaveReview = (status: string) => {
         let path = type;
-
+        if (reason === "" && status === "Odbijen")
+            return;
 
         let ResenjeDto = {
             ime: user?.name,
             prezime: user?.surname,
-            obrazlozenje: "Obrazlozenje", //TODO treba ubaciti da dopuni
+            obrazlozenje: reason, //TODO treba ubaciti da dopuni
             status: status,
             brojPrijave: "A-38169" //TODO treba izmeniti
         }
@@ -135,7 +138,10 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                                         <ZahtevButton prilog={htmlPrilog}></ZahtevButton>
                                         <ZahtevButton prilog={rdfPrilog}></ZahtevButton>
                                         <ZahtevButton prilog={jsonPrilog}></ZahtevButton>
-
+                                        <input type={"text"} onChange={event => {
+                                            setReason(event.target.value)
+                                        }
+                                        }/>
                                         <div className="flex gap-3">
 
                                             <button
@@ -204,7 +210,7 @@ function PrilogCard(props: PrilogCardProps) {
     return (
 
         <div
-            className={`w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow px-2 ${prilog.putanja? '' : "bg-red-400"}`}>
+            className={`w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow px-2 ${prilog.putanja ? '' : "bg-red-400"}`}>
             <div className="flex flex-col items-center py-6">
                 <h5 className="mb-1 text-sm font-medium text-gray-900 text-center ">{prilog.naslov}</h5>
                 {
@@ -212,22 +218,22 @@ function PrilogCard(props: PrilogCardProps) {
                 }
                 {prilog.putanja &&
                     <>
-                <div className="flex space-x-3">
-                    <a href={prilog.putanja} target="_blank"
-                       className="inline-flex items-center px-4 py-2  text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200"
-                    >Pregledaj
-                    </a>
+                        <div className="flex space-x-3">
+                            <a href={prilog.putanja} target="_blank"
+                               className="inline-flex items-center px-4 py-2  text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200"
+                            >Pregledaj
+                            </a>
 
-                    <div>
-                        <button onClick={downloadFile}
-                                className="inline-flex items-center px-4 py-2  text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200"
-                        >
-                            Preuzmi
-                        </button>
-                        <a ref={linkRef} style={{display: 'none'}}/>
-                    </div>
-                </div>
-                </>}
+                            <div>
+                                <button onClick={downloadFile}
+                                        className="inline-flex items-center px-4 py-2  text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200"
+                                >
+                                    Preuzmi
+                                </button>
+                                <a ref={linkRef} style={{display: 'none'}}/>
+                            </div>
+                        </div>
+                    </>}
             </div>
         </div>
 
