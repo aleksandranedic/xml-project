@@ -18,7 +18,7 @@ export const ConvertToZahtevi = (jsonDataRes: any): ZahtevData[] => {
   return zahtevi;
 };
 
-const createZahtev = (jsonData: any): ZahtevData => {
+export const createZahtev = (jsonData: any): ZahtevData => {
   let zahtev: ZahtevData = new ZahtevData();
   zahtev.status = jsonData.status["_text"];
   zahtev.brojPrijave = jsonData.brojPrijave["_text"];
