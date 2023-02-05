@@ -1,6 +1,7 @@
 package ftn.xml.autor.controller;
 
 import ftn.xml.autor.dto.Metadata;
+import ftn.xml.autor.dto.ZahtevDataMapper;
 import ftn.xml.autor.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,13 @@ import java.util.List;
 public class SearchController {
 
     private final SearchService searchService;
+    private final ZahtevDataMapper zahtevDataMapper;
 
     @Autowired
-    public SearchController(SearchService searchService) throws IOException {
+    public SearchController(SearchService searchService, ZahtevDataMapper zahtevDataMapper) throws IOException {
         this.searchService = searchService;
 
+        this.zahtevDataMapper = zahtevDataMapper;
     }
 
 
@@ -28,7 +31,7 @@ public class SearchController {
     @PostMapping(path = "/advanced", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> advanced(@RequestBody List<Metadata> metadata) {
         try {
-            return ResponseEntity.ok(this.searchService.advancedSearch(metadata));
+            return ResponseEntity.ok(this.searchService.advancedSearch(metadata).stream().map(zahtevDataMapper::convertToZahtevData).toList());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -38,7 +41,7 @@ public class SearchController {
     @GetMapping(path = "/basic", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> basic(@RequestParam("terms") String terms) {
         try {
-            return ResponseEntity.ok(this.searchService.basicSearch(terms));
+            return ResponseEntity.ok(this.searchService.basicSearch(terms).stream().map(zahtevDataMapper::convertToZahtevData).toList());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

@@ -36,9 +36,59 @@ public class SearchService {
         conn = AuthenticationUtilitiesMetadata.loadProperties();
     }
 
-    public List<ZahtevData> advancedSearch(List<Metadata> metadataList) {
+    private static String getPositiveValue(int i, Metadata m) {
+        String value;
+        if (i == 0) {
+            value = String.format("?%s = \"%s\" ", m.getMeta(), m.getValue());
+        } else {
+            if (Objects.equals(m.getLogicalOperator(), "")) {
+                throw new IllegalArgumentException("Only last parameter can be without operator.");
+            }
+            value = String.format("%s ?%s = \"%s\" ", m.getLogicalOperator(), m.getMeta(), m.getValue());
+        }
+        return value;
+    }
+
+    private static String getNegativeValue(int i, Metadata m) {
+        String value;
+        if (i == 0) {
+            value = String.format("?%s != \"%s\" ", m.getMeta(), m.getValue());
+        } else {
+            if (Objects.equals(m.getLogicalOperator(), "")) {
+                throw new IllegalArgumentException("Only last parameter can be without operator.");
+            }
+            value = String.format("%s ?%s != \"%s\" ", m.getLogicalOperator(), m.getMeta(), m.getValue());
+        }
+        return value;
+    }
+
+    private String getFilterValue(List<Metadata> metadata) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < metadata.size(); i++) {
+            Metadata m = metadata.get(i);
+            int lastIndex = metadata.size() - 1;
+
+            if (Objects.equals(m.getOperator(), "!=")) {
+                builder.append(getNegativeValue(i, m));
+            } else {
+                builder.append(getPositiveValue(i, m));
+            }
+        }
+        return builder.toString();
+    }
+
+
+    private String getMetaString() {
+        StringBuilder builder = new StringBuilder();
+        for (String meta : METAS) {
+            builder.append(String.format("?zig <%s/%s> ?%s . ", PRED, meta, meta));
+        }
+        return builder.toString();
+    }
+
+    public List<ZahtevZaIntelektualnuSvojinu> advancedSearch(List<Metadata> metadataList) {
         List<ZahtevZaIntelektualnuSvojinu> zahtevi = new ArrayList<>();
-        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(metadataList));
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, getSparqlQuery(metadataList));
         ResultSet results = query.execSelect();
         String varName;
         RDFNode varValue;
@@ -49,26 +99,35 @@ public class SearchService {
             while (variableBindings.hasNext()) {
                 varName = variableBindings.next();
                 varValue = querySolution.get(varName);
-                if (Objects.equals(varName, "Broj_prijave")) {
-                    try {
-//                        zahtevi.addAll(repository.retrieveBasedOnBrojPrijave(varValue.toString()));
-                        zahtevi.add(repository.retrieve(varValue.toString()+".xml"));
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
 
+                try {
+                    zahtevi.add(repository.retrieve(varValue.toString()+".xml"));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             }
         }
         query.close();
-        return mapZahtevEntityToZahtevData(zahtevi);
+        return zahtevi;
+    }
+
+    private String getSparqlQuery(List<Metadata> metadata) {
+        String FUSEKI = "http://localhost:8080/fuseki-autor/autorDataset/data/autor/metadata";
+
+        return "SELECT * FROM <" + FUSEKI + ">" +
+                " WHERE {" +
+                getMetaString() +
+                " FILTER (" +
+                getFilterValue(metadata) +
+                ")" +
+                "}" +
+                " GROUP BY ?Broj_prijave";
     }
 
 
-    public List<ZahtevData> basicSearch(String terms) throws Exception {
+    public List<ZahtevZaIntelektualnuSvojinu> basicSearch(String terms) throws Exception {
         Set<ZahtevZaIntelektualnuSvojinu> zahtevi = new HashSet<>(repository.retrieveBasedOnTermList(terms.split(";")));
-        return mapZahtevEntityToZahtevData(zahtevi.stream().toList());
-
+        return zahtevi.stream().toList();
     }
 
     public List<ZahtevData> mapZahtevEntityToZahtevData(List<ZahtevZaIntelektualnuSvojinu> list) {

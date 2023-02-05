@@ -1,13 +1,13 @@
 package ftn.xml.patent.controller;
 
-import ftn.xml.patent.dto.Resenje;
-import ftn.xml.patent.dto.Zahtev;
-import ftn.xml.patent.dto.ZahtevData;
-import ftn.xml.patent.dto.ZahtevDataMapper;
+import ftn.xml.patent.dto.*;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
@@ -50,7 +50,7 @@ public class PatentController {
         return this.service.getZahtev(brojPrijave);
     }
 
-    @PostMapping(path = "/rich", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
+    @PostMapping(path = "/rich", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     public String addRequestWithRichInput(@RequestBody Zahtev zahtev) throws Exception {
 
 
@@ -77,7 +77,7 @@ public class PatentController {
     }
 
 
-    @PostMapping(path = "/create", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
+    @PostMapping(path = "/create", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     public String createRequest(@RequestBody Zahtev zahtev) {
         try {
             String brojPrijave = service.save(zahtev);
@@ -88,11 +88,13 @@ public class PatentController {
         }
     }
 
-    @PutMapping(path= "/update", consumes = MediaType.APPLICATION_XML_VALUE)
-    public String updateRequest(@RequestParam("broj") String brojPrijave, @RequestBody Resenje resenje) {
+    @PutMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<?> updateRequest(@RequestBody Resenje resenje) {
         try {
-            service.updateRequest(brojPrijave, resenje);
-            return "Uspešno ste ažurirali zahtev.";
+            service.updateRequest(resenje);
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add("Content-Type", "application/xml; charset=utf-8");
+            return new ResponseEntity<>("Uspešno ste ažurirali zahtev.", responseHeaders, HttpStatus.OK);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -108,7 +110,7 @@ public class PatentController {
         }
     }
 
-    @GetMapping("/izvestaj")
+    @GetMapping(value = "/izvestaj", produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
     public String getIzvestaj(@RequestParam("start") String startDate, @RequestParam("end") String endDate) {
         try {
             return service.getIzvestajPdf(startDate, endDate);
@@ -117,7 +119,8 @@ public class PatentController {
             throw new RuntimeException(e);
         }
     }
-    @GetMapping(path = "/json",consumes = MediaType.APPLICATION_XML_VALUE)
+
+    @GetMapping(path = "/json", consumes = MediaType.APPLICATION_XML_VALUE)
     public void rdfToJSON(@RequestBody String brojPrijave) throws IOException {
         this.service.createJsonFromRdf(brojPrijave);
     }
@@ -127,4 +130,8 @@ public class PatentController {
         this.service.createRdfFromRdf(brojPrijave);
     }
 
+    @PostMapping(path = "/izvestaj")
+    public void getIzvestaj(@RequestBody DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
+        this.service.createIzvestaj(dateRange);
+    }
 }

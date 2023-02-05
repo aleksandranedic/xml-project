@@ -48,12 +48,12 @@ public class SearchService {
     private static String getPositiveValue(int i, Metadata m) {
         String value;
         if (i == 0) {
-            value = String.format("?%s = \"%s\"", m.getMeta(), m.getValue());
+            value = String.format("?%s = \"%s\" ", m.getMeta(), m.getValue());
         } else {
             if (Objects.equals(m.getLogicalOperator(), "")) {
                 throw new IllegalArgumentException("Only last parameter can be without operator.");
             }
-            value = String.format(" %s ?%s = \"%s\"", m.getLogicalOperator(), m.getMeta(), m.getValue());
+            value = String.format("%s ?%s = \"%s\" ", m.getLogicalOperator(), m.getMeta(), m.getValue());
         }
         return value;
     }
@@ -61,19 +61,19 @@ public class SearchService {
     private static String getNegativeValue(int i, Metadata m) {
         String value;
         if (i == 0) {
-            value = String.format("NOT EXISTS {?patent <%s> \"%s\"}", m.getMeta(), m.getValue());
+            value = String.format("?%s != \"%s\" ", m.getMeta(), m.getValue());
         } else {
             if (Objects.equals(m.getLogicalOperator(), "")) {
                 throw new IllegalArgumentException("Only last parameter can be without operator.");
             }
-            value = String.format(" %s NOT EXISTS {?patent <%s> \"%s\"}", m.getLogicalOperator(), m.getMeta(), m.getValue());
+            value = String.format("%s ?%s != \"%s\" ", m.getLogicalOperator(), m.getMeta(), m.getValue());
         }
         return value;
     }
 
-    public List<ZahtevZaPriznanjePatenta> advancedSearch(MetadataList metadataList) {
+    public List<ZahtevZaPriznanjePatenta> advancedSearch(List<Metadata> metadataList) {
         List<ZahtevZaPriznanjePatenta> zahtevi = new ArrayList<>();
-        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, getSparqlQuery(metadataList.getMetadata()));
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, getSparqlQuery(metadataList));
         ResultSet results = query.execSelect();
         String varName;
         RDFNode varValue;
