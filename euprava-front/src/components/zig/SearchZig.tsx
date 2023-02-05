@@ -8,8 +8,10 @@ import {ZahtevData} from "../types";
 const SearchZig: React.FunctionComponent = () => {
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("zig");
     const [zigZahtevi, setZigZahtevi] = useState<ZahtevData[]>([]);
+    const port = "8000";
+
     return (
-        <RequestTypeContext.Provider value={{type, setType}}>
+        <RequestTypeContext.Provider value={{type, setType, port}}>
             <ZigContext.Provider value={{zigZahtevi, setZigZahtevi}}>
                 <div className="p-8 h-full">
                     <Search/>

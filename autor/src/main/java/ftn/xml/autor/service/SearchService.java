@@ -37,8 +37,6 @@ public class SearchService {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < metadata.size(); i++) {
             Metadata m = metadata.get(i);
-            int lastIndex = metadata.size() - 1;
-
             if (Objects.equals(m.getOperator(), "!=")) {
                 builder.append(getNegativeValue(i, m));
             } else {

@@ -10,6 +10,7 @@ import SearchPatent from "./components/patent/SearchPatent";
 import PatentForm from "./components/patent/PatentForm";
 import AutorskaForm from "./components/autorska/AutorskaForm";
 import {PatentRequests} from "./components/patent/PatentRequests";
+import PatentRichEdit from "./components/patent/PatentRichEdit";
 
 const App: React.FunctionComponent = () => {
     const [user, setUser] = useState<User | null>(JSON.parse(localStorage.getItem('user')!) || null);
@@ -31,6 +32,7 @@ const App: React.FunctionComponent = () => {
                             <Route path='/zahtevi/podnesi/autorska' element={<AutorskaForm/>}/>
                             <Route path='/zahtevi/podnesi/zig' element={<ZigForm/>}/>
                             <Route path='/zahtevi/podnesi/patent' element={<PatentForm/>}/>
+                            <Route path='/zahtevi/podnesi/detaljno/patent/:brojPrijave' element={<PatentRichEdit/>}/>
                             <Route path='/zahtevi/moji/patent' element={<PatentRequests/>}/>
                         </Routes>
                     </div>

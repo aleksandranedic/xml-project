@@ -4,6 +4,7 @@ import ftn.xml.patent.dto.Resenje;
 import ftn.xml.patent.dto.Zahtev;
 import ftn.xml.patent.dto.ZahtevData;
 import ftn.xml.patent.dto.ZahtevDataMapper;
+import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -44,9 +45,15 @@ public class PatentController {
         return service.getAllUnresolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
-    @GetMapping("/{broj}")
-    public ZahtevData getRequest(@PathVariable("broj") String brojPrijave) {
-        return zahtevDataMapper.convertToZahtevData(this.service.getZahtev(brojPrijave));
+    @GetMapping(path = "/{broj}", produces = MediaType.APPLICATION_XML_VALUE)
+    public ZahtevZaPriznanjePatenta getRequest(@PathVariable("broj") String brojPrijave) {
+        return this.service.getZahtev(brojPrijave);
+    }
+
+    @PutMapping(path = "/rich/update", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
+    public String updateRequestWithRichContentEdit(@RequestBody ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta) {
+        System.out.println(zahtevZaPriznanjePatenta.getPopunjavaPodnosioc().getNazivPatenta().getNazivNaSrpskom());
+        return "Top";
     }
 
     @GetMapping("/pdf/{broj}")

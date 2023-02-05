@@ -277,6 +277,7 @@ const PatentForm: React.FunctionComponent = () => {
             const builder = new xml2js.Builder();
             let xml = builder.buildObject({Zahtev: {...dto}});
 
+            console.log(xml);
 
             axios.post("http://localhost:8002/patent/create", xml, {
                 headers: {
