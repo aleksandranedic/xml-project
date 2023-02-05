@@ -51,7 +51,7 @@ public class ZigRepository {
                 Unmarshaller unmarshaller = context.createUnmarshaller();
                 ZahtevZaPriznanjeZiga zahtev = (ZahtevZaPriznanjeZiga) unmarshaller.unmarshal(res.getContentAsDOM());
                 System.out.println("[INFO] Showing the document as JAXB instance: ");
-                PrettyPrint.printZahtev(zahtev);
+  //              PrettyPrint.printZahtev(zahtev);
                 return zahtev;
             }
         } finally {
