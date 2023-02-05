@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+    @apply h-full bg-gray-light
+}
+#container {
+    @apply h-fit
+}
+h1 {
+   @apply text-xl font-semibold
+}
+
+h2 {
+    @apply text-sm font-semibold
+}
+h3 {
+    @apply font-semibold
+}
+
+label {
+    @apply text-sm ml-2
+}
+input, textarea {
+    @apply p-1 focus:!border focus:!border-gray-dark focus:outline-none rounded border border-gray-light
+}
+
+footer {
+    @apply text-xs font-light
+}
+
+.form-block {
+    @apply shadow-lg bg-white rounded-lg p-7 items-center flex flex-col gap-5 w-full
+}
+
+.form-input-container {
+    @apply flex flex-col gap-5 w-full
+}
+
+.carousel-title {
+    @apply absolute top-[40%] left-[13%] text-gray-100 text-6xl font-bold uppercase
+}
+
+.carousel-text {
+    @apply absolute text-3xl top-[52%] left-[40%] font-semibold
+}
+
+.badge {
+   @apply bg-white text-green-700 text-xs font-medium mr-2 px-2.5 py-0.5 rounded  border-2 border-green-700
+}
+
+.appearance-none:focus {
+    appearance: none;
+    outline: none;
+    border: none;
+    border-bottom: solid black 1px;
+}
+
+.appearance-none-full:focus {
+    appearance: none;
+    outline: none;
+    border: none;
+}

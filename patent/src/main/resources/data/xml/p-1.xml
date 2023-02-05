@@ -1,0 +1,125 @@
+<Zahtev_za_priznanje_patenta
+        xmlns="http://www.ftn.uns.ac.rs/jaxb/patent"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.ftn.uns.ac.rs/jaxb/patent ../xsd/p-1.xsd">
+    <Informacije_o_ustanovi>
+        <Adresa>
+            <Ulica>Knjeginje Ljubice</Ulica>
+            <Broj>5</Broj>
+            <Postanski_broj>11000</Postanski_broj>
+            <Grad>Beograd</Grad>
+            <Drzava>Republika Srbija</Drzava>
+        </Adresa>
+        <Naziv>Zavod za intelektualnu svojinu</Naziv>
+    </Informacije_o_ustanovi>
+    <Popunjava_zavod>
+        <Broj_prijave>P-14345</Broj_prijave>
+        <Datum_prijema>2008-09-29</Datum_prijema>
+        <Priznati_datum_podnosenja>2014-09-19</Priznati_datum_podnosenja>
+    </Popunjava_zavod>
+    <Popunjava_podnosioc>
+        <Naziv_patenta>
+            <Naziv_na_srpskom>Novi patent</Naziv_na_srpskom>
+            <Naziv_na_engleskom>New patent</Naziv_na_engleskom>
+        </Naziv_patenta>
+
+        <Podaci_o_podnosiocu>
+            <Podnosioc xsi:type="TFizicko_lice">
+                <Adresa>
+                    <Ulica>Bulevar Kralja Petra</Ulica>
+                    <Broj>123</Broj>
+                    <Postanski_broj>21000</Postanski_broj>
+                    <Grad>Novi Sad</Grad>
+                    <Drzava>Republika Srbija</Drzava>
+                </Adresa>
+
+                <Kontakt>
+                    <E_posta>marko@gmail.com</E_posta>
+                    <Telefon>0600000000</Telefon>
+                    <Faks>123-00000-000</Faks>
+                </Kontakt>
+
+                <Ime>Marko</Ime>
+                <Prezime>Jovanovic</Prezime>
+                <Drzavljanstvo>Srpsko</Drzavljanstvo>
+
+            </Podnosioc>
+            <Podnosioc_je_pronalazac/>
+        </Podaci_o_podnosiocu>
+
+        <Podaci_o_pronalazacu>
+            <Pronalazac xsi:type="TFizicko_lice">
+                <Adresa>
+                    <Ulica>Bulevar Kralja Petra</Ulica>
+                    <Broj>123</Broj>
+                    <Postanski_broj>21000</Postanski_broj>
+                    <Grad>Novi Sad</Grad>
+                    <Drzava>Republika Srbija</Drzava>
+                </Adresa>
+
+                <Kontakt>
+                    <E_posta>marko@gmail.com</E_posta>
+                    <Telefon>0600000000</Telefon>
+                    <Faks>123-00000-000</Faks>
+                </Kontakt>
+
+                <Ime>Marko</Ime>
+                <Prezime>Jovanovic</Prezime>
+                <Drzavljanstvo>Srpsko</Drzavljanstvo>
+
+            </Pronalazac>
+            <Pronalazac_ne_zeli_da_bude_naveden/>
+        </Podaci_o_pronalazacu>
+
+        <Podaci_o_punomocniku>
+            <Punomocnik xsi:type="TFizicko_lice">
+                <Adresa>
+                    <Ulica>Bulevar Evrope</Ulica>
+                    <Broj>64</Broj>
+                    <Postanski_broj>21000</Postanski_broj>
+                    <Grad>Novi Sad</Grad>
+                    <Drzava>Republika Srbija</Drzava>
+                </Adresa>
+
+                <Kontakt>
+                    <E_posta>milos@gmail.com</E_posta>
+                    <Telefon>0600000000</Telefon>
+                    <Faks>123-00000-000</Faks>
+                </Kontakt>
+
+                <Ime>Milos</Ime>
+                <Prezime>Vuksanovic</Prezime>
+                <Drzavljanstvo>Srpsko</Drzavljanstvo>
+            </Punomocnik>
+            <Tip_punomocnika>
+                <Za_zastupanje/>
+                <Za_prijem/>
+            </Tip_punomocnika>
+        </Podaci_o_punomocniku>
+
+        <Dostavljanje>
+            <Adresa>
+                <Ulica>Bulevar Evrope</Ulica>
+                <Broj>64</Broj>
+                <Postanski_broj>21000</Postanski_broj>
+                <Grad>Novi Sad</Grad>
+                <Drzava>Republika Srbija</Drzava>
+            </Adresa>
+            <Nacin>pisano</Nacin>
+        </Dostavljanje>
+
+        <Prvobitna_prijava>
+            <Broj_prijave>P-123</Broj_prijave>
+            <Datum_podnosenja>2018-11-01+01:00</Datum_podnosenja>
+            <Tip_prijave>izdvojena</Tip_prijave>
+        </Prvobitna_prijava>
+
+        <Ranije_prijave></Ranije_prijave>
+    </Popunjava_podnosioc>
+    <Prilozi_uz_zahtev>
+        <Opis_pronalaska>opis_pronalska_putanja</Opis_pronalaska>
+        <Patentn_zahtevi_za_zastitu_pronalaska>patentn_zahtevi_za_zastitu_pronalaska_putanja</Patentn_zahtevi_za_zastitu_pronalaska>
+        <Nacrt_na_koji_se_poziva_opis>nacrt_putanja</Nacrt_na_koji_se_poziva_opis>
+        <Apstrakt>apstrakt_putanja</Apstrakt>
+    </Prilozi_uz_zahtev>
+</Zahtev_za_priznanje_patenta>

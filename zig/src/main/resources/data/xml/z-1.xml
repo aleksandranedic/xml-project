@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../xsl-fo/zig.xsl"?>
+<Zahtev_za_priznanje_ziga xmlns="http://www.ftn.uns.ac.rs/jaxb/zig"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.ftn.uns.ac.rs/jaxb/zig ../xsd/zig_schema.xsd">
+    <Informacije_o_ustanovi>
+        <Naziv>Zavod za intelektualnu svojinu</Naziv>
+        <Adresa>
+            <Ulica>Knjeginje Ljubice</Ulica>
+            <Broj>5</Broj>
+            <Postanski_broj>11000</Postanski_broj>
+            <Grad>Beograd</Grad>
+        </Adresa>
+    </Informacije_o_ustanovi>
+    <Popunjava_podnosilac>
+        <Podnosilac xsi:type="TFizicko_lice">
+            <Adresa>
+                <Ulica>Balzakova</Ulica>
+                <Broj>19</Broj>
+                <Postanski_broj>21000</Postanski_broj>
+                <Grad>Novi Sad</Grad>
+                <Drzava>Srbija</Drzava>
+            </Adresa>
+            <Kontakt>
+                <Email>sonjas@gmail.com</Email>
+                <Faks>584-985-521</Faks>
+                <Telefon>0652587456</Telefon>
+            </Kontakt>
+            <Ime>Sonja</Ime>
+            <Prezime>Sonjic</Prezime>
+        </Podnosilac>
+        <Punomocnik xsi:type="TFizicko_lice">
+            <Adresa>
+                <Ulica>Strazilovska</Ulica>
+                <Broj>23</Broj>
+                <Postanski_broj>21000</Postanski_broj>
+                <Grad>Novi Sad</Grad>
+                <Drzava>Srbija</Drzava>
+            </Adresa>
+            <Kontakt>
+                <Email>miram@gmail.com</Email>
+                <Faks>123-456-789</Faks>
+                <Telefon>0632548972</Telefon>
+            </Kontakt>
+            <Ime>Mira</Ime>
+            <Prezime>Miric</Prezime>
+        </Punomocnik>
+        <Zig>
+            <Vrsta>
+                <Tip_a>               
+                    <Individualni_zig/>
+                </Tip_a>
+                <Tip_b>
+                    <Graficki_znak/>
+                </Tip_b>
+            </Vrsta>
+            <Naznacenje_boje> Narandzasta, plava</Naznacenje_boje>
+            <Transliteracija_znak > Latinica</Transliteracija_znak>
+            <Prevod_znaka >Cirilica</Prevod_znaka>
+            <Opis_znaka>Krug sa nazivom firme u sredini</Opis_znaka>
+            <Izgled_znaka> C/User/x/home/logo.jpg</Izgled_znaka>
+        </Zig>
+        <Dodatne_informacije>
+            <Klasa_robe_i_uslaga>
+                <Klasa>12</Klasa>
+                <Klasa>45</Klasa>
+            </Klasa_robe_i_uslaga>
+            <Zatrazeno_pravo_prvensta_i_osnov > Zatrazeno </Zatrazeno_pravo_prvensta_i_osnov>
+        </Dodatne_informacije>
+        <Placene_takse>
+            <Osnovna_taksa>1000</Osnovna_taksa>
+            <Za_klasa>
+                <Naziv_klase> 5 </Naziv_klase>
+                <Suma>1500</Suma>
+            </Za_klasa>
+            <Za_graficko_resenje>500</Za_graficko_resenje>
+            <Ukupno>3000</Ukupno>
+        </Placene_takse>  
+    </Popunjava_podnosilac>
+    <Broj_prijave_ziga>Z-27190/22</Broj_prijave_ziga>
+    <Datum_podnosenja>2022-07-07</Datum_podnosenja>
+    <Prilozi_uz_zahtev>
+        <Dokaz_o_pravu_prvenstva>dokaz_putanja</Dokaz_o_pravu_prvenstva>
+        <Dokaz_o_uplati_takse>dokaz_uplata_putanja</Dokaz_o_uplati_takse>
+        <Generalno_punomocje>generalno_punomocje_putanja</Generalno_punomocje>
+        <Opsti_akt>opsti_akt</Opsti_akt>
+    </Prilozi_uz_zahtev>
+    <QR_kod></QR_kod>
+</Zahtev_za_priznanje_ziga>

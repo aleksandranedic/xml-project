@@ -1,0 +1,18 @@
+{ "head": {
+    "vars": [ "autor" , "Broj_prijave" , "Datum_podnosenja" , "Naslov" , "Vrsta" , "Forma" , "Naziv" , "Status" ]
+  } ,
+  "results": {
+    "bindings": [
+      { 
+        "autor": { "type": "uri" , "value": "http://www.ftn.uns.ac.rs/jaxb/autor/A-54369" } ,
+        "Broj_prijave": { "type": "literal" , "value": "A-54369" } ,
+        "Datum_podnosenja": { "type": "literal" , "value": "2023-02-05" } ,
+        "Naslov": { "type": "literal" , "value": "Perica" } ,
+        "Vrsta": { "type": "literal" , "value": "knjizevno" } ,
+        "Forma": { "type": "literal" , "value": "Umetnost" } ,
+        "Naziv": { "type": "literal" , "value": "Sandra Sandric" } ,
+        "Status": { "type": "literal" , "value": "Na cekanju" }
+      }
+    ]
+  }
+}
