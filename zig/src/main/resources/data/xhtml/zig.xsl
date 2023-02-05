@@ -300,7 +300,7 @@
 
                     <div class="block border">
                         <td class="title">
-                            Zatrazeno pravo prvenstva i osnov
+                            Zatrazeno pravo prvenstva i osnov:
                         </td>
                         <p class="cell-2 weight-normal">
                             <xsl:value-of select="//zig:Zatrazeno_pravo_prvensta_i_osnov"/>

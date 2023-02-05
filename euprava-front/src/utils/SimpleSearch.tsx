@@ -1,11 +1,12 @@
 import {useContext, useState} from "react"
 import RequestTypeContext from "../store/request-type-context";
 import axios from "axios";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import PatentContext from "../store/patent-zahtevi-context";
 import ZigContext from "../store/zig-zahtevi-context";
 import AutorskaContext from "../store/autorska-zahtevi-context";
 import {Prilog, ZahtevData} from "../components/types";
+import { ConvertToZahtevi } from "./search.service";
 interface SimpleSearchProps {
     
 }
@@ -41,7 +42,7 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
             port = "8003"
         }
         let terms:string = keywords.join(";");
-
+        setKeywords([]);
         axios.get(`http://localhost:${port}/search/basic?terms=${terms}`,{
             headers:{
                 "Content-Type":"application/xml",
@@ -54,48 +55,17 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
                 alwaysChildren: true,
             });
             
-            let zahtevi:ZahtevData[] = [];
-            let json = jsonDataRes.ListN.item;
-            if (json.status) {
-                console.log("uso")
-                const zahtev = createZahtev(json)
-                zahtevi.push(zahtev);
-            } else {
-                for (let jsonData of json) {
-                    let zahtev = createZahtev(jsonData);
-                    zahtevi.push(zahtev);
-                }
-            }
-            console.log(zahtevi)
+            const zahtevi: ZahtevData[] = ConvertToZahtevi(jsonDataRes);
+            if (zahtevi.length === 0) toast.error("Nema zahteva koji odgovaraju kriterijuma.")
             switch (type) {
                 case 'patent': setPatentZahtevi(zahtevi); break;
                 case 'zig': setZigZahtevi(zahtevi); break;
                 case 'autor': setAutorskaZahtevi(zahtevi);
             }
-        }).catch(() => {
+        }).catch((e) => {
             toast.error("Greška pri pretrazi.")
         })
     }
-
-    const createZahtev = (jsonData: any):ZahtevData => {
-        let zahtev:ZahtevData = new ZahtevData();
-        zahtev.status = jsonData.status["_text"]
-        zahtev.brojPrijave = jsonData.brojPrijave["_text"]
-        zahtev.html = jsonData.html["_text"]
-        zahtev.datum = jsonData.datum["_text"]          
-        let prilozi:Prilog[] = [];
-        
-        if (jsonData.prilozi) {
-            for (let prilog of jsonData.prilozi.prilozi) {
-                prilozi.push({
-                    putanja: prilog.putanja["_text"],
-                    naslov: prilog.naslov["_text"]
-                })
-            }
-        }
-        zahtev.prilozi = prilozi;
-        return zahtev;
-    } 
 
     return (
         <div className="overflow-auto flex justify-center w-1/2">
@@ -113,6 +83,7 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
                 <input onKeyDown={handleKeyDown} type='text' className={`w-[75vh] rounded-none py-2 bg-transparent border-0 appearance-none-full focus:outline-none focus:!ring-0 `}/>
             </div>
             <button className="text-white rounded-r-lg px-4 py-2 bg-green-700 w-2/12 " onClick={()=>search()}>Pretraga</button>
+            <ToastContainer position="top-center" draggable={false}/>
         </div>
      );
 }
