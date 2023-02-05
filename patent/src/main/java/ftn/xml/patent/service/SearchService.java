@@ -1,5 +1,6 @@
 package ftn.xml.patent.service;
 
+import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.dto.Metadata;
 import ftn.xml.patent.dto.MetadataList;
 import ftn.xml.patent.repository.PatentRepository;

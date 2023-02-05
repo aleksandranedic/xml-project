@@ -50,12 +50,42 @@ public class ZahtevMapper {
         ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = new ZahtevZaPriznanjePatenta();
         zahtevZaPriznanjePatenta.setInformacijeOUstanovi(getInformacijeOUstanovi());
         zahtevZaPriznanjePatenta.setPopunjavaPodnosioc(getPopunjavaPodnosioc(zahtev));
+        zahtevZaPriznanjePatenta.setPopunjavaZavod(getPopunjavaZavod());
+        ZahtevZaPriznanjePatenta.PriloziUzZahtev priloziUzZahtev = new ZahtevZaPriznanjePatenta.PriloziUzZahtev();
+
+        if (zahtev.getPrilozi().getApstrakt() != null) {
+            priloziUzZahtev.setApstrakt(zahtev.getPrilozi().getApstrakt());
+        }
+        if (zahtev.getPrilozi().getPrvobitnaPrijava() != null) {
+            priloziUzZahtev.setPrvaPrijava(zahtev.getPrilozi().getPrvobitnaPrijava());
+        }
+        if (zahtev.getPrilozi().getRanijePrijave() != null) {
+            for (String prijava: zahtev.getPrilozi().getRanijePrijave()) {
+                priloziUzZahtev.getRanijaPrijava().add(prijava);
+            }
+        }
+        if (zahtev.getPrilozi().getIzjavaOSticanjuPrava() != null) {
+            priloziUzZahtev.setIzjavaOOsnovuSticanjaPravaNaPodnosenjePrijave(zahtev.getPrilozi().getIzjavaOSticanjuPrava());
+        }
+        if (zahtev.getPrilozi().getIzjavaPronalazaca() != null) {
+            priloziUzZahtev.setIzjavaPronalazacaDaNeZeliDaBudeNaveden(zahtev.getPrilozi().getIzjavaPronalazaca());
+        }
+        if (zahtev.getPrilozi().getOpis() != null) {
+            priloziUzZahtev.setOpisPronalaska(zahtev.getPrilozi().getOpis());
+        }
+        if (zahtev.getPrilozi().getNacrt() != null) {
+            priloziUzZahtev.setNacrtNaKojiSePozivaOpis(zahtev.getPrilozi().getNacrt());
+        }
+
+        zahtevZaPriznanjePatenta.setPriloziUzZahtev(priloziUzZahtev);
+        return zahtevZaPriznanjePatenta;
+    }
+
+    private ZahtevZaPriznanjePatenta.PopunjavaZavod getPopunjavaZavod() throws DatatypeConfigurationException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         ZahtevZaPriznanjePatenta.PopunjavaZavod popunjavaZavod = new ZahtevZaPriznanjePatenta.PopunjavaZavod();
         popunjavaZavod.setDatumPrijema(parseToXMLGregorianCalendar(Timestamp.valueOf(LocalDateTime.now())));
         popunjavaZavod.setBrojPrijave(patentRepository.getNextBrojPrijave().substring(2));
-        zahtevZaPriznanjePatenta.setPopunjavaZavod(popunjavaZavod);
-
-        return zahtevZaPriznanjePatenta;
+        return popunjavaZavod;
     }
 
     private ZahtevZaPriznanjePatenta.PopunjavaPodnosioc getPopunjavaPodnosioc(Zahtev zahtev) throws DatatypeConfigurationException, ParseException {
@@ -143,7 +173,7 @@ public class ZahtevMapper {
     private static ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu getPodaciOPronalazacu(Zahtev zahtev) {
         ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu podaciOPronalazacu = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPronalazacu();
 
-        if (zahtev.getPronalazaci().size() == 0) {
+        if (zahtev.getPronalazaci() == null) {
             podaciOPronalazacu.setPronalazacNeZeliDaBudeNaveden(new TEmpty());
         } else {
             for (Zahtev.Lice pronalazac : zahtev.getPronalazaci()) {
@@ -163,6 +193,9 @@ public class ZahtevMapper {
     private static ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku getPodaciOPunomocniku(Zahtev zahtev) {
         ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku podaciOPunomocniku = new ZahtevZaPriznanjePatenta.PopunjavaPodnosioc.PodaciOPunomocniku();
         Zahtev.Punomocnik punomocnik = zahtev.getPunomocnik();
+        if (punomocnik == null) {
+            return null;
+        }
         if (Objects.equals(punomocnik.getInfo().getIme(), "")) {
             return null;
         }
