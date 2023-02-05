@@ -1,11 +1,19 @@
 package ftn.xml.patent.service;
 
-import ftn.xml.patent.dto.*;
+import ftn.xml.patent.dto.Metadata;
+import ftn.xml.patent.dto.Resenje;
+import ftn.xml.patent.dto.Zahtev;
+import ftn.xml.patent.dto.ZahtevMapper;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.model.izvestaj.Izvestaj;
 import ftn.xml.patent.repository.PatentRepository;
 import ftn.xml.patent.repository.RdfRepository;
+import ftn.xml.patent.utils.AuthenticationUtilitiesMetadata;
 import ftn.xml.patent.utils.SchemaValidationEventHandler;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -22,6 +30,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,6 +40,9 @@ public class PatentService {
     public static final String CONTEXT_PATH = "ftn.xml.patent.model";
     private static final String SCHEMA_PATH = "./src/main/resources/data/xsd/p-1.xsd";
     private static final String FILE_FOLDER = "./src/main/resources/data/files/";
+
+    private static final String TARGET_FOLDER = "./target/classes/data/files/";
+
     private final PatentRepository repository;
     private final RdfRepository rdfRepository;
     private final TransformationService trasformationService;
@@ -38,14 +50,19 @@ public class PatentService {
     private final Marshaller marshaller;
     private final ZahtevMapper mapper;
     private final IzvestajService izvestajService;
+    private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
+
+    private final QueryService queryService;
 
     @Autowired
-    public PatentService(PatentRepository repository, RdfRepository rdfRepository, TransformationService trasformationService, ZahtevMapper mapper, IzvestajService izvestajService) throws SAXException, JAXBException {
+    public PatentService(PatentRepository repository, RdfRepository rdfRepository, TransformationService trasformationService, ZahtevMapper mapper, IzvestajService izvestajService, QueryService queryService) throws SAXException, JAXBException, IOException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.trasformationService = trasformationService;
         this.mapper = mapper;
         this.izvestajService = izvestajService;
+        this.conn = AuthenticationUtilitiesMetadata.loadProperties();
+        this.queryService = queryService;
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -103,7 +120,7 @@ public class PatentService {
         }
     }
 
-    private void addRdf(ZahtevZaPriznanjePatenta zahtev) throws JAXBException, TransformerException {
+    private void addRdf(ZahtevZaPriznanjePatenta zahtev) throws JAXBException, TransformerException, IOException {
         ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshal(zahtev);
 
         InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
@@ -123,9 +140,12 @@ public class PatentService {
 
     public String save(Zahtev zahtev) throws Exception {
         ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = mapper.parseZahtev(zahtev);
-
         save(zahtevZaPriznanjePatenta);
         addRdf(zahtevZaPriznanjePatenta);
+        createJsonFromRdf(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave());
+        createRdfFromRdf(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave());
+        trasformationService.toXHTML(marshal(getZahtev(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave())), zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave() + ".html");
+        trasformationService.toPDF(marshal(getZahtev(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave())), zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave() + ".pdf");
         return zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave();
     }
 
@@ -171,32 +191,28 @@ public class PatentService {
         }
     }
 
-    public List<ZahtevZaPriznanjePatenta> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaPriznanjePatenta> getAllResolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return true;
-            } catch (Exception e) {
-                return false;
+        List<ZahtevZaPriznanjePatenta> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjePatenta zahtev :
+                list) {
+            if (email.equals(zahtev.getPopunjavaPodnosioc().getPodaciOPodnosiocu().getPodnosioc().getKontakt().getEPosta()) && zahtev.getResenje() != null) {
+                list1.add(zahtev);
             }
-        });
-        //TODO:Filtriraj da li ima resenje
-        return list;
+        }
+        return list1;
     }
 
-    public List<ZahtevZaPriznanjePatenta> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaPriznanjePatenta> getAllUnresolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return false;
-            } catch (Exception e) {
-                return true;
+        List<ZahtevZaPriznanjePatenta> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjePatenta zahtev :
+                list) {
+            if (email.equals(zahtev.getPopunjavaPodnosioc().getPodaciOPodnosiocu().getPodnosioc().getKontakt().getEPosta()) && zahtev.getResenje() == null) {
+                list1.add(zahtev);
             }
-        });
-        //TODO:Filtriraj da nema resenje
-        return list;
+        }
+        return list1;
     }
 
     public String getIzvestajPdf(String startDate, String endDate) throws JAXBException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -206,5 +222,31 @@ public class PatentService {
         izvestaj.setBrojOdbijenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(startDate, endDate, "Odbijeno").size()));
         izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", startDate, endDate));
         return izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + startDate + "_" + endDate + ".pdf");
+    }
+
+    public void createJsonFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
+        ResultSetFormatter.outputAsJSON(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".json");
+        results = query.execSelect();
+        ResultSetFormatter.outputAsJSON(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
+    public void createRdfFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".rdf");
+        ResultSetFormatter.out(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".rdf");
+        results = query.execSelect();
+        ResultSetFormatter.out(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
     }
 }

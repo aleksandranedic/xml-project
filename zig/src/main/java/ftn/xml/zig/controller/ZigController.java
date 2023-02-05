@@ -1,4 +1,5 @@
 package ftn.xml.zig.controller;
+
 import ftn.xml.zig.dto.Zahtev;
 import ftn.xml.zig.dto.ZahtevData;
 import ftn.xml.zig.dto.ZahtevDataMapper;
@@ -12,10 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="zig")
+@RequestMapping(path = "zig")
 public class ZigController {
     private final ZigService service;
     private final ZahtevDataMapper zahtevDataMapper;
@@ -83,20 +85,29 @@ public class ZigController {
             throw new RuntimeException(e);
         }
     }
+
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public List<ZahtevData> getAll() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         return service.getAll().stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
-    @GetMapping("/resolved")
-    public List<ZahtevData> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return service.getAllResolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
+    @GetMapping(value = "/resolved/{email}", produces = MediaType.APPLICATION_XML_VALUE)
+    public List<ZahtevData> getAllResolved(@PathVariable String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAllResolved(email).stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
-    @GetMapping("/unresolved")
-    public List<ZahtevData> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return service.getAllUnresolved().stream().map(zahtevDataMapper::convertToZahtevData).toList();
+    @GetMapping(value = "/unresolved/{email}", produces = MediaType.APPLICATION_XML_VALUE)
+    public List<ZahtevData> getAllUnresolved(@PathVariable String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        return service.getAllUnresolved(email).stream().map(zahtevDataMapper::convertToZahtevData).toList();
     }
 
+    @GetMapping(path = "/json", consumes = MediaType.APPLICATION_XML_VALUE)
+    public void rdfToJSON(@RequestBody String brojPrijave) throws IOException {
+        this.service.createJsonFromRdf(brojPrijave);
+    }
 
+    @GetMapping(path = "/create/rdf", consumes = MediaType.APPLICATION_XML_VALUE)
+    public void saveRdfFile(@RequestBody String brojPrijave) throws IOException {
+        this.service.createRdfFromRdf(brojPrijave);
+    }
 }

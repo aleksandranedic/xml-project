@@ -79,6 +79,7 @@ public class RdfRepository {
         QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, sparqlQuery);
         ResultSet results = query.execSelect();
         ResultSetFormatter.out(System.out, results);
+
         query.close() ;
 
         System.out.println("[INFO] End.");
