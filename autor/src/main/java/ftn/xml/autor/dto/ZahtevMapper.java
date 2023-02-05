@@ -147,10 +147,17 @@ public class ZahtevMapper {
             autorZaZahtev.setDrzavljanstvo(autor.getInfo().getDrzavljanstvo());
             autorZaZahtev.setAdresa(getAdresa(autor.getAdresa()));
             autorZaZahtev.setKontakt(getKontakt(autor.getKontakt()));
-            autorZaZahtev.setGodinaSmrti(parseToXMLGregorianCalendar(autor.getGodinaSmrti()));
+            autorZaZahtev.setGodinaSmrti(parseToXMLGregorianCalendarForDeathDate(autor.getGodinaSmrti()));
             autorZaZahtev.setZnakAutora(autor.getPseudonim());
             return autorZaZahtev;
         }
+    }
+
+    private XMLGregorianCalendar parseToXMLGregorianCalendarForDeathDate(String dateString) throws DatatypeConfigurationException, ParseException {
+        int year = Integer.parseInt(dateString);
+        Date date = new Date();
+        date.setYear(year);
+        return parseToXMLGregorianCalendar(date);
     }
 
     private TAutor getAutorKaoPodnosilac(Zahtev.Lice podnosilac) {
@@ -178,7 +185,6 @@ public class ZahtevMapper {
     private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = format.parse(dateString);
-
         return parseToXMLGregorianCalendar(date);
     }
 
@@ -188,7 +194,7 @@ public class ZahtevMapper {
 
         GregorianCalendar call = new GregorianCalendar();
         call.setTime(new Date());
-        XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(call.get(Calendar.YEAR), call.get(Calendar.MONTH)+1, call.get(Calendar.DAY_OF_MONTH), DatatypeConstants.FIELD_UNDEFINED);
+        XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(call.get(Calendar.YEAR), call.get(Calendar.MONTH) + 1, call.get(Calendar.DAY_OF_MONTH), DatatypeConstants.FIELD_UNDEFINED);
         return xmlDate;
     }
 

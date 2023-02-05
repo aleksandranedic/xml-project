@@ -42,12 +42,12 @@ public class ZahtevMapper {
 
     public ZahtevZaPriznanjeZiga.Resenje parseResenje(ResenjeDTO resenje) throws DatatypeConfigurationException {
         ZahtevZaPriznanjeZiga.Resenje novoResenje = new ZahtevZaPriznanjeZiga.Resenje();
-        novoResenje.setStatus("Z-" + resenje.getStatus());
+        novoResenje.setStatus(resenje.getStatus());
         novoResenje.setDatum(parseToXMLGregorianCalendar());
         novoResenje.setIme(resenje.getIme());
         novoResenje.setPrezime(resenje.getPrezime());
         novoResenje.setObrazlozenje(resenje.getObrazlozenje());
-        novoResenje.setBrojPrijave(resenje.getBrojPrijave());
+        novoResenje.setBrojPrijave("Z-" + resenje.getBrojPrijave());
         return novoResenje;
     }
 
@@ -80,12 +80,6 @@ public class ZahtevMapper {
         }
     }
 
-    /*private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = format.parse(dateString);
-
-        return parseToXMLGregorianCalendar(date);
-    }*/
 
     private static XMLGregorianCalendar parseToXMLGregorianCalendar() throws DatatypeConfigurationException {
         GregorianCalendar call = new GregorianCalendar();

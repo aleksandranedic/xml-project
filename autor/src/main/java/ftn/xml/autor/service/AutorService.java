@@ -157,7 +157,9 @@ public class AutorService {
         ZahtevZaIntelektualnuSvojinu zahtev = getZahtev(resenje.getBrojPrijave());
         try {
             zahtev.setResenje(mapper.parseResenje(resenje));
+            zahtev.getPopunjavaZavod().setBrojPrijave("A-" + zahtev.getPopunjavaZavod().getBrojPrijave());
             save(zahtev);
+
             String email = zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta();
             String documentPath = "./src/main/resources/data/files/" + zahtev.getPopunjavaZavod().getBrojPrijave() + ".pdf";
             EmailDataDTO emailDataDTO = EmailService.buildEmailDTO(email, documentPath);

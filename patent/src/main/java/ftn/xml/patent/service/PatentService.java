@@ -181,10 +181,11 @@ public class PatentService {
         return content;
     }
 
-    public void updateRequest(String brojPrijave, Resenje resenje) {
-        ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = getZahtev(brojPrijave);
+    public void updateRequest(Resenje resenje) {
+        ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = getZahtev(resenje.getBrojPrijave());
         try {
             zahtevZaPriznanjePatenta.setResenje(mapper.parseResenje(resenje));
+            zahtevZaPriznanjePatenta.getPopunjavaZavod().setBrojPrijave("P-" + zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave());
             save(zahtevZaPriznanjePatenta);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -234,6 +235,8 @@ public class PatentService {
         ResultSetFormatter.outputAsJSON(outputStream1, results);
         outputStream.flush();
         outputStream.close();
+        outputStream1.flush();
+        outputStream1.close();
         query.close();
     }
 
