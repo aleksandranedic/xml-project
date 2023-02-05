@@ -101,7 +101,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                                 className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 {/*header*/}
                                 <div
-                                    className="flex items-start justify-between px-5 py-0 border-b border-solid border-slate-200 rounded-t">
+                                    className="flex w-full items-start justify-between px-5 py-0 border-solid border-slate-200 rounded-t">
                                     <button
                                         className="p-1 ml-auto flex items-center bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                                         onClick={() => setShowModal(false)}>

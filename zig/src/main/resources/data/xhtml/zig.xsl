@@ -12,7 +12,7 @@
                     font-weight: bold;
                 }
                 .container {
-                    font-size: 20px;
+                    font-size: 15px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
@@ -32,25 +32,30 @@
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    margin-top:30px;
                     width: 100%;
                 }
                 .title {
-                    font-size:25px;
-                    font-weight:bold;
+                    font-size:15px;
+                    width:100%;
+                    margin-top: 10px;
+                }
+                .half {
+                    width: 50%
+                }
+                .third {
+                    width: 33%
                 }
                 table {
                     width: 100%;
                     border:1px;
                     margin-top:10px;
                     margin-bottom:5px;
-                    font-weight: bold;
                 }
                 .table-2 {
                     font-family:serif;
                     border:1px;
                     margin-top:10px;
-                    font-size: 20px
+                    font-size: 15px
                 }
                 tr {
                     display: inline-flex;
@@ -62,6 +67,10 @@
                     align-items: center;
                     justify-content: center;
                 }
+                .margin-right {
+                    font-weight: bold;
+                    margin-right: 5px;
+                }
                 .border {
                     border:1px solid darkgrey;
                 }
@@ -69,21 +78,14 @@
                     border-top:1px solid darkgrey;
                 }
                 .green-cell {
-                    background-color:#4caf50;
-                    color:white;
                     font-family:sans-serif;
                     padding:5px;
-                    font-weight:bold;
                 }
                 .light-green-cell {
-                    background-color:#80C883;
-                    color:white;
                     font-family:sans-serif;
-                    font-weight:bold;
                 }
                 .cell {
                     padding-left:5px
-                    font-weight:bold
                 }
                 .address-cell {
                     padding-right:8px;
@@ -102,6 +104,18 @@
                 .weight-normal {
                     font-weight: normal
                 }
+                .table-like {
+                    display: flex;
+                    width: 100%;
+                }
+                .flex-col {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .flex {
+                    display: flex;
+                align-items: center;
+                }
             </style>
         </head>
         <body>
@@ -109,360 +123,271 @@
                 <h1> Zahtev za priznanje žiga </h1>
                 <div class="inline-container">
                     <div>
-                        <xsl:value-of select="//zig:informacije_o_ustanovi/zig:naziv"/>,
+                        <xsl:value-of select="//zig:Informacije_o_ustanovi/zig:Naziv"/>,
                     </div>
                     <div>
-                        <xsl:value-of select="//zig:informacije_o_ustanovi/zig:adresa/zig:ulica"/>
-                    </div>
-
-                    <div>
-                        <xsl:value-of select="//zig:informacije_o_ustanovi/zig:adresa/zig:broj"/>,
-                    </div>
-                    <div>
-                        <xsl:value-of select="//zig:informacije_o_ustanovi/zig:adresa/zig:postanski_broj"/>
+                        <xsl:value-of select="//zig:Informacije_o_ustanovi/zig:Adresa/zig:Ulica"/>
                     </div>
 
                     <div>
-                        <xsl:value-of select="//zig:informacije_o_ustanovi/zig:adresa/zig:grad"/>
+                        <xsl:value-of select="//zig:Informacije_o_ustanovi/zig:Adresa/zig:Broj"/>,
+                    </div>
+                    <div>
+                        <xsl:value-of select="//zig:Informacije_o_ustanovi/zig:Adresa/zig:Postanski_broj"/>
+                    </div>
+
+                    <div>
+                        <xsl:value-of select="//zig:Informacije_o_ustanovi/zig:Adresa/zig:Grad"/>
                     </div>
                 </div>
 
-                <div class="block">
-                    <div class="title">
-                        Podnosilac prijave
-                    </div>
-                    <table>
-                        <thead>
-                            <tr class="border">
-                                <th class="green-cell">
-                                    Ime
-                                </th>
-                                <th class="green-cell">
-                                    Adresa
-                                </th>
-                                <th class="green-cell">
-                                    Telefon
-                                </th>
-                                <th class="green-cell">
-                                    Email
-                                </th>
-                                <th class="green-cell">
-                                    Faks
-                                </th>
-                            </tr>
-                            </thead>
+                <div class="border">
+
+                    <div class="block">
+                        <div class="title">
+                            <b>Podnosilac prijave</b>: ime i prezime/poslovno ime, ulica i broj, poštanski broj, mesto, država prebivališta/sedišta
+                        </div>
+                        <table>
                             <tbody>
                                 <tr class="border">
-                                    <td class="cell">
+                                    <td class="cell half">
                                         <xsl:choose>
-                                            <xsl:when test="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime">
-                                                <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime"/>
+                                            <xsl:when test="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Poslovno_ime">
+                                                <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Poslovno_ime"/>
                                             </xsl:when>
                                             <xsl:otherwise>
                                                 <div class="inline">
-                                                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:prezime"/>
+                                                    <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Prezime"/>
                                                 </div>
                                             </xsl:otherwise>
                                         </xsl:choose>
                                     </td>
 
-                                    <td class="address-cell inline">
-                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:ulica"/>
+                                    <td class="address-cell inline half">
+                                        <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Adresa/zig:Ulica"/>
                                         <xsl:text> </xsl:text>
-                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:broj"/>,
-                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:postanski_broj"/>
+                                        <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Adresa/zig:Broj"/>,
+                                        <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Adresa/zig:Postanski_broj"/>
                                         <xsl:text> </xsl:text>
-                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:adresa/zig:grad"/>
-                                    </td>
-
-                                    <td>
-                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:telefon"/>
-                                    </td>
-
-                                    <td>
-                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:email"/>
-                                    </td>
-
-                                    <td>
-                                        <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:faks"/>
+                                        <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Adresa/zig:Grad"/>
                                     </td>
                                 </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="block">
-                    <div class="title">
-                        Punomocnik
-                    </div>
-                    <table>
-                        <thead>
-                            <tr class="border">
-                                <th class="green-cell">
-                                    Ime
-                                </th>
-                                <th class="green-cell">
-                                    Adresa
-                                </th>
-                                <th class="green-cell">
-                                    Telefon
-                                </th>
-                                <th class="green-cell">
-                                    Email
-                                </th>
-                                <th class="green-cell">
-                                    Faks
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <xsl:for-each select="//zig:popunjava_podnosilac/zig:punomocnik">
-                                <tr class="border">
-                                    <td class="cell">
-                                        <xsl:choose>
-                                            <xsl:when test="zig:poslovno_ime">
-                                                <xsl:value-of select="zig:poslovno_ime"/>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <div class="inline">
-                                                    <xsl:value-of select="zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="zig:prezime"/>
-                                                </div>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
+                                <tr>
+                                    <td class="third border">
+                                       <p class="margin-right">Telefon:</p> <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Kontakt/zig:Telefon"/>
                                     </td>
 
-                                    <td class="address-cell inline">
-                                        <xsl:value-of select="zig:adresa/zig:ulica"/>
-                                        <xsl:text> </xsl:text>
-                                        <xsl:value-of select="zig:adresa/zig:broj"/>,
-                                        <xsl:value-of select="zig:adresa/zig:postanski_broj"/>
-                                        <xsl:text> </xsl:text>
-                                        <xsl:value-of select="zig:adresa/zig:grad"/>
+                                    <td class="third border">
+                                        <p class="margin-right">Email:</p>  <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Kontakt/zig:Email"/>
                                     </td>
 
-                                    <td>
-                                        <xsl:value-of select="zig:telefon"/>
-                                    </td>
-
-                                    <td>
-                                        <xsl:value-of select="zig:email"/>
-                                    </td>
-
-                                    <td>
-                                        <xsl:value-of select="zig:faks"/>
+                                    <td class="third border">
+                                        <p class="margin-right">Faks:</p> <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Kontakt//zig:Faks"/>
                                     </td>
                                 </tr>
-                                </xsl:for-each>
                             </tbody>
                         </table>
                     </div>
 
-                <div class="block">
-                    <div class="title">
-                        Informacije o zigu
-                    </div>
-                    <table class="table-2">
-                       <thead>
-                        <tr>
-                            <th class="border-top two-cols">
-                                Vrsta
-                            </th>
-                        </tr>
-                        <tr>
-                            <th class="cell-2">
-                                Tip A
-                            </th>
-                            <th class="cell-2">
-                               Tip B
-                            </th>
-                        </tr>
-                       </thead>
-                        <tbody>
-                        <tr>
-                            <td class="cell-2 weight-normal">
-                                <xsl:variable name="name_a" select="name(//zig:zig/zig:vrsta/zig:tip_a/*[1])"/>
-                                <xsl:value-of select="concat(translate($name_a, '_', ' '), ' ')"/>
-                            </td>
-                            <td class="cell-2 weight-normal">
-                                <xsl:variable name="name_b" select="name(//zig:zig/zig:vrsta/zig:tip_b/*[1])"/>
-                                <xsl:value-of select="concat(translate($name_b, '_', ' '), ' ')"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border-top two-cols">
-                                Naznacenje boje, odnosno boja iz kojih se znak sastoji
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="cell-2 weight-normal">
-                                <xsl:value-of select="//zig:zig/zig:naznacenje_boje"/>
-                            </td>
-                        </tr>
-                        <xsl:if test="//zig:zig/zig:transliteracija_znak">
-                            <tr>
-                                <td class="border-top two-cols">
-                                    Transliteracija znaka
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="cell-2 weight-normal">
-                                    <xsl:value-of select="//zig:zig/zig:transliteracija_znak"/>
-                                </td>
-                            </tr>
-                        </xsl:if>
-                        <xsl:if test="//zig:zig/zig:prevod_znaka">
-                            <tr>
-                                <td class="border-top two-cols">
-                                    Prevod znaka
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="cell-2 weight-normal">
-                                    <xsl:value-of select="//zig:zig/zig:prevod_znaka"/>
-                                </td>
-                            </tr>
-                        </xsl:if>
-                        <tr>
-                            <td class="border-top two-cols">
-                                Opis znaka
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="cell-2 weight-normal">
-                                <xsl:value-of select="//zig:zig/zig:opis_znaka"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border-top two-cols">
-                                Brojevi klase roba i usluga prema Nicanskoj klasifikaciji
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="cell-2 weight-normal inline">
-                                <xsl:for-each select="//zig:dodatne_informacije/zig:klasa_robe_i_uslaga/zig:klasa">
-                                    <xsl:value-of select="."/>
-                                    <xsl:text>  </xsl:text>
-                                </xsl:for-each>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="border-top two-cols">
-                                Zatrazeno pravo prvenstva i osnov
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="cell-2 weight-normal">
-                                <xsl:value-of select="//zig:zatrazeno_pravo_prvensta_i_osnov"/>
-                            </td>
-                        </tr>
-                    </tbody>
-                    </table>
-                </div>
+                    <xsl:if test="//zig:Popunjava_podnosilac/zig:Punomocnik">
+                    <div class="block">
+                        <div class="title">
+                            <b>Punomoćnik</b>: ime i prezime/poslovno ime, ulica i broj, poštanski broj, mesto, država prebivališta/sedišta
+                        </div>
+                        <table>
+                            <tbody>
+                                <tr class="border">
+                                    <td class="cell half">
+                                        <xsl:choose>
+                                            <xsl:when test="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Poslovno_ime">
+                                                <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Poslovno_ime"/>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <div class="inline">
+                                                    <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Prezime"/>
+                                                </div>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                    </td>
 
-                <div class="block">
-                    <div class="title">
-                        Informacije o placanju
+                                    <td class="address-cell inline half">
+                                        <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Adresa/zig:Ulica"/>
+                                        <xsl:text> </xsl:text>
+                                        <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Adresa/zig:Broj"/>,
+                                        <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Adresa/zig:Postanski_broj"/>
+                                        <xsl:text> </xsl:text>
+                                        <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Adresa/zig:Grad"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="third border">
+                                        <p class="margin-right">Telefon:</p> <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Kontakt/zig:Telefon"/>
+                                    </td>
+
+                                    <td class="third border">
+                                        <p class="margin-right">Email:</p>  <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Kontakt/zig:Email"/>
+                                    </td>
+
+                                    <td class="third border">
+                                        <p class="margin-right">Faks:</p> <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Punomocnik/zig:Kontakt//zig:Faks"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="border green-cell" style="width: 65%;">
-                                    Placene takse
-                                </th>
-                                <th class="border green-cell" style="width: 35%;">
-                                    Dinara
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="border light-green-cell" style="width: 65%;">
-                                    Osnovna taksa:
-                                </td>
-                                <td class="border" style="width: 35%;">
-                                    <xsl:value-of select="//zig:osnovna_taksa"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="border light-green-cell" style="width: 65%;">
-                                    <div class="inline">
-                                        Za
-                                        <xsl:value-of select="//zig:za_klasa/zig:naziv_klase"/>
-                                        klasa:
+                    </xsl:if>
+
+                    <div class="block">
+                        <div class="table-like">
+                            <div class="half flex-col">
+                                <div class="flex border">
+                                    <p class="margin-right">a)</p>
+                                    <xsl:value-of select="//zig:Zig//zig:Tip_a"/>
+                                </div>
+                                <div class="flex border">
+                                    <p class="margin-right">b)</p>
+                                    <xsl:value-of select="//zig:Zig//zig:Tip_b"/>
+                                </div>
+                                <div class="flex-col border">
+                                    <p class="margin-right">Naznacenje boje, odnosno boja iz kojih se znak sastoji</p>
+                                    <xsl:value-of select="//zig:Zig//zig:Naznacenje_boje"/>
+                                </div>
+                                <xsl:if test="//zig:Zig//zig:Transliteracija_znak">
+                                    <div class="flex-col border">
+                                        <p class="margin-right">Transliteracija znaka</p>
+                                        <xsl:value-of select="//zig:Zig//zig:Transliteracija_znak"/>
                                     </div>
-                                </td>
-                                <td class="border" style="width: 35%;">
-                                    <xsl:value-of select="//zig:za_klasa/zig:suma"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="border light-green-cell" style="width: 65%;">
-                                    Za graficko resenje:
-                                </td>
-                                <td class="border" style="width: 35%;">
-                                    <xsl:value-of select="//zig:za_graficko_resenje"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="border light-green-cell" style="width: 65%;">
-                                    UKUPNO:
-                                </td>
-                                <td class="border" style="width: 35%;font-size: 20px;">
-                                    <xsl:value-of select="//zig:ukupno"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="block">
-                    <div class="title">
-                        Popunjava zavod
+                                </xsl:if>
+                                <xsl:if test="//zig:Zig//zig:Prevod_znaka">
+                                    <div class="flex-col border">
+                                        <p class="margin-right">Prevod znaka</p>
+                                        <xsl:value-of select="//zig:Zig//zig:Prevod_znaka"/>
+                                    </div>
+                                </xsl:if>
+                                <xsl:if test="//zig:Zig//zig:Opis_znaka">
+                                    <div class="flex-col border">
+                                        <p class="margin-right">Opis znaka</p>
+                                        <xsl:value-of select="//zig:Zig//zig:Opis_znaka"/>
+                                    </div>
+                                </xsl:if>
+                            </div>
+                            <div class="half border">
+                                <xsl:element name="img">
+                                    <xsl:attribute name="src">
+                                        <xsl:value-of select="//zig:Primerak_znaka"/>
+                                    </xsl:attribute>
+                                    <xsl:attribute name="style">object-fit: contain;"</xsl:attribute>
+                                    <xsl:attribute name="width">330px</xsl:attribute>
+                                    <xsl:attribute name="height">360px</xsl:attribute>
+                                    <xsl:attribute name="maxWidth">330px</xsl:attribute>
+                                    <xsl:attribute name="maxHeight">360px</xsl:attribute>
+                                </xsl:element>
+                            </div>
+                        </div>
                     </div>
-                    <table>
-                    <thead>
-                    <tr>
-                        <th class="border green-cell cell-2">
-                            Prilozi uz zahtev
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <xsl:for-each select="//zig:popunjava_zavod/zig:prilozi_uz_zahtev/*">
-                        <tr>
-                            <td class="border cell-2">
-                                <xsl:variable name="name" select="name(.)"/>
-                                <xsl:value-of select="concat(translate($name, '_', ' '), ' ')"/>
-                            </td>
-                        </tr>
-                    </xsl:for-each>
-                    </tbody>
-                    </table>
-                </div>
 
-                <div class="block" style="margin-top: 80px">
-                    <table>
-                    <thead>
-                    <tr>
-                        <th class="cell-2">
-                            Broj prijave ziga
-                        </th>
-                        <th class="cell-2">
-                            Datum podnosenja
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="cell-2">
-                            <xsl:value-of select="//zig:broj_prijave_ziga"/>
+                    <div class="flex-col block border">
+                        <p class="margin-right">
+                            Brojevi klase roba i usluga prema Nicanskoj klasifikaciji
+                        </p>
+                        <p class="title">
+                            <xsl:for-each select="//zig:Dodatne_informacije/zig:Klasa_robe_i_uslaga/zig:Klasa">
+                                <xsl:value-of select="."/>
+                                <xsl:text>  </xsl:text>
+                            </xsl:for-each>
+                        </p>
+                    </div>
+
+                    <div class="block border">
+                        <td class="title">
+                            Zatrazeno pravo prvenstva i osnov
                         </td>
-                        <td class="cell-2">
-                            <xsl:value-of select="//zig:datum_podnosenja"/>
-                        </td>
-                    </tr>
-                    </tbody>
-                    </table>
+                        <p class="cell-2 weight-normal">
+                            <xsl:value-of select="//zig:Zatrazeno_pravo_prvensta_i_osnov"/>
+                        </p>
+                    </div>
+
+                    <div class="block">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="border green-cell" style="width: 65%;">
+                                        Placene takse
+                                    </th>
+                                    <th class="border green-cell" style="width: 35%;">
+                                        Dinara
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border light-green-cell" style="width: 65%;">
+                                        Osnovna taksa:
+                                    </td>
+                                    <td class="border" style="width: 35%;">
+                                        <xsl:value-of select="//zig:Osnovna_taksa"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border light-green-cell" style="width: 65%;">
+                                        <div class="inline">
+                                            Za
+                                            <xsl:value-of select="//zig:Za_klasa/zig:Naziv_klase"/>
+                                            klasa:
+                                        </div>
+                                    </td>
+                                    <td class="border" style="width: 35%;">
+                                        <xsl:value-of select="//zig:Za_klasa/zig:Suma"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border light-green-cell" style="width: 65%;">
+                                        Za graficko resenje:
+                                    </td>
+                                    <td class="border" style="width: 35%;">
+                                        <xsl:value-of select="//zig:Za_graficko_resenje"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="border light-green-cell" style="width: 65%;">
+                                        UKUPNO:
+                                    </td>
+                                    <td class="border" style="width: 35%;font-size: 15px;">
+                                        <xsl:value-of select="//zig:Ukupno"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="block" style="margin-top: 40px">
+
+                        <div class="flex">
+                            <div class="flex-col third">
+                                <p class="margin-right">Broj prijave ziga</p>
+                                <p>
+                                    <xsl:value-of select="//zig:Broj_prijave_ziga"/>
+                                </p>
+                            </div>
+                            <div class="flex-col third">
+                                <p class="margin-right">Datum podnosenja</p>
+                                <p>
+                                    <xsl:value-of select="//zig:Datum_podnosenja"/>
+                                </p>
+                            </div>
+                            <div class="third">
+                                <xsl:element name="img">
+                                    <xsl:attribute name="src">
+                                        <xsl:value-of select="//zig:QR_kod"/>
+                                    </xsl:attribute>
+                                    <xsl:attribute name="width">200px</xsl:attribute>
+                                    <xsl:attribute name="height">200px</xsl:attribute>
+                                    <xsl:attribute name="maxWidth">200px</xsl:attribute>
+                                    <xsl:attribute name="maxHeight">200px</xsl:attribute>
+                                </xsl:element>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </body>

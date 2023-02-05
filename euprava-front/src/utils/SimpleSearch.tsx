@@ -54,26 +54,19 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
                 alwaysChildren: true,
             });
             
-            let json = jsonDataRes.ListN.item;
             let zahtevi:ZahtevData[] = [];
-            for (let jsonData of json) {
-                let zahtev:ZahtevData = new ZahtevData();
-                zahtev.status = jsonData.status["_text"]
-                zahtev.brojPrijave = jsonData.brojPrijave["_text"]
-                zahtev.html = jsonData.html["_text"]
-                zahtev.datum = jsonData.datum["_text"]          
-                let prilozi:Prilog[] = [];
-                if (jsonData.prilozi) {
-                    for (let prilog of jsonData.prilozi.prilozi) {
-                        prilozi.push({
-                            putanja: prilog.putanja["_text"],
-                            naslov: prilog.naslov["_text"]
-                        })
-                    }
-                }
-                zahtev.prilozi = prilozi;
+            let json = jsonDataRes.ListN.item;
+            if (json.status) {
+                console.log("uso")
+                const zahtev = createZahtev(json)
                 zahtevi.push(zahtev);
+            } else {
+                for (let jsonData of json) {
+                    let zahtev = createZahtev(jsonData);
+                    zahtevi.push(zahtev);
+                }
             }
+            console.log(zahtevi)
             switch (type) {
                 case 'patent': setPatentZahtevi(zahtevi); break;
                 case 'zig': setZigZahtevi(zahtevi); break;
@@ -83,6 +76,26 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
             toast.error("Greška pri pretrazi.")
         })
     }
+
+    const createZahtev = (jsonData: any):ZahtevData => {
+        let zahtev:ZahtevData = new ZahtevData();
+        zahtev.status = jsonData.status["_text"]
+        zahtev.brojPrijave = jsonData.brojPrijave["_text"]
+        zahtev.html = jsonData.html["_text"]
+        zahtev.datum = jsonData.datum["_text"]          
+        let prilozi:Prilog[] = [];
+        
+        if (jsonData.prilozi) {
+            for (let prilog of jsonData.prilozi.prilozi) {
+                prilozi.push({
+                    putanja: prilog.putanja["_text"],
+                    naslov: prilog.naslov["_text"]
+                })
+            }
+        }
+        zahtev.prilozi = prilozi;
+        return zahtev;
+    } 
 
     return (
         <div className="overflow-auto flex justify-center w-1/2">

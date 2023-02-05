@@ -19,7 +19,7 @@ import java.util.List;
 public class ZigController {
     private final ZigService service;
     private final ZahtevDataMapper zahtevDataMapper;
-    public static final String FILES = "http://localhost:8002/files/";
+    public static final String FILES = "http://localhost:8000/";
 
     @Autowired
     public ZigController(ZigService service, ZahtevDataMapper zahtevDataMapper) {
