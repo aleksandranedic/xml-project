@@ -1,6 +1,6 @@
 import {Dispatch, SetStateAction, useContext, useRef} from "react";
 import UserContext, {Role} from "../../store/user-context";
-import {Prilog, ZahtevData} from "../types";
+import {Prilog, Status, ZahtevData} from "../types";
 import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
 import {toast} from "react-toastify";
@@ -41,7 +41,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
             prezime: user?.surname,
             obrazlozenje: "Obrazlozenje", //TODO treba ubaciti da dopuni
             status: status,
-            brojPrijave: "A-38169" //TODO treba izmeniti
+            brojPrijave: zahtev?.brojPrijave //TODO treba izmeniti
         }
         const xml2js = require("xml2js");
         const builder = new xml2js.Builder();
@@ -61,7 +61,6 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                 compact: true,
                 alwaysChildren: true,
             });
-            console.log(jsonData);
             toast.success(response.data)
         }).catch(() => {
             toast.error("Greška pri pretrazi.")
@@ -128,7 +127,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                                     })}
                                 </div>
 
-                                {user?.role === Role.WORKER &&
+                                {user?.role === Role.WORKER &&  zahtev.status === Status.Prilozen &&
                                     <div
                                         className="flex w-full items-center justify-between p-6 border-t border-solid border-slate-200 rounded-b">
                                         <ZahtevButton prilog={pdfPrilog}></ZahtevButton>

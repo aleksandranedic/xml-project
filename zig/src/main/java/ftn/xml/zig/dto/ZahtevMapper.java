@@ -40,6 +40,18 @@ public class ZahtevMapper {
         return zahtevZaPriznanjeZiga;
     }
 
+    public ZahtevZaPriznanjeZiga.Resenje parseResenje(ResenjeDTO resenje) throws DatatypeConfigurationException {
+        ZahtevZaPriznanjeZiga.Resenje novoResenje = new ZahtevZaPriznanjeZiga.Resenje();
+        novoResenje.setStatus("Z-" + resenje.getStatus());
+        novoResenje.setDatum(parseToXMLGregorianCalendar());
+        novoResenje.setIme(resenje.getIme());
+        novoResenje.setPrezime(resenje.getPrezime());
+        novoResenje.setObrazlozenje(resenje.getObrazlozenje());
+        novoResenje.setBrojPrijave(resenje.getBrojPrijave());
+        return novoResenje;
+    }
+
+
     private final Path qrLocationFolder = Paths.get("src/main/resources/data/files/qr/");
     private final Path qrLocationTargetFolder = Paths.get("target/classes/data/files/qr/");
     private final String showZahtevHTMLEndPoint = "http://localhost:3000/zig/";

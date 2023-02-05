@@ -1,11 +1,13 @@
 package ftn.xml.zig.service;
 
+import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.fop.apps.*;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.*;
