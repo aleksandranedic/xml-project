@@ -124,8 +124,10 @@ public class ZahtevMapper {
         if (zahtev.isJeAutor()) {
             autori.getAnonimanOrAutor().add(getAutorKaoPodnosilac(zahtev.getPodnosilac()));
         }
-        for (Zahtev.Autor autor : zahtev.getAutori()) {
-            autori.getAnonimanOrAutor().add(getAutorZaZahtevZaIntelektualnuSvojinu(autor));
+        if (zahtev.getAutori() != null) {
+            for (Zahtev.Autor autor : zahtev.getAutori()) {
+                autori.getAnonimanOrAutor().add(getAutorZaZahtevZaIntelektualnuSvojinu(autor));
+            }
         }
         for (int i = 0; i < zahtev.getBrojAnonimnihAutora(); i++) {
             autori.getAnonimanOrAutor().add(new TEmpty());

@@ -1,12 +1,19 @@
 package ftn.xml.autor.service;
 
+import ftn.xml.autor.dto.Metadata;
 import ftn.xml.autor.dto.ResenjeDTO;
 import ftn.xml.autor.dto.Zahtev;
 import ftn.xml.autor.dto.ZahtevMapper;
+import ftn.xml.autor.model.EmailDataDTO;
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.repository.AutorRepository;
 import ftn.xml.autor.repository.RdfRepository;
+import ftn.xml.autor.utils.AuthenticationUtilitiesMetadata;
 import ftn.xml.autor.utils.SchemaValidationEventHandler;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -30,6 +37,8 @@ public class AutorService {
     public static final String CONTEXT_PATH = "ftn.xml.autor.model";
     private static final String SCHEMA_PATH = "./src/main/resources/data/xsd/autor.xsd";
     private static final String FILE_FOLDER = "./src/main/resources/data/files/";
+
+    private static final String FUSEKI_DATASET_PATH = "/autorDataset";
     private final AutorRepository repository;
     private final RdfRepository rdfRepository;
     private final Unmarshaller unmarshaller;
@@ -37,17 +46,20 @@ public class AutorService {
     private final ZahtevMapper mapper;
     private final EmailService emailService;
     private final TransformationService transformationService;
+    private final QueryService queryService;
+
+    private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
 
     @Autowired
-    public AutorService(AutorRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, EmailService emailService, TransformationService transformationService) throws SAXException, JAXBException {
+    public AutorService(AutorRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, EmailService emailService, TransformationService transformationService, QueryService queryService) throws SAXException, JAXBException, IOException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.mapper = mapper;
         this.emailService = emailService;
         this.transformationService = transformationService;
-
+        this.queryService = queryService;
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
-
+        conn = AuthenticationUtilitiesMetadata.loadProperties();
         unmarshaller = context.createUnmarshaller();
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema schema = schemaFactory.newSchema(new File(SCHEMA_PATH));
@@ -125,7 +137,7 @@ public class AutorService {
         ZahtevZaIntelektualnuSvojinu zahtevZaIntelektualnuSvojinu = mapper.parseZahtev(zahtev);
         save(zahtevZaIntelektualnuSvojinu);
         addRdf(zahtevZaIntelektualnuSvojinu);
-        System.out.println(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave());
+        createJsonFromRdf(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave());
     }
 
     public void updateRequest(ResenjeDTO resenje) {
@@ -134,10 +146,10 @@ public class AutorService {
             zahtev.setResenje(mapper.parseResenje(resenje));
             save(zahtev);
             String email = zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta();
-            //TODO create new xsl for zahtev with resenje and pass the path here
-//        String documentPath="D:\\Fourth Year\\XML_WebServices\\XML_PROJEKAT_GIT\\xml-project\\autor\\src\\main\\resources\\data\\gen\\autor.pdf";
-//        EmailDataDTO emailDataDTO= EmailService.buildEmailDTO(email,documentPath);
-//        emailService.sendEmail(emailDataDTO);
+            String documentPath = "./src/main/resources/data/files/" + zahtev.getPopunjavaZavod().getBrojPrijave() + ".pdf";
+            EmailDataDTO emailDataDTO = EmailService.buildEmailDTO(email, documentPath);
+            emailService.sendEmail(emailDataDTO);
+            createJsonFromRdf(zahtev.getPopunjavaZavod().getBrojPrijave());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -153,7 +165,6 @@ public class AutorService {
                 return false;
             }
         });
-        //TODO:Filtriraj da li ima resenje
         return list;
     }
 
@@ -167,13 +178,13 @@ public class AutorService {
                 return true;
             }
         });
-        //TODO:Filtriraj da nema resenje
         return list;
     }
 
     public String getHtml(String brojPrijave) throws JAXBException {
         return this.transformationService.toXHTML(marshal(getZahtev(brojPrijave)), brojPrijave + ".html");
     }
+
     public String getHtmlString(String brojPrijave) {
 
         String filePath = FILE_FOLDER + brojPrijave + ".html";
@@ -196,5 +207,23 @@ public class AutorService {
             return getHtmlString(brojPrijave);
         }
         return content;
+    }
+
+
+    public void createJsonFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
+        ResultSetFormatter.outputAsJSON(outputStream, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
+    public void createRdfFile(ResultSet resultSet, String brojPrijave) throws IOException {
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
+        ResultSetFormatter.outputAsJSON(outputStream, resultSet);
+        outputStream.flush();
+        outputStream.close();
     }
 }
