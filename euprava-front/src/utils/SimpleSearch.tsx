@@ -3,11 +3,9 @@ import RequestTypeContext from "../store/request-type-context";
 import axios from "axios";
 import {toast} from "react-toastify";
 import PatentContext from "../store/patent-zahtevi-context";
-import { ZahtevZaPriznanjePatenta } from "../components/patent/types";
 import ZigContext from "../store/zig-zahtevi-context";
-import { ZahtevZaPriznanjeZiga } from "../components/zig/types";
 import AutorskaContext from "../store/autorska-zahtevi-context";
-import { ZahtevZaPriznanjeAutorska } from "../components/autorska/types";
+import {ZahtevData} from "../components/types";
 
 interface SimpleSearchProps {
     
@@ -44,9 +42,9 @@ const SimpleSearch: React.FunctionComponent<SimpleSearchProps> = () => {
 
         axios.get(`http://localhost:${port}/search/basic?terms=${terms}`).then(response => {
             switch (type) {
-                case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
-                case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
-                case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
+                case 'patent': setPatentZahtevi([new ZahtevData()]); break;
+                case 'zig': setZigZahtevi([new ZahtevData()]); break;
+                case 'autor': setAutorskaZahtevi([new ZahtevData()]);
             }
             console.log(response.data);
         }).catch(() => {

@@ -1,7 +1,7 @@
-import { ZahtevZaPriznanjeAutorska } from "../autorska/types";
+import {ZahtevData} from "../types";
 
 interface ZahtevAutorskaProps {
-    zahtev: ZahtevZaPriznanjeAutorska
+    zahtev: ZahtevData
 }
  
 const ZahtevAutorska: React.FunctionComponent<ZahtevAutorskaProps> = ({zahtev}) => {

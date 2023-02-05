@@ -14,7 +14,7 @@ import {
 } from './types';
 import {toast, ToastContainer} from 'react-toastify';
 import UserContext from '../../store/user-context';
-import {Lice} from "../types";
+import {Adresa, Lice} from "../types";
 import axios from "axios";
 
 
@@ -108,10 +108,7 @@ const PatentForm: React.FunctionComponent = () => {
 
     const validate = (): boolean => {
 
-        let p = {...podnosilac}
-        p.kontakt.eposta = "eposta"
-
-        if (!Lice.validate(p)) {
+        if (!Lice.validate(podnosilac)) {
             toast.error("Niste uneli sve podatke o podnosiocu.");
             return false;
         }
@@ -164,97 +161,129 @@ const PatentForm: React.FunctionComponent = () => {
 
     }
 
-    const uploadFile = (file: File): string => {
+    const uploadFile = async (file: File): Promise<string> => {
         let formData = new FormData();
-
         formData.append('file', file);
 
-        axios.post('http://localhost:8002/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(response => {
-                toast.success("Uspešno je poslata datoteka: " + file.name);
-                return "http://localhost:8002" + response.data;
+        try {
+            let fileName = await axios.post('http://localhost:8002/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
-            .catch(() => {
-                toast.error("Greška pri prilaganju datoteke: " + file.name);
-                return "";
-            });
-
-        return "";
+            toast.success("Uspešno je poslata datoteka: " + file.name);
+            return fileName.data
+        } catch {
+            toast.error("Greška pri prilaganju datoteke: " + file.name);
+            return "";
+        }
     }
 
 
     async function getPrilozi() {
-        let prilozi = {
-            apstrakt: "", nacrt: "", opis: "",
-            izjavaPronalazaca: "", izajavaOSticanjuPrava: "",
-            ranijePrijave: [""], prvobitnaPrijava: ""
-        }
+        let prilozi: any = {}
 
-        let ranijePrijave: string[] = [];
+        let ranijePrijave: any[] = [];
 
         if (prilozeniDokumenti.apstrakt)
-            prilozi.apstrakt = uploadFile(prilozeniDokumenti.apstrakt[0]);
+            prilozi.apstrakt = await uploadFile(prilozeniDokumenti.apstrakt[0]);
         if (prilozeniDokumenti.nacrt) {
-            prilozi.nacrt = uploadFile(prilozeniDokumenti.nacrt[0]);
+            prilozi.nacrt = await uploadFile(prilozeniDokumenti.nacrt[0]);
         }
         if (prilozeniDokumenti.opisPronalaska) {
-            prilozi.opis = uploadFile(prilozeniDokumenti.opisPronalaska[0]);
+            prilozi.opis = await uploadFile(prilozeniDokumenti.opisPronalaska[0]);
         }
         if (prilozeniDokumenti.osnovSticanja) {
-            prilozi.izajavaOSticanjuPrava = uploadFile(prilozeniDokumenti.osnovSticanja[0])
+            prilozi.izjavaOSticanjuPrava = await uploadFile(prilozeniDokumenti.osnovSticanja[0])
         }
         if (prilozeniDokumenti.nenavedenPronalazac) {
-            prilozi.izjavaPronalazaca = uploadFile(prilozeniDokumenti.nenavedenPronalazac[0])
+            prilozi.izjavaPronalazaca = await uploadFile(prilozeniDokumenti.nenavedenPronalazac[0])
         }
         if (prilozeniDokumenti.prvobitnaPrijava) {
-            prilozi.prvobitnaPrijava = uploadFile(prilozeniDokumenti.prvobitnaPrijava[0])
+            prilozi.prvobitnaPrijava = await uploadFile(prilozeniDokumenti.prvobitnaPrijava[0])
         }
         if (prilozeniDokumenti.ranijePrijave) {
             for (let i = 0; i < prilozeniDokumenti.ranijePrijave.length; i++) {
-                ranijePrijave.push(uploadFile(prilozeniDokumenti.ranijePrijave[i]))
+                ranijePrijave.push({RanijaPrijava: await uploadFile(prilozeniDokumenti.ranijePrijave[i])})
             }
         }
 
         prilozi.ranijePrijave = ranijePrijave;
-
         return prilozi;
     }
 
     const onSubmit = async (e: any) => {
         e.preventDefault();
 
-        if (validate()) {
-            let p = podnosilac;
-            p.kontakt.eposta = "smddfknjg"
-            let dto = {
-                prilozi: getPrilozi(),
-                podnosilac: {info: p.info, kontakt: p.kontakt, adresa: p.adresa},
-                podnosilacJePronalazac: podnosilac.pronalazac,
-                pronalazaci: pronalazaci,
-                punomocnik: punomocnik,
-                nazivNaSrpskom: nazivPatenta.srpski,
-                nazivNaEngleskom: nazivPatenta.engleski,
-                adresaZaDostavljanje: {
-                    ulica:dostavljanje.ulica,
+        if (true) {
+
+            let dto: any = {};
+
+            dto.podnosilacJePronalazac = podnosilac.pronalazac;
+            dto.nacinDostavljanja = dostavljanje.pisano ? "pisano" : "elektornski";
+            dto.nazivNaSrpskom = nazivPatenta.srpski;
+            dto.nazivNaEngleskom = nazivPatenta.engleski
+
+            dto.podnosilac = {
+                info: {...podnosilac.info},
+                adresa: {...podnosilac.adresa},
+                kontakt: {eposta: user?.email, telefon: podnosilac.kontakt.telefon, faks: podnosilac.kontakt.faks}
+            }
+
+            dto.prilozi = await getPrilozi();
+
+            if (pronalazaciNavedeni) {
+                let dodatiPronalazaci = []
+                for (let pronalazac of pronalazaci) {
+                    if (Pronalazac.validate(pronalazac)) {
+                        dodatiPronalazaci.push({"Lice": pronalazac})
+                    }
+                }
+                if (dodatiPronalazaci.length > 0) {
+                    dto.pronalazaci = dodatiPronalazaci;
+                }
+            }
+
+            if (PrvobitnaPrijava.isFull(prvobitnaPrijava)) {
+                dto.prvobitnaPrijava = prvobitnaPrijava;
+            }
+
+            let dodateRanijePrijave = []
+
+            for (let ranijaPrijava of ranijePrijave) {
+                if (RanijaPrijava.isFull(ranijaPrijava)) {
+                    dodateRanijePrijave.push({"RanijaPrijava": ranijaPrijava})
+                }
+            }
+            if (dodateRanijePrijave.length > 0) {
+                dto.ranijePrijave = dodateRanijePrijave;
+            }
+
+            if (Adresa.validate(dostavljanje) && dostavljanje.pisano) {
+                dto.adresaZaDostavljanje = {
+                    ulica: dostavljanje.ulica,
                     grad: dostavljanje.grad,
                     broj: dostavljanje.broj,
                     drzava: dostavljanje.drzava,
                     postanskiBroj: dostavljanje.postanskiBroj
-                },
-                nacinDostavljanja: dostavljanje.pisano ? "pisano" : "elektornski",
-                prvobitnaPrijava: prvobitnaPrijava,
-                ranijePrijave: ranijePrijave
+                }
             }
 
-            //const xml2js = require("xml2js");
-            //const builder = new xml2js.Builder();
-            //let xml = builder.buildObject(dto);
+            if (Punomocnik.isFull(punomocnik)) {
+                dto.punomocnik = punomocnik;
+            }
 
-            axios.post("http://localhost:8002/patent/create", dto).then(response => {
+            const xml2js = require("xml2js");
+            const builder = new xml2js.Builder();
+            let xml = builder.buildObject({Zahtev: {...dto}});
+
+
+            axios.post("http://localhost:8002/patent/create", xml, {
+                headers: {
+                    "Content-Type": "application/xml",
+                    Accept: "application/xml",
+                }
+            }).then(response => {
                 toast.success(response.data);
             }).catch(() => {
                 toast.error("Greška pri čuvanju zahteva.")
@@ -284,14 +313,6 @@ const PatentForm: React.FunctionComponent = () => {
                     <h3>Podnosilac prijave</h3>
                     <div className="form-input-container">
                         <div id="licePodnosilac" className="grid grid-cols-2 gap-4">
-                            <h2 className=" col-span-full"> Tip podnosilaca </h2>
-                            <div className="flex items-center mb-4 col-span-2 self-start">
-                                <input id="disabled-checkbox" type="checkbox" checked={podnosilac.pronalazac}
-                                       onChange={e => setPodnosilac({...podnosilac, pronalazac: e.target.checked})}
-                                       className=" w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"/>
-                                <label htmlFor="disabled-checkbox" className="ml-2 text-base">Podnosilac prijave je i
-                                    pronalazač</label>
-                            </div>
                             <div className="flex items-center mr-4">
                                 <input type="radio" value="" name="podnosilac-radio" className="w-4 h-4"
                                        onClick={() => showFizickoLice(namePodnosilac, surnamePodnosilac, citizenshipPodnosilac)}/>
@@ -373,6 +394,7 @@ const PatentForm: React.FunctionComponent = () => {
                                            adresa: {...podnosilac.adresa, drzava: e.target.value}
                                        })}/>
                             </div>
+
                         </div>
 
                         <div id="kontaktPodnosilac" className="grid grid-cols-3 gap-4">
@@ -387,7 +409,7 @@ const PatentForm: React.FunctionComponent = () => {
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>E-pošta</p>
-                                {/*<input type="text" name="eposta" className='w-full' value={user!.email}/>*/}
+                                <input type="text" name="eposta" className='w-full' value={user!.email}/>
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Faks</p>
@@ -398,6 +420,19 @@ const PatentForm: React.FunctionComponent = () => {
                                        })}/>
                             </div>
                         </div>
+
+                        <div className='flex-col gap-3 items-start'>
+                            <h2 className="col-span-full mb-3"> Tip podnosilaca </h2>
+                            <div className="flex items-center mb-4 col-span-2 self-start">
+                                <input id="disabled-checkbox" type="checkbox" checked={podnosilac.pronalazac}
+                                       onChange={e => {
+                                           setPodnosilac({...podnosilac, pronalazac: e.target.checked})}}
+                                       className=" w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"/>
+                                <label htmlFor="disabled-checkbox" className="ml-2 text-base">Podnosilac prijave je i
+                                    pronalazač</label>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -682,40 +717,50 @@ const PatentForm: React.FunctionComponent = () => {
 
                 <div id="punomocnik" className="form-block">
                     <h3>Dostavljanje</h3>
+
                     <div className="form-input-container">
-                        <div id="adresaDostavljanje" className="grid grid-cols-3 gap-4">
-                            <h2 className=" col-span-full"> Adresa za dostavljanje</h2>
-                            <div className='flex-col gap-1 items-start'>
-                                <p className='font-light text-sm'>Ulica</p>
-                                <input type="text" name="ulica-dostavljanje" className='w-full'
-                                       value={dostavljanje.ulica}
-                                       onChange={e => setDostavljanje({...dostavljanje, ulica: e.target.value})}/>
+
+                        {dostavljanje.pisano ? <div>
+
+                            <div id="adresaDostavljanje" className="grid grid-cols-3 gap-4">
+                                <h2 className=" col-span-full"> Adresa za dostavljanje</h2>
+                                <div className='flex-col gap-1 items-start'>
+                                    <p className='font-light text-sm'>Ulica</p>
+                                    <input type="text" name="ulica-dostavljanje" className='w-full'
+                                           value={dostavljanje.ulica}
+                                           onChange={e => setDostavljanje({...dostavljanje, ulica: e.target.value})}/>
+                                </div>
+                                <div className='flex-col gap-1 items-start'>
+                                    <p className='font-light text-sm'>Broj</p>
+                                    <input type="text" name="broj-dostavljanje" className='w-full'
+                                           value={dostavljanje.broj}
+                                           onChange={e => setDostavljanje({...dostavljanje, broj: e.target.value})}/>
+                                </div>
+                                <div className='flex-col gap-1 items-start'>
+                                    <p className='font-light text-sm'>Poštanski broj</p>
+                                    <input type="text" name="postanskiBroj-dostavljanje" className='w-full'
+                                           value={dostavljanje.postanskiBroj} onChange={e => setDostavljanje({
+                                        ...dostavljanje,
+                                        postanskiBroj: e.target.value
+                                    })}/>
+                                </div>
+                                <div className='flex-col gap-1 items-start'>
+                                    <p className='font-light text-sm'>Grad</p>
+                                    <input type="text" name="grad-dostavljanje" className='w-full'
+                                           value={dostavljanje.grad}
+                                           onChange={e => setDostavljanje({...dostavljanje, grad: e.target.value})}/>
+                                </div>
+                                <div className='flex-col gap-1 items-start'>
+                                    <p className='font-light text-sm'>Država</p>
+                                    <input type="text" name="drzava-dostavljanje" className='w-full'
+                                           value={dostavljanje.drzava}
+                                           onChange={e => setDostavljanje({...dostavljanje, drzava: e.target.value})}/>
+                                </div>
                             </div>
-                            <div className='flex-col gap-1 items-start'>
-                                <p className='font-light text-sm'>Broj</p>
-                                <input type="text" name="broj-dostavljanje" className='w-full' value={dostavljanje.broj}
-                                       onChange={e => setDostavljanje({...dostavljanje, broj: e.target.value})}/>
-                            </div>
-                            <div className='flex-col gap-1 items-start'>
-                                <p className='font-light text-sm'>Poštanski broj</p>
-                                <input type="text" name="postanskiBroj-dostavljanje" className='w-full'
-                                       value={dostavljanje.postanskiBroj} onChange={e => setDostavljanje({
-                                    ...dostavljanje,
-                                    postanskiBroj: e.target.value
-                                })}/>
-                            </div>
-                            <div className='flex-col gap-1 items-start'>
-                                <p className='font-light text-sm'>Grad</p>
-                                <input type="text" name="grad-dostavljanje" className='w-full' value={dostavljanje.grad}
-                                       onChange={e => setDostavljanje({...dostavljanje, grad: e.target.value})}/>
-                            </div>
-                            <div className='flex-col gap-1 items-start'>
-                                <p className='font-light text-sm'>Država</p>
-                                <input type="text" name="drzava-dostavljanje" className='w-full'
-                                       value={dostavljanje.drzava}
-                                       onChange={e => setDostavljanje({...dostavljanje, drzava: e.target.value})}/>
-                            </div>
-                        </div>
+
+
+                        </div> : null}
+
 
                         <div id="licePodnosilac" className="grid grid-cols-2 gap-4">
                             <h2 className=" col-span-full"> Način dostavljanja </h2>
@@ -759,19 +804,20 @@ const PatentForm: React.FunctionComponent = () => {
                             <td className='flex items-end'>Datum podnošenja:</td>
                             <td className='w-3/5'>
                                 <input type="date" className="w-full" name='prvobitna-prijava-datum'
-                                       value={prvobitnaPrijava.datum} onChange={e => setPrvobitnaPrijava({
+                                       value={prvobitnaPrijava.datumPodnosenja} onChange={e => setPrvobitnaPrijava({
                                     ...prvobitnaPrijava,
-                                    datum: e.target.value
+                                    datumPodnosenja: e.target.value
                                 })}/>
                             </td>
                         </tr>
                         <tr>
                             <td className='flex items-end'>Tip prijave koja se podnosi:</td>
                             <td className='w-3/5 align-baseline'>
-                                <select className="w-full p-1" name='tip-prvobitne-prijave' value={prvobitnaPrijava.tip}
+                                <select className="w-full p-1" name='tip-prvobitne-prijave'
+                                        value={prvobitnaPrijava.tipPrijave}
                                         onChange={e => setPrvobitnaPrijava({
                                             ...prvobitnaPrijava,
-                                            tip: e.target.value as TipPrvobitnePrijave
+                                            tipPrijave: e.target.value as TipPrvobitnePrijave
                                         })}>
                                     <option value="izdvojena">Izdvojena</option>
                                     <option value="dopunska">Dopunska</option>
@@ -811,16 +857,16 @@ const PatentForm: React.FunctionComponent = () => {
                                 </td>
                                 <td>
                                     <input type="date" className="w-full" name={`ranija-prijava-datum-${index}`}
-                                           value={application.datum} onChange={e => setRanijaPrijava(index, {
+                                           value={application.datumPodnosenja} onChange={e => setRanijaPrijava(index, {
                                         ...application,
-                                        datum: e.target.value
+                                        datumPodnosenja: e.target.value
                                     })}/>
                                 </td>
                                 <td>
                                     <input type="input" className="w-full" name={`ranija-prijava-oznaka-${index}`}
-                                           value={application.oznaka} onChange={e => setRanijaPrijava(index, {
+                                           value={application.dvoslovnaOznaka} onChange={e => setRanijaPrijava(index, {
                                         ...application,
-                                        oznaka: e.target.value
+                                        dvoslovnaOznaka: e.target.value
                                     })}/>
                                 </td>
                                 <td>
@@ -844,7 +890,7 @@ const PatentForm: React.FunctionComponent = () => {
                     <div className="form-input-container">
                         <div className="flex justify-between w-full items-center">
                             <p>Prvobitna prijava:</p>
-                            <input type="file" name='prvobitna-prijava-fajl' className="!border-none"
+                            <input type="file" size={10485760} name='prvobitna-prijava-fajl' className="!border-none"
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        prvobitnaPrijava: e.target.files as FileList
@@ -852,7 +898,8 @@ const PatentForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Ranije prijave:</p>
-                            <input type="file" name='ranije-prijave-fajl' multiple className="!border-none"
+                            <input type="file" size={10485760} name='ranije-prijave-fajl' multiple
+                                   className="!border-none"
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        ranijePrijave: e.target.files as FileList
@@ -860,7 +907,8 @@ const PatentForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Izjava o osnovu sticanja prava na podnosenje prijave:</p>
-                            <input type="file" name='osnova-sticanja-prava-fajl' className="!border-none"
+                            <input type="file" size={10485760} name='osnova-sticanja-prava-fajl'
+                                   className="!border-none"
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        osnovSticanja: e.target.files as FileList
@@ -868,7 +916,7 @@ const PatentForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Izjava pronalazaca da ne zeli da bude naveden:</p>
-                            <input type="file" name='izjava-pronalazaca-fajl' className="!border-none"
+                            <input type="file" size={10485760} name='izjava-pronalazaca-fajl' className="!border-none"
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        nenavedenPronalazac: e.target.files as FileList
@@ -876,7 +924,7 @@ const PatentForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Opis pronalaska:</p>
-                            <input type="file" name='opis-pronalaska-fajl' className="!border-none"
+                            <input type="file" size={10485760} name='opis-pronalaska-fajl' className="!border-none"
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        opisPronalaska: e.target.files as FileList
@@ -884,7 +932,7 @@ const PatentForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Patent zahtevi za zastitu pronalaska:</p>
-                            <input type="file" name='patent-zahtevi-fajl' className="!border-none"
+                            <input type="file" size={10485760} name='patent-zahtevi-fajl' className="!border-none"
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        zastitaPronalaska: e.target.files as FileList
@@ -892,7 +940,7 @@ const PatentForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Nacrt na koji se poziva opis:</p>
-                            <input type="file" name='nacrt-fajl' className="!border-none"
+                            <input type="file" size={10485760} name='nacrt-fajl' className="!border-none"
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        nacrt: e.target.files as FileList
@@ -900,7 +948,7 @@ const PatentForm: React.FunctionComponent = () => {
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Apstrakt:</p>
-                            <input type="file" name='apstrakt-fajl' className="!border-none"
+                            <input type="file" size={10485760} name='apstrakt-fajl' className="!border-none"
                                    onChange={e => setPrilozeniDokumenti({
                                        ...prilozeniDokumenti,
                                        apstrakt: e.target.files as FileList

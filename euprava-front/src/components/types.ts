@@ -1,7 +1,31 @@
-import { ZahtevZaPriznanjeAutorska } from "./autorska/types";
-import { ZahtevZaPriznanjePatenta } from "./patent/types";
-import { ZahtevZaPriznanjeZiga } from "./zig/types";
 
+
+export class Prilog {
+  public putanja: string;
+  public naslov: string;
+
+  constructor() {
+    this.putanja = "";
+    this.naslov = "";
+  }
+}
+export class ZahtevData {
+  public status: string;
+  public datum: string;
+  public brojPrijave: string;
+  public html: string;
+  public prilozi:Prilog[];
+
+  constructor() {
+    this.status = "";
+    this.datum = "";
+    this.brojPrijave = "";
+    this.html = "";
+    this.prilozi = [];
+  }
+
+
+}
 export class Lice {
   public info: Info;
   public adresa: Adresa;
@@ -131,8 +155,3 @@ export class InformacijeOResenju {
   public referenca?: string;
   public obrazlozenje?: string;
 }
-
-export type Zahtev =
-  | ZahtevZaPriznanjeZiga
-  | ZahtevZaPriznanjeAutorska
-  | ZahtevZaPriznanjePatenta;

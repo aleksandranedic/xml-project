@@ -1,14 +1,12 @@
 import {useContext, useState} from "react";
-import { IoIosAddCircle, IoIosCloseCircle } from 'react-icons/io'
+import {IoIosAddCircle, IoIosCloseCircle} from 'react-icons/io'
 import RequestTypeContext from "../store/request-type-context";
 import axios from "axios";
 import {toast} from "react-toastify";
 import PatentContext from "../store/patent-zahtevi-context";
-import { ZahtevZaPriznanjePatenta } from "../components/patent/types";
 import ZigContext from "../store/zig-zahtevi-context";
-import { ZahtevZaPriznanjeZiga } from "../components/zig/types";
 import AutorskaContext from "../store/autorska-zahtevi-context";
-import { ZahtevZaPriznanjeAutorska } from "../components/autorska/types";
+import {ZahtevData} from "../components/types";
 
 
 enum Operator {
@@ -109,9 +107,9 @@ const AdvancedSearch: React.FunctionComponent = () => {
         axios.post(`http://localhost:${port}/search/advanced`, {metadata:searchParams}).then(response => {
             console.log(response.data);
             switch (type) {
-                case 'patent': setPatentZahtevi([new ZahtevZaPriznanjePatenta()]); break;
-                case 'zig': setZigZahtevi([new ZahtevZaPriznanjeZiga()]); break;
-                case 'autor': setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
+                case 'patent': setPatentZahtevi([new ZahtevData()]); break;
+                case 'zig': setZigZahtevi([new ZahtevData()]); break;
+                case 'autor': setAutorskaZahtevi([new ZahtevData()]);
             }
         }).catch(() => {
             toast.error("Greška pri pretrazi.")

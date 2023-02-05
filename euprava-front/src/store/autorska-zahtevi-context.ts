@@ -1,10 +1,10 @@
 import { createContext } from "react";
-import { ZahtevZaPriznanjeAutorska } from "../components/autorska/types";
+import {ZahtevData} from "../components/types";
 
 interface AutorskaZahtevContextType {
-  autorskaZahtevi: ZahtevZaPriznanjeAutorska[];
+  autorskaZahtevi: ZahtevData[];
   setAutorskaZahtevi: React.Dispatch<
-    React.SetStateAction<ZahtevZaPriznanjeAutorska[]>
+    React.SetStateAction<ZahtevData[]>
   >;
 }
 

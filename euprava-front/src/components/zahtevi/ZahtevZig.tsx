@@ -1,7 +1,7 @@
-import { ZahtevZaPriznanjeZiga } from "../zig/types";
+import {ZahtevData} from "../types";
 
 interface ZahtevZigProps {
-    zahtev: ZahtevZaPriznanjeZiga
+    zahtev: ZahtevData
 }
  
 const ZahtevZig: React.FunctionComponent<ZahtevZigProps> = ({zahtev}) => {

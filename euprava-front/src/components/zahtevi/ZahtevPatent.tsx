@@ -1,7 +1,7 @@
-import { ZahtevZaPriznanjePatenta } from "../patent/types";
+import {ZahtevData} from "../types";
 
 interface ZahtevPatentProps {
-    zahtev: ZahtevZaPriznanjePatenta
+    zahtev: ZahtevData
 }
  
 const ZahtevPatent: React.FunctionComponent<ZahtevPatentProps> = ({zahtev}) => {
