@@ -1,5 +1,6 @@
 package ftn.xml.autor.service;
 
+import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.model.izvestaj.Izvestaj;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.fop.apps.*;
@@ -25,7 +26,7 @@ public class IzvestajService {
     private static final String FILE_FOLDER = "./src/main/resources/data/files/";
     private static final String TARGET_FOLDER = "./target/classes/data/files/";
 
-    public static final String CONTEXT_PATH = "ftn.xml.patent.model.izvestaj";
+    public static final String CONTEXT_PATH = "ftn.xml.autor.model.izvestaj";
 
     private final FopFactory fopFactory;
     private TransformerFactory transformerFactory;
@@ -55,10 +56,19 @@ public class IzvestajService {
         return toPDF(marshal(izvestaj), fileName);
     }
 
+    public String getResnjePdf(ZahtevZaIntelektualnuSvojinu.Resenje resenje, String fileName) throws JAXBException {
+        return toPDF(marshalResenje(resenje), fileName);
+    }
 
     public OutputStream marshal(Izvestaj izvestaj) throws JAXBException {
         OutputStream os = new ByteArrayOutputStream();
         marshaller.marshal(izvestaj, os);
+        return os;
+    }
+
+    public OutputStream marshalResenje(ZahtevZaIntelektualnuSvojinu.Resenje resenje) throws JAXBException {
+        OutputStream os = new ByteArrayOutputStream();
+        marshaller.marshal(resenje, os);
         return os;
     }
 
@@ -74,7 +84,7 @@ public class IzvestajService {
 
     public String toPDF(OutputStream outputStream, String pdfFilePath) {
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(((ByteArrayOutputStream)outputStream).toByteArray());
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(((ByteArrayOutputStream) outputStream).toByteArray());
             StreamSource source = new StreamSource(inputStream);
             toPDF(pdfFilePath, source);
             return pdfFilePath;
@@ -93,13 +103,13 @@ public class IzvestajService {
         Result res = new SAXResult(fop.getDefaultHandler());
         xslFoTransformer.transform(source, res);
 
-        toPDF(FILE_FOLDER +pdfFilePath, outStream);
+        toPDF(FILE_FOLDER + pdfFilePath, outStream);
         toPDF(TARGET_FOLDER + pdfFilePath, outStream);
 
     }
 
     private static void toPDF(String pdfFilePath, ByteArrayOutputStream outStream) throws IOException {
-        File pdfFile = new File( pdfFilePath);
+        File pdfFile = new File(pdfFilePath);
         if (!pdfFile.getParentFile().exists()) {
             pdfFile.getParentFile().mkdir();
         }

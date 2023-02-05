@@ -12,7 +12,7 @@ export function PatentRequests() {
     const [patentZahtevi, setPatentZahtevi] = useState<ZahtevData[]>([]);
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("patent");
 
-    const path = user?.role === "Sluzbenik" ? "" : "/resolved/" + user?.email;
+    const path = user?.role === Role.WORKER ? "" : "/resolved/" + user?.email;
     useEffect(() => {
         axios.get('http://localhost:8002/patent'+path, {
             headers: {
