@@ -20,8 +20,7 @@ public class ZahtevData {
         }catch (Exception e){
             this.status="";
         }
-//        this.datum=zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getDatumPodnosenja();
-        this.datum="12.3.2022.";
+        this.datum= String.valueOf(zahtevZaPriznanjeZiga.getDatumPodnosenja());
         this.brojPrijave=zahtevZaPriznanjeZiga.getBrojPrijaveZiga();
         this.html="";
     }

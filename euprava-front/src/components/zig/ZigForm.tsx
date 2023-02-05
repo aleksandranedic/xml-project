@@ -244,24 +244,24 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
         e.preventDefault()
         if (validate()) {
             const files = await uploadFiles();
-            if (!files) return;
+            if (!files) {
+                toast.error("Greška pri čuvanju fajlova.")
+                return;
+            }
             const dto = createDto(files);
             const xml2js = require("xml2js");
             const builder = new xml2js.Builder();
             let xml = builder.buildObject(dto);
-
-            console.log(dto)
             try{
                 const result = await axios.post("http://localhost:8000/zig/create", xml, {
                     headers: {
                       "Content-Type": "application/xml",
                     },
                 });
-                console.log(result);
                 toast.success(result.data)
             } catch (e: any) {
                 console.log(e);
-                toast.error(e.message)
+                toast.error("Greška pri podnošenju zahteva.")
             }
         }
     }
