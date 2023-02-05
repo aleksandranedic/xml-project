@@ -3,7 +3,7 @@ import Zahtevi from "../zahtevi/Zahtevi";
 import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
 import {Prilog, ZahtevData} from "../types";
-import userContext from "../../store/user-context";
+import userContext, {Role} from "../../store/user-context";
 
 export function ZigRequests() {
 
@@ -11,7 +11,7 @@ export function ZigRequests() {
     const [zigZahtevi, setZigZahtevi] = useState<ZahtevData[]>([]);
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("zig");
 
-    const path = user?.role === "Sluzbenik" ? "" : "/resolved/" + user?.email;
+    const path = user?.role === Role.WORKER ? "" : "/resolved/" + user?.email;
     useEffect(() => {
         axios.get('http://localhost:8000/autor' + path, {
             headers: {

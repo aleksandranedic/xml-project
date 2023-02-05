@@ -28,6 +28,7 @@ public class AutorRepository {
     private final String COLLECTION_ID = "/db/autor";
     private final Unmarshaller unmarshaller;
 
+
     AutorRepository() throws IOException, JAXBException {
         this.conn = AuthenticationUtilities.loadProperties();
         JAXBContext context = JAXBContext.newInstance("ftn.xml.autor.model");
@@ -90,6 +91,7 @@ public class AutorRepository {
         }).toList();
         return list;
     }
+
 
     public ZahtevZaIntelektualnuSvojinu retrieve(String documentId) throws Exception {
         createConnection();
@@ -265,19 +267,6 @@ public class AutorRepository {
         return "A-" + randomString.toString() + ".xml";
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> retrieveAllWithinDatePeriod(String startDate, String endDate) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        //Date format is yyyy-MM-dd (example: 2023-02-01)
-        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema >= xs:date('" + startDate
-                + "') and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema <= xs:date('" + endDate + "')]";
-        return retrieveBasedOnXQuery(xquery);
-    }
 
-    public List<ZahtevZaIntelektualnuSvojinu> retrieveAllWithResenjeStatus(String startDate, String endDate, String status) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        //Date format is yyyy-MM-dd (example: 2023-02-01)
-        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_priznanje_patenta/Resenje/Status='" + status +
-                "' and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema >= xs:date('" + startDate
-                + "') and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema <= xs:date('" + endDate + "')]";
-        return retrieveBasedOnXQuery(xquery);
-    }
 
 }

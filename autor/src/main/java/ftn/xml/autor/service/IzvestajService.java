@@ -25,7 +25,7 @@ public class IzvestajService {
     private static final String FILE_FOLDER = "./src/main/resources/data/files/";
     private static final String TARGET_FOLDER = "./target/classes/data/files/";
 
-    public static final String CONTEXT_PATH = "ftn.xml.patent.model.izvestaj";
+    public static final String CONTEXT_PATH = "ftn.xml.autor.model.izvestaj";
 
     private final FopFactory fopFactory;
     private TransformerFactory transformerFactory;
@@ -74,7 +74,7 @@ public class IzvestajService {
 
     public String toPDF(OutputStream outputStream, String pdfFilePath) {
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(((ByteArrayOutputStream)outputStream).toByteArray());
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(((ByteArrayOutputStream) outputStream).toByteArray());
             StreamSource source = new StreamSource(inputStream);
             toPDF(pdfFilePath, source);
             return pdfFilePath;
@@ -93,13 +93,13 @@ public class IzvestajService {
         Result res = new SAXResult(fop.getDefaultHandler());
         xslFoTransformer.transform(source, res);
 
-        toPDF(FILE_FOLDER +pdfFilePath, outStream);
+        toPDF(FILE_FOLDER + pdfFilePath, outStream);
         toPDF(TARGET_FOLDER + pdfFilePath, outStream);
 
     }
 
     private static void toPDF(String pdfFilePath, ByteArrayOutputStream outStream) throws IOException {
-        File pdfFile = new File( pdfFilePath);
+        File pdfFile = new File(pdfFilePath);
         if (!pdfFile.getParentFile().exists()) {
             pdfFile.getParentFile().mkdir();
         }

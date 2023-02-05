@@ -3,7 +3,7 @@ import Zahtevi from "../zahtevi/Zahtevi";
 import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
 import {Prilog, ZahtevData} from "../types";
-import userContext from "../../store/user-context";
+import userContext, {Role} from "../../store/user-context";
 
 export function AutorskaRequests() {
 
@@ -11,7 +11,7 @@ export function AutorskaRequests() {
     const [autorZahtevi, setAutorZahtevi] = useState<ZahtevData[]>([]);
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("autor");
 
-    const path = user?.role === "Službenik" ? "" : "/resolved/" + user?.email;
+    const path = user?.role === Role.WORKER ? "" : "/resolved/" + user?.email;
     console.log(user?.role)
     useEffect(() => {
         axios.get('http://localhost:8003/autor' + path, {

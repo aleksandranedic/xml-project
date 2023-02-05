@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.xmldb.api.base.XMLDBException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigInteger;
@@ -16,6 +17,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -174,17 +176,20 @@ public class ZahtevMapper {
     }
 
     private XMLGregorianCalendar parseToXMLGregorianCalendar(String dateString) throws DatatypeConfigurationException, ParseException {
-        DateFormat format = new SimpleDateFormat("yyyy");
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = format.parse(dateString);
 
         return parseToXMLGregorianCalendar(date);
     }
 
     private static XMLGregorianCalendar parseToXMLGregorianCalendar(Date date) throws DatatypeConfigurationException {
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(date);
+        //GregorianCalendar cal = new GregorianCalendar();
+        // cal.setTime(date);
 
-        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+        GregorianCalendar call = new GregorianCalendar();
+        call.setTime(new Date());
+        XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(call.get(Calendar.YEAR), call.get(Calendar.MONTH)+1, call.get(Calendar.DAY_OF_MONTH), DatatypeConstants.FIELD_UNDEFINED);
+        return xmlDate;
     }
 
     private static TFizickoLice getFizickoLice(Zahtev.Lice l) {

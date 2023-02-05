@@ -3,7 +3,7 @@ import Zahtevi from "../zahtevi/Zahtevi";
 import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
 import {Prilog, ZahtevData} from "../types";
-import UserContext from "../../store/user-context";
+import UserContext, {Role} from "../../store/user-context";
 
 export function PatentRequests() {
 
@@ -11,7 +11,7 @@ export function PatentRequests() {
     const [patentZahtevi, setPatentZahtevi] = useState<ZahtevData[]>([]);
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("patent");
 
-    const path = user?.role === "Sluzbenik" ? "" : "/resolved/" + user?.email;
+    const path = user?.role === Role.WORKER ? "" : "/resolved/" + user?.email;
     useEffect(() => {
         axios.get('http://localhost:8002/patent'+path, {
             headers: {

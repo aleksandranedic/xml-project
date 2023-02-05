@@ -22,12 +22,17 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +44,9 @@ public class AutorService {
     private static final String TARGET_FOLDER = "./target/classes/data/files/";
 
 
-    private static final String FUSEKI_DATASET_PATH = "/autorDataset";
+    private final String FUSEKI_DATABASE = "<http://localhost:8080/fuseki-autor/autorDataset/data/autor/metadata>";
+
+    private final String DATE_PREDICT = "<http://www.ftn.uns.ac.rs/jaxb/autor/pred/Datum_podnosenja>";
     private final AutorRepository repository;
     private final RdfRepository rdfRepository;
     private final Unmarshaller unmarshaller;
@@ -242,11 +249,46 @@ public class AutorService {
 
     public void createIzvestaj(DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
         Izvestaj izvestaj = new Izvestaj();
-        izvestaj.setBrojPodnetihZahteva(String.valueOf(repository.retrieveAllWithinDatePeriod(dateRange.getStartDate(), dateRange.getEndDate()).size()));
-        izvestaj.setBrojOdobrenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(dateRange.getStartDate(), dateRange.getEndDate(), "Odobreno").size()));
-        izvestaj.setBrojOdbijenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(dateRange.getStartDate(), dateRange.getEndDate(), "Odbijeno").size()));
+        izvestaj.setBrojPodnetihZahteva(String.valueOf(retrieveAllInDateRange(dateRange).size()));
+        izvestaj.setBrojOdobrenihZahteva(String.valueOf(getAllApprovedRequestInDateRange(dateRange, "Odobren").size()));
+        izvestaj.setBrojOdbijenihZahteva(String.valueOf(getAllApprovedRequestInDateRange(dateRange, "Odbijen").size()));
         izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", dateRange.getStartDate(), dateRange.getEndDate()));
         izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + dateRange.getStartDate() + "_" + dateRange.getEndDate() + ".pdf");
     }
 
+    public List<ZahtevZaIntelektualnuSvojinu> getAllApprovedRequestInDateRange(DateRangeDto dateRange, String status) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaIntelektualnuSvojinu> list = retrieveAllInDateRange(dateRange);
+        List<ZahtevZaIntelektualnuSvojinu> list1 = new ArrayList<>();
+        for (ZahtevZaIntelektualnuSvojinu zahtev : list) {
+            if (zahtev.getResenje() == null) {
+                continue;
+            } else {
+                if (zahtev.getResenje().getStatus().equals(status)) {
+                    list1.add(zahtev);
+                }
+            }
+        }
+        return list1;
+    }
+
+
+    public List<ZahtevZaIntelektualnuSvojinu> retrieveAllInDateRange(DateRangeDto dateRangeDto) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaIntelektualnuSvojinu> list = repository.retrieveAll();
+        List<ZahtevZaIntelektualnuSvojinu> list1 = new ArrayList<>();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate start = LocalDate.parse(dateRangeDto.getStartDate(), dateTimeFormatter);
+        LocalDate end = LocalDate.parse(dateRangeDto.getEndDate(), dateTimeFormatter);
+        for (ZahtevZaIntelektualnuSvojinu intelektualnuSvojinu : list) {
+            LocalDate datumPodnosenja = convertGregorianToLocalDateTime(intelektualnuSvojinu.getPopunjavaZavod().getDatumPodnosenja());
+            if (start.isBefore(datumPodnosenja) && end.isAfter(datumPodnosenja)) {
+                list1.add(intelektualnuSvojinu);
+            }
+        }
+        return list1;
+    }
+
+    public LocalDate convertGregorianToLocalDateTime(XMLGregorianCalendar xgc) {
+        ZonedDateTime utcZoned = xgc.toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneId.of("UTC"));
+        return utcZoned.toLocalDate();
+    }
 }
