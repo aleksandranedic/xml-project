@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
@@ -125,9 +126,23 @@ public class ZigService {
         repository.remove(brojPrijave + ".xml");
     }
 
-    public void save(Zahtev zahtev) throws Exception {
-        save(mapper.parseZahtev(zahtev));
+    public String save(Zahtev zahtev) throws Exception {
+        ZahtevZaPriznanjeZiga zahtevZaPriznanjeZiga = mapper.parseZahtev(zahtev);
+        save(zahtevZaPriznanjeZiga);
+        addRdf(zahtevZaPriznanjeZiga);
+        return zahtevZaPriznanjeZiga.getBrojPrijaveZiga();
     }
+
+    private void addRdf(ZahtevZaPriznanjeZiga zahtev) throws JAXBException, TransformerException {
+        ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshal(zahtev);
+
+        InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
+        ByteArrayOutputStream zahtev_output = new ByteArrayOutputStream();
+
+        rdfRepository.extractMetadata(zahtev_input, zahtev_output);
+        rdfRepository.writeRdf(zahtev_output.toString());
+    }
+
     public String getHtmlString(String brojPrijave) {
 
         String filePath = FILE_FOLDER + brojPrijave + ".html";

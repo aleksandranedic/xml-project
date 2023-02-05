@@ -7,29 +7,35 @@
 >
     <xsl:template match="/">
         <rdf:RDF>
-            <rdf:Description rdf:about="http://www.ftn.uns.ac.rs/jaxb/zig/{//zig:broj_prijave_ziga}">
+            <rdf:Description rdf:about="http://www.ftn.uns.ac.rs/jaxb/zig/{//zig:Broj_prijave_ziga}">
                 <pred:Broj_prijave>
-                    <xsl:value-of select="//zig:broj_prijave_ziga"/>
+                    <xsl:value-of select="//zig:Broj_prijave_ziga"/>
                 </pred:Broj_prijave>
                 <pred:Podnosilac>
                     <xsl:choose>
-                        <xsl:when test="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime">
-                            <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:poslovno_ime"/>
+                        <xsl:when test="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Poslovno_ime">
+                            <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Poslovno_ime"/>
                         </xsl:when>
                         <xsl:otherwise>
-                                <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:prezime"/>
+                                <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Ime"/> <xsl:text> </xsl:text> <xsl:value-of select="//zig:popunjava_podnosilac/zig:podnosilac/zig:prezime"/>
                         </xsl:otherwise>
                     </xsl:choose>
                 </pred:Podnosilac>
+                <pred:Podnosilac_email>
+                    <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Podnosilac/zig:Kontakt/zig:Email"/>
+                </pred:Podnosilac_email>
                 <pred:Datum_podnosenja>
-                    <xsl:value-of select="//zig:datum_podnosenja"/>
+                    <xsl:value-of select="//zig:Datum_podnosenja"/>
                 </pred:Datum_podnosenja>
-
+                <pred:Vrsta_a>
+                    <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Zig/zig:Vrsta/zig:Tip_a"/>
+                </pred:Vrsta_a>
+                <pred:Vrsta_b>
+                    <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Zig/zig:Vrsta/zig:Tip_b"/>
+                </pred:Vrsta_b>
                 <pred:Takse>
-                    <xsl:value-of select="//zig:popunjava_podnosilac/zig:placene_takse/zig:ukupno"/>
+                    <xsl:value-of select="//zig:Popunjava_podnosilac/zig:Placene_takse/zig:Ukupno"/>
                 </pred:Takse>
-
-
             </rdf:Description>
         </rdf:RDF>
     </xsl:template>
