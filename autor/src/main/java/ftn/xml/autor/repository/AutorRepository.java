@@ -2,7 +2,6 @@ package ftn.xml.autor.repository;
 
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.utils.AuthenticationUtilities;
-import ftn.xml.autor.utils.PrettyPrint;
 import org.exist.xmldb.EXistResource;
 import org.springframework.stereotype.Repository;
 import org.xmldb.api.DatabaseManager;
@@ -61,7 +60,6 @@ public class AutorRepository {
 
     public List<ZahtevZaIntelektualnuSvojinu> retrieveBasedOnBrojPrijave(String Broj_prijave) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_intelektualnu_svojinu/Popunjava_zavod/Broj_prijave = \"" + Broj_prijave + "\"]";
-        //TODO ovo baca exception
         return retrieveBasedOnXQuery(xquery);
     }
 
@@ -266,4 +264,20 @@ public class AutorRepository {
         }
         return "A-" + randomString.toString() + ".xml";
     }
+
+    public List<ZahtevZaIntelektualnuSvojinu> retrieveAllWithinDatePeriod(String startDate, String endDate) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        //Date format is yyyy-MM-dd (example: 2023-02-01)
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema >= xs:date('" + startDate
+                + "') and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema <= xs:date('" + endDate + "')]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
+    public List<ZahtevZaIntelektualnuSvojinu> retrieveAllWithResenjeStatus(String startDate, String endDate, String status) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        //Date format is yyyy-MM-dd (example: 2023-02-01)
+        String xquery = "let $files := collection(\"" + COLLECTION_ID + "\") return $files[Zahtev_za_priznanje_patenta/Resenje/Status='" + status +
+                "' and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema >= xs:date('" + startDate
+                + "') and Zahtev_za_priznanje_patenta/Popunjava_zavod/Datum_prijema <= xs:date('" + endDate + "')]";
+        return retrieveBasedOnXQuery(xquery);
+    }
+
 }

@@ -40,4 +40,5 @@ public class ZahtevDataMapper {
         }
         return zahtevData;
     }
+
 }

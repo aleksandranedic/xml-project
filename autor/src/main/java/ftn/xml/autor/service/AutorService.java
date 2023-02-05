@@ -1,11 +1,9 @@
 package ftn.xml.autor.service;
 
-import ftn.xml.autor.dto.Metadata;
-import ftn.xml.autor.dto.ResenjeDTO;
-import ftn.xml.autor.dto.Zahtev;
-import ftn.xml.autor.dto.ZahtevMapper;
+import ftn.xml.autor.dto.*;
 import ftn.xml.autor.model.EmailDataDTO;
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
+import ftn.xml.autor.model.izvestaj.Izvestaj;
 import ftn.xml.autor.repository.AutorRepository;
 import ftn.xml.autor.repository.RdfRepository;
 import ftn.xml.autor.utils.AuthenticationUtilitiesMetadata;
@@ -51,16 +49,18 @@ public class AutorService {
     private final TransformationService transformationService;
     private final QueryService queryService;
 
+    private final IzvestajService izvestajService;
     private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
 
     @Autowired
-    public AutorService(AutorRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, EmailService emailService, TransformationService transformationService, QueryService queryService) throws SAXException, JAXBException, IOException {
+    public AutorService(AutorRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, EmailService emailService, TransformationService transformationService, QueryService queryService, IzvestajService izvestajService) throws SAXException, JAXBException, IOException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.mapper = mapper;
         this.emailService = emailService;
         this.transformationService = transformationService;
         this.queryService = queryService;
+        this.izvestajService = izvestajService;
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
         conn = AuthenticationUtilitiesMetadata.loadProperties();
         unmarshaller = context.createUnmarshaller();
@@ -161,7 +161,7 @@ public class AutorService {
         }
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> getAllResolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaIntelektualnuSvojinu> getAllResolvedForUser(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaIntelektualnuSvojinu> list = repository.retrieveAll();
         List<ZahtevZaIntelektualnuSvojinu> list1 = new ArrayList<>();
         for (ZahtevZaIntelektualnuSvojinu zahtev :
@@ -173,7 +173,7 @@ public class AutorService {
         return list1;
     }
 
-    public List<ZahtevZaIntelektualnuSvojinu> getAllUnresolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaIntelektualnuSvojinu> getAllUnresolvedForUser(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaIntelektualnuSvojinu> list = repository.retrieveAll();
         List<ZahtevZaIntelektualnuSvojinu> list1 = new ArrayList<>();
         for (ZahtevZaIntelektualnuSvojinu zahtev : list) {
@@ -238,4 +238,15 @@ public class AutorService {
         outputStream.close();
         query.close();
     }
+
+
+    public void createIzvestaj(DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
+        Izvestaj izvestaj = new Izvestaj();
+        izvestaj.setBrojPodnetihZahteva(String.valueOf(repository.retrieveAllWithinDatePeriod(dateRange.getStartDate(), dateRange.getEndDate()).size()));
+        izvestaj.setBrojOdobrenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(dateRange.getStartDate(), dateRange.getEndDate(), "Odobreno").size()));
+        izvestaj.setBrojOdbijenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(dateRange.getStartDate(), dateRange.getEndDate(), "Odbijeno").size()));
+        izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", dateRange.getStartDate(), dateRange.getEndDate()));
+        izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + dateRange.getStartDate() + "_" + dateRange.getEndDate() + ".pdf");
+    }
+
 }

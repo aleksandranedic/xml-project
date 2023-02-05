@@ -21,7 +21,6 @@ public class PatentController {
 
     private final PatentService service;
     private final ZahtevDataMapper zahtevDataMapper;
-    //TODO: Dodaj streamovanje
     public static final String FILES = "http://localhost:8002/files/";
 
 
