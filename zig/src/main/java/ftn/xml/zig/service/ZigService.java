@@ -1,9 +1,7 @@
 package ftn.xml.zig.service;
 
-import ftn.xml.zig.dto.Metadata;
-import ftn.xml.zig.dto.ResenjeDTO;
-import ftn.xml.zig.dto.Zahtev;
-import ftn.xml.zig.dto.ZahtevMapper;
+import ftn.xml.zig.model.izvestaj.Izvestaj;
+import ftn.xml.zig.dto.*;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.repository.RdfRepository;
 import ftn.xml.zig.repository.ZigRepository;
@@ -25,6 +23,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
@@ -33,6 +32,10 @@ import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,14 +60,18 @@ public class ZigService {
 
     private final QueryService queryService;
 
+    private final IzvestajService izvestajService;
+
     @Autowired
-    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, TransformationService trasformationService, QueryService queryService) throws SAXException, JAXBException, IOException {
+    public ZigService(ZigRepository repository, IzvestajService izvestajService, RdfRepository rdfRepository, ZahtevMapper mapper, TransformationService trasformationService, QueryService queryService) throws SAXException, JAXBException, IOException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
+        this.izvestajService = izvestajService;
         this.mapper = mapper;
         this.trasformationService = trasformationService;
         this.queryService = queryService;
         this.conn = AuthenticationUtilitiesMetadata.loadProperties();
+
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -208,6 +215,52 @@ public class ZigService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String createIzvestaj(DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
+        Izvestaj izvestaj = new Izvestaj();
+        izvestaj.setBrojPodnetihZahteva(String.valueOf(retrieveAllInDateRange(dateRange).size()));
+        izvestaj.setBrojOdobrenihZahteva(String.valueOf(getAllApprovedRequestInDateRange(dateRange, "Odobren").size()));
+        izvestaj.setBrojOdbijenihZahteva(String.valueOf(getAllApprovedRequestInDateRange(dateRange, "Odbijen").size()));
+        izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", dateRange.getStartDate(), dateRange.getEndDate()));
+        izvestajService.getIzvestajPdf(izvestaj, "Zig_Izvestaj_" + dateRange.getStartDate() + "_" + dateRange.getEndDate() + ".pdf");
+        return "Zig_Izvestaj_" + dateRange.getStartDate() + "_" + dateRange.getEndDate() + ".pdf";
+    }
+
+    public List<ZahtevZaPriznanjeZiga> getAllApprovedRequestInDateRange(DateRangeDto dateRange, String status) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaPriznanjeZiga> list = retrieveAllInDateRange(dateRange);
+        List<ZahtevZaPriznanjeZiga> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjeZiga zahtev : list) {
+            if (zahtev.getResenje() == null) {
+                continue;
+            } else {
+                if (zahtev.getResenje().getStatus().equals(status)) {
+                    list1.add(zahtev);
+                }
+            }
+        }
+        return list1;
+    }
+
+
+    public List<ZahtevZaPriznanjeZiga> retrieveAllInDateRange(DateRangeDto dateRangeDto) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
+        List<ZahtevZaPriznanjeZiga> list1 = new ArrayList<>();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate start = LocalDate.parse(dateRangeDto.getStartDate(), dateTimeFormatter);
+        LocalDate end = LocalDate.parse(dateRangeDto.getEndDate(), dateTimeFormatter);
+        for (ZahtevZaPriznanjeZiga zig : list) {
+            LocalDate datumPodnosenja = convertGregorianToLocalDateTime(zig.getDatumPodnosenja());
+            if (start.isBefore(datumPodnosenja) && end.isAfter(datumPodnosenja)) {
+                list1.add(zig);
+            }
+        }
+        return list1;
+    }
+
+    public LocalDate convertGregorianToLocalDateTime(XMLGregorianCalendar xgc) {
+        ZonedDateTime utcZoned = xgc.toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneId.of("UTC"));
+        return utcZoned.toLocalDate();
     }
 
     public OutputStream marshalResenje(ZahtevZaPriznanjeZiga.Resenje resenje) throws JAXBException {
