@@ -11,7 +11,7 @@ interface ZahtevModalProps {
     zahtev: ZahtevData | null;
 }
 
-const ZahtevBody: React.FunctionComponent<{ zahtev: ZahtevData }> = ({zahtev}) => {
+export const ZahtevBody: React.FunctionComponent<{ zahtev: ZahtevData }> = ({zahtev}) => {
     return (<div dangerouslySetInnerHTML={{__html: zahtev.html}}/>)
 }
 const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showModal, setShowModal}) => {
@@ -152,7 +152,7 @@ interface PrilogCardProps {
     prilog: Prilog;
 }
 
-function PrilogCard(props: PrilogCardProps) {
+export function PrilogCard(props: PrilogCardProps) {
     const {prilog} = props;
     const {type, port} = useContext(RequestTypeContext);
 

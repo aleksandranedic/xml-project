@@ -27,9 +27,9 @@ public class ZigController {
         this.zahtevDataMapper = zahtevDataMapper;
     }
 
-    @GetMapping("/{broj}")
-    public ZahtevZaPriznanjeZiga getRequest(@PathVariable("broj") String brojPrijave) {
-        return this.service.getZahtev(brojPrijave);
+    @GetMapping(value = "/{broj}", produces = MediaType.APPLICATION_XML_VALUE)
+    public ZahtevData getRequest(@PathVariable("broj") String brojPrijave) {
+        return zahtevDataMapper.convertToZahtevData(this.service.getZahtev(brojPrijave));
     }
 
 
