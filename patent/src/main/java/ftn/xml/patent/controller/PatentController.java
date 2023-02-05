@@ -50,10 +50,12 @@ public class PatentController {
         return this.service.getZahtev(brojPrijave);
     }
 
-    @PutMapping(path = "/rich/update", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
-    public String updateRequestWithRichContentEdit(@RequestBody ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta) {
-        System.out.println(zahtevZaPriznanjePatenta.getPopunjavaPodnosioc().getNazivPatenta().getNazivNaSrpskom());
-        return "Top";
+    @PostMapping(path = "/rich", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE )
+    public String addRequestWithRichInput(@RequestBody Zahtev zahtev) throws Exception {
+
+
+        String brojPrijave = service.save(zahtev);
+        return "Zahtev je dodat pod brojem prijave " + brojPrijave + ".";
     }
 
     @GetMapping("/pdf/{broj}")

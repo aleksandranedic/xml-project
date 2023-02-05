@@ -36,7 +36,7 @@ const App: React.FunctionComponent = () => {
                             <Route path='/zahtevi/podnesi/autorska' element={<AutorskaForm/>}/>
                             <Route path='/zahtevi/podnesi/zig' element={<ZigForm/>}/>
                             <Route path='/zahtevi/podnesi/patent' element={<PatentForm/>}/>
-                            <Route path='/zahtevi/podnesi/detaljno/patent/:brojPrijave' element={<PatentRichEdit/>}/>
+                            <Route path='/zahtevi/detaljno/patent' element={<PatentRichEdit/>}/>
                             <Route path='/zahtevi/moji/patent' element={<PatentRequests/>}/>
                             <Route path='/zahtevi/moji/autorska' element={<AutorskaRequests/>}/>
                             <Route path='/zahtevi/moji/zig' element={<ZigRequests/>}/>

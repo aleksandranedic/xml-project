@@ -32,7 +32,6 @@
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    margin-top:30px;
                     width: 100%;
                     }
                     .title {
@@ -67,19 +66,6 @@
                     }
                     .border-top {
                     border-top:1px solid darkgrey;
-                    }
-                    .purple-cell {
-                    background-color:#6f4caf;
-                    color:white;
-                    font-family:sans-serif;
-                    padding:5px;
-                    font-weight:bold;
-                    }
-                    .light-purple-cell {
-                    background-color:#9680c8;
-                    color:white;
-                    font-family:sans-serif;
-                    font-weight:bold;
                     }
                     .cell {
                     padding-left:5px
@@ -275,7 +261,15 @@
                         <xsl:for-each select="//patent:Popunjava_podnosioc/patent:Podaci_o_pronalazacu">
                             <xsl:choose>
                                 <xsl:when test="patent:Pronalazac_ne_zeli_da_bude_naveden">
-                                    Pronalazač ne želi da bude naveden
+                                    <table>
+                                        <thead>
+                                            <tr class="border">
+                                                <th>
+                                                    Pronalazač ne želi da bude naveden
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </xsl:when>
                                 <xsl:otherwise>
                                     <table>
@@ -321,6 +315,7 @@
                                                     <xsl:value-of select="patent:Adresa/patent:Ulica"/>
                                                     <xsl:text> </xsl:text>
                                                     <xsl:value-of select="patent:Adresa/patent:Broj"/>
+                                                    <xsl:text> </xsl:text>
                                                     <xsl:value-of select="patent:Adresa/patent:Postanski_broj"/>
                                                     <xsl:text> </xsl:text>
                                                     <xsl:value-of select="patent:Adresa/patent:Grad"/>
