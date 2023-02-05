@@ -1,6 +1,9 @@
 package ftn.xml.patent.service;
 
-import ftn.xml.patent.dto.*;
+import ftn.xml.patent.dto.Metadata;
+import ftn.xml.patent.dto.Resenje;
+import ftn.xml.patent.dto.Zahtev;
+import ftn.xml.patent.dto.ZahtevMapper;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.model.izvestaj.Izvestaj;
 import ftn.xml.patent.repository.PatentRepository;
@@ -36,6 +39,9 @@ public class PatentService {
     public static final String CONTEXT_PATH = "ftn.xml.patent.model";
     private static final String SCHEMA_PATH = "./src/main/resources/data/xsd/p-1.xsd";
     private static final String FILE_FOLDER = "./src/main/resources/data/files/";
+
+    private static final String TARGET_FOLDER = "./target/classes/data/files/";
+
     private final PatentRepository repository;
     private final RdfRepository rdfRepository;
     private final TransformationService trasformationService;
@@ -113,7 +119,7 @@ public class PatentService {
         }
     }
 
-    private void addRdf(ZahtevZaPriznanjePatenta zahtev) throws JAXBException, TransformerException {
+    private void addRdf(ZahtevZaPriznanjePatenta zahtev) throws JAXBException, TransformerException, IOException {
         ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshal(zahtev);
 
         InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
@@ -133,9 +139,12 @@ public class PatentService {
 
     public String save(Zahtev zahtev) throws Exception {
         ZahtevZaPriznanjePatenta zahtevZaPriznanjePatenta = mapper.parseZahtev(zahtev);
-
         save(zahtevZaPriznanjePatenta);
         addRdf(zahtevZaPriznanjePatenta);
+        createJsonFromRdf(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave());
+        createRdfFromRdf(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave());
+        trasformationService.toXHTML(marshal(getZahtev(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave())), zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave() + ".html");
+        trasformationService.toPDF(marshal(getZahtev(zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave())), zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave() + ".pdf");
         return zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave();
     }
 
@@ -223,9 +232,24 @@ public class PatentService {
         ResultSet results = query.execSelect();
         OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
         ResultSetFormatter.outputAsJSON(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".json");
+        results = query.execSelect();
+        ResultSetFormatter.outputAsJSON(outputStream1, results);
         outputStream.flush();
         outputStream.close();
         query.close();
     }
 
+    public void createRdfFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".rdf");
+        ResultSetFormatter.out(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".rdf");
+        results = query.execSelect();
+        ResultSetFormatter.out(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
 }

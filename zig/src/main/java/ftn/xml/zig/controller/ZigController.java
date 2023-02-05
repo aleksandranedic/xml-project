@@ -103,4 +103,8 @@ public class ZigController {
     public void rdfToJSON(@RequestBody String brojPrijave) throws IOException {
         this.service.createJsonFromRdf(brojPrijave);
     }
+    @GetMapping(path = "/create/rdf", consumes = MediaType.APPLICATION_XML_VALUE)
+    public void saveRdfFile(@RequestBody String brojPrijave) throws IOException {
+        this.service.createRdfFromRdf(brojPrijave);
+    }
 }

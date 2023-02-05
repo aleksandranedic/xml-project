@@ -37,6 +37,8 @@ public class AutorService {
     public static final String CONTEXT_PATH = "ftn.xml.autor.model";
     private static final String SCHEMA_PATH = "./src/main/resources/data/xsd/autor.xsd";
     private static final String FILE_FOLDER = "./src/main/resources/data/files/";
+    private static final String TARGET_FOLDER = "./target/classes/data/files/";
+
 
     private static final String FUSEKI_DATASET_PATH = "/autorDataset";
     private final AutorRepository repository;
@@ -117,7 +119,7 @@ public class AutorService {
     }
 
 
-    private void addRdf(ZahtevZaIntelektualnuSvojinu zahtev) throws JAXBException, TransformerException {
+    private void addRdf(ZahtevZaIntelektualnuSvojinu zahtev) throws JAXBException, TransformerException, IOException {
         ByteArrayOutputStream zahtev_xml_out = (ByteArrayOutputStream) marshal(zahtev);
         InputStream zahtev_input = new ByteArrayInputStream(zahtev_xml_out.toByteArray());
         ByteArrayOutputStream zahtev_output = new ByteArrayOutputStream();
@@ -138,6 +140,9 @@ public class AutorService {
         save(zahtevZaIntelektualnuSvojinu);
         addRdf(zahtevZaIntelektualnuSvojinu);
         createJsonFromRdf(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave());
+        createRdfFromRdf(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave());
+        this.transformationService.toXHTML(marshal(getZahtev(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave())), zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave() + ".html");
+        this.transformationService.toPDF(marshal(getZahtev(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave())), zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave() + ".pdf");
     }
 
     public void updateRequest(ResenjeDTO resenje) {
@@ -215,6 +220,22 @@ public class AutorService {
         ResultSet results = query.execSelect();
         OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
         ResultSetFormatter.outputAsJSON(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".json");
+        results = query.execSelect();
+        ResultSetFormatter.outputAsJSON(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
+    public void createRdfFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".rdf");
+        ResultSetFormatter.out(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".rdf");
+        results = query.execSelect();
+        ResultSetFormatter.out(outputStream1, results);
         outputStream.flush();
         outputStream.close();
         query.close();

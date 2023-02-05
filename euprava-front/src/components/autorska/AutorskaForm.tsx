@@ -87,7 +87,6 @@ const AutorskaForm: React.FunctionComponent = () => {
         p.kontakt.eposta = "milos2000.mm@gmail.com"
         if (validate()) {
             let p = podnosilac;
-            p.kontakt.eposta = "milos2000.mm@gmail.com"
             let autori_list = []
             let anonimni_autori: number = 0;
             for (const autoriListElement of autori) {

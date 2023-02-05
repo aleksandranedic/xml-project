@@ -49,6 +49,8 @@ public class ZigService {
 
     private final TransformationService trasformationService;
 
+    private static final String TARGET_FOLDER = "./target/classes/data/files/";
+
     private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
 
     private final QueryService queryService;
@@ -142,6 +144,10 @@ public class ZigService {
         ZahtevZaPriznanjeZiga zahtevZaPriznanjeZiga = mapper.parseZahtev(zahtev);
         save(zahtevZaPriznanjeZiga);
         addRdf(zahtevZaPriznanjeZiga);
+        createJsonFromRdf(zahtevZaPriznanjeZiga.getBrojPrijaveZiga());
+        createRdfFromRdf(zahtevZaPriznanjeZiga.getBrojPrijaveZiga());
+        this.trasformationService.toXHTML(marshal(getZahtev(zahtevZaPriznanjeZiga.getBrojPrijaveZiga())), zahtevZaPriznanjeZiga.getBrojPrijaveZiga() + ".html");
+        this.trasformationService.toPDF(marshal(getZahtev(zahtevZaPriznanjeZiga.getBrojPrijaveZiga())), zahtevZaPriznanjeZiga.getBrojPrijaveZiga() + ".pdf");
         return zahtevZaPriznanjeZiga.getBrojPrijaveZiga();
     }
 
@@ -189,7 +195,6 @@ public class ZigService {
                 return false;
             }
         });
-        //TODO:Filtriraj da li ima resenje
         return list;
     }
 
@@ -203,7 +208,6 @@ public class ZigService {
                 return true;
             }
         });
-        //TODO:Filtriraj da nema resenje
         return list;
     }
 
@@ -212,6 +216,22 @@ public class ZigService {
         ResultSet results = query.execSelect();
         OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
         ResultSetFormatter.outputAsJSON(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".json");
+        results = query.execSelect();
+        ResultSetFormatter.outputAsJSON(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
+    public void createRdfFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".rdf");
+        ResultSetFormatter.out(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".rdf");
+        results = query.execSelect();
+        ResultSetFormatter.out(outputStream1, results);
         outputStream.flush();
         outputStream.close();
         query.close();
