@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class AuthenticationUtilities {
 
-    private static String connectionUri = "xmldb:exist://%1$s:%2$s/exist/xmlrpc";
+    private static String connectionUri = "xmldb:exist://%1$s:%2$s/exist-autor/xmlrpc";
 
     static public class ConnectionProperties {
 

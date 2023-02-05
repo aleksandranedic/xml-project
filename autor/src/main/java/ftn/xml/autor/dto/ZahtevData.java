@@ -1,9 +1,13 @@
 package ftn.xml.autor.dto;
 
 import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -13,16 +17,20 @@ public class ZahtevData {
     private String datum;
     private String brojPrijave;
     private String html;
+    private List<Prilog> prilozi = new ArrayList<>();
 
-    public ZahtevData(ZahtevZaIntelektualnuSvojinu zahtevZaIntelektualnuSvojinu) {
-        try{
-            this.status=zahtevZaIntelektualnuSvojinu.getResenje().getStatus();
-        }catch (Exception e){
-            this.status="";
+    public void addPrilog(String putanja, String naziv) {
+        if (putanja != null) {
+            prilozi.add( new Prilog(putanja, naziv));
         }
-//        this.datum=zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getDatumPodnosenja();
-        this.datum="12.3.2022.";
-        this.brojPrijave=zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave();
-        this.html="";
+    }
+
+    @Setter
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Prilog {
+        private String putanja;
+        private String naslov;
     }
 }

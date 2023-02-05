@@ -24,8 +24,4 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/data/files");
     }
 
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.defaultContentType(MediaType.valueOf(MediaType.APPLICATION_XML_VALUE));
-    }
 }

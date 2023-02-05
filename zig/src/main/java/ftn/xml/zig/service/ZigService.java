@@ -1,15 +1,21 @@
 package ftn.xml.zig.service;
 
+import ftn.xml.zig.dto.Metadata;
 import ftn.xml.zig.dto.Zahtev;
-import ftn.xml.zig.dto.ZahtevData;
 import ftn.xml.zig.dto.ZahtevMapper;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.repository.RdfRepository;
 import ftn.xml.zig.repository.ZigRepository;
+import ftn.xml.zig.utils.AuthenticationUtilitiesMetadata;
 import ftn.xml.zig.utils.SchemaValidationEventHandler;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
+import org.xmldb.api.base.XMLDBException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -20,14 +26,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.xmldb.api.base.XMLDBException;
 
 @Service
 public class ZigService {
@@ -44,12 +46,20 @@ public class ZigService {
 
     private final TransformationService trasformationService;
 
+    private static final String TARGET_FOLDER = "./target/classes/data/files/";
+
+    private final AuthenticationUtilitiesMetadata.ConnectionProperties conn;
+
+    private final QueryService queryService;
+
     @Autowired
-    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, TransformationService trasformationService) throws SAXException, JAXBException {
+    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, TransformationService trasformationService, QueryService queryService) throws SAXException, JAXBException, IOException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.mapper = mapper;
         this.trasformationService = trasformationService;
+        this.queryService = queryService;
+        this.conn = AuthenticationUtilitiesMetadata.loadProperties();
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -63,6 +73,7 @@ public class ZigService {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
     }
+
     public ZahtevZaPriznanjeZiga getZahtev(String brojPrijave) {
         try {
             return repository.retrieve(brojPrijave + ".xml");
@@ -83,7 +94,7 @@ public class ZigService {
         return trasformationService.toXHTML(marshal(getZahtev(brojPrijave)), brojPrijave + ".html");
     }
 
-    public ZahtevZaPriznanjeZiga unmarshall(String path) throws JAXBException{
+    public ZahtevZaPriznanjeZiga unmarshall(String path) throws JAXBException {
         return (ZahtevZaPriznanjeZiga) unmarshaller.unmarshal(new File(path));
     }
 
@@ -130,6 +141,10 @@ public class ZigService {
         ZahtevZaPriznanjeZiga zahtevZaPriznanjeZiga = mapper.parseZahtev(zahtev);
         save(zahtevZaPriznanjeZiga);
         addRdf(zahtevZaPriznanjeZiga);
+        createJsonFromRdf(zahtevZaPriznanjeZiga.getBrojPrijaveZiga());
+        createRdfFromRdf(zahtevZaPriznanjeZiga.getBrojPrijaveZiga());
+        this.trasformationService.toXHTML(marshal(getZahtev(zahtevZaPriznanjeZiga.getBrojPrijaveZiga())), zahtevZaPriznanjeZiga.getBrojPrijaveZiga() + ".html");
+        this.trasformationService.toPDF(marshal(getZahtev(zahtevZaPriznanjeZiga.getBrojPrijaveZiga())), zahtevZaPriznanjeZiga.getBrojPrijaveZiga() + ".pdf");
         return zahtevZaPriznanjeZiga.getBrojPrijaveZiga();
     }
 
@@ -166,31 +181,54 @@ public class ZigService {
         }
         return content;
     }
-    public List<ZahtevZaPriznanjeZiga> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+
+    public List<ZahtevZaPriznanjeZiga> getAllResolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return true;
-            } catch (Exception e) {
-                return false;
+        List<ZahtevZaPriznanjeZiga> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjeZiga zahtev :
+                list) {
+            if (email.equals(zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEmail()) && zahtev.getResenje() != null) {
+                list1.add(zahtev);
             }
-        });
-        //TODO:Filtriraj da li ima resenje
-        return list;
+        }
+        return list1;
     }
 
-    public List<ZahtevZaPriznanjeZiga> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public List<ZahtevZaPriznanjeZiga> getAllUnresolved(String email) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
-        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
-            try {
-                zahtevZaIntelektualnuSvojinu.getResenje();
-                return false;
-            } catch (Exception e) {
-                return true;
+        List<ZahtevZaPriznanjeZiga> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjeZiga zahtev : list) {
+            if (email.equals(zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEmail()) && zahtev.getResenje() == null) {
+                list1.add(zahtev);
             }
-        });
-        //TODO:Filtriraj da nema resenje
-        return list;
+        }
+        return list1;
     }
+
+    public void createJsonFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".json");
+        ResultSetFormatter.outputAsJSON(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".json");
+        results = query.execSelect();
+        ResultSetFormatter.outputAsJSON(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
+    public void createRdfFromRdf(String brojPrijave) throws IOException {
+        QueryExecution query = QueryExecutionFactory.sparqlService(conn.queryEndpoint, queryService.getSparqlQuery(List.of(new Metadata("Broj_prijave", brojPrijave, "&&", "="))));
+        ResultSet results = query.execSelect();
+        OutputStream outputStream = new FileOutputStream(FILE_FOLDER + brojPrijave + ".rdf");
+        ResultSetFormatter.out(outputStream, results);
+        OutputStream outputStream1 = new FileOutputStream(TARGET_FOLDER + brojPrijave + ".rdf");
+        results = query.execSelect();
+        ResultSetFormatter.out(outputStream1, results);
+        outputStream.flush();
+        outputStream.close();
+        query.close();
+    }
+
 }
