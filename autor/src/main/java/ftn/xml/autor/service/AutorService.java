@@ -153,15 +153,16 @@ public class AutorService {
         this.transformationService.toPDF(marshal(getZahtev(zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave())), zahtevZaIntelektualnuSvojinu.getPopunjavaZavod().getBrojPrijave() + ".pdf");
     }
 
+
     public void updateRequest(ResenjeDTO resenje) {
         ZahtevZaIntelektualnuSvojinu zahtev = getZahtev(resenje.getBrojPrijave());
         try {
             zahtev.setResenje(mapper.parseResenje(resenje));
             zahtev.getPopunjavaZavod().setBrojPrijave("A-" + zahtev.getPopunjavaZavod().getBrojPrijave());
             save(zahtev);
-
+            String ime_resenja=izvestajService.getResnjePdf(zahtev.getResenje(), "Resenje.pdf");
             String email = zahtev.getPopunjavaPodnosilac().getPodnosilac().getKontakt().getEPosta();
-            String documentPath = "./src/main/resources/data/files/" + zahtev.getPopunjavaZavod().getBrojPrijave() + ".pdf";
+            String documentPath = "./src/main/resources/data/files/" + ime_resenja + ".pdf";
             EmailDataDTO emailDataDTO = EmailService.buildEmailDTO(email, documentPath);
             emailService.sendEmail(emailDataDTO);
             createJsonFromRdf(zahtev.getPopunjavaZavod().getBrojPrijave());
