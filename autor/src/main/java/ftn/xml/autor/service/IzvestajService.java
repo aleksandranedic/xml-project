@@ -1,5 +1,6 @@
 package ftn.xml.autor.service;
 
+import ftn.xml.autor.model.ZahtevZaIntelektualnuSvojinu;
 import ftn.xml.autor.model.izvestaj.Izvestaj;
 import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.fop.apps.*;
@@ -55,10 +56,19 @@ public class IzvestajService {
         return toPDF(marshal(izvestaj), fileName);
     }
 
+    public String getResnjePdf(ZahtevZaIntelektualnuSvojinu.Resenje resenje, String fileName) throws JAXBException {
+        return toPDF(marshalResenje(resenje), fileName);
+    }
 
     public OutputStream marshal(Izvestaj izvestaj) throws JAXBException {
         OutputStream os = new ByteArrayOutputStream();
         marshaller.marshal(izvestaj, os);
+        return os;
+    }
+
+    public OutputStream marshalResenje(ZahtevZaIntelektualnuSvojinu.Resenje resenje) throws JAXBException {
+        OutputStream os = new ByteArrayOutputStream();
+        marshaller.marshal(resenje, os);
         return os;
     }
 
