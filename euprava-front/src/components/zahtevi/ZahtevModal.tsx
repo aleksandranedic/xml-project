@@ -66,7 +66,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
             });
             toast.success("Rešenje uspešno kreirano")
         }).catch(() => {
-            toast.error("Greška.")
+           
         })
 
 
