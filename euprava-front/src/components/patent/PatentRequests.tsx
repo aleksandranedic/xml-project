@@ -82,7 +82,22 @@ export function PatentRequests() {
             toast.error('Unesite krajnji datum');
             return;
         } 
-        console.log(fromDate)
+        const dto = {
+            dateRange: { startDate: fromDate, endDate: toDate}
+        }
+        const xml2js = require("xml2js");
+        const builder = new xml2js.Builder();
+        let xml = builder.buildObject(dto);
+        axios.post("http://localhost:8002/patent/izvestaj", xml,  {
+            headers: {
+                'Content-Type': 'application/xml', 'Accept': 'application/xml'}
+            }).then(result => {
+            toast.success("Uspešno kreiran izvestaj");
+            toast.success(result.data)})
+            .catch(e => 
+                {
+                    alert(e)
+                  toast.error("Greska pri cuvanju izvestaja")})  
     }
 
     return (

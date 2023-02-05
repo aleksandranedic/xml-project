@@ -1,9 +1,6 @@
 package ftn.xml.zig.controller;
 
-import ftn.xml.zig.dto.ResenjeDTO;
-import ftn.xml.zig.dto.Zahtev;
-import ftn.xml.zig.dto.ZahtevData;
-import ftn.xml.zig.dto.ZahtevDataMapper;
+import ftn.xml.zig.dto.*;
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.service.ZigService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xmldb.api.base.XMLDBException;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.List;
 
@@ -47,6 +45,14 @@ public class ZigController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @PostMapping(path = "/izvestaj", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<?> getIzvestaj(@RequestBody DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
+        String filename = this.service.createIzvestaj(dateRange);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("Content-Type", "application/xml; charset=utf-8");
+        return new ResponseEntity<>("Uspešno kreiran izvestaj na putanji: http://localhost:8000/" + filename, responseHeaders, HttpStatus.OK);
     }
 
     @PutMapping(produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
