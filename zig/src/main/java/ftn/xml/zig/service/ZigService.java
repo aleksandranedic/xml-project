@@ -211,6 +211,7 @@ public class ZigService {
         try {
             zahtev.setResenje(mapper.parseResenje(resenje));
             save(zahtev);
+            izvestajService.getResnjePdf(zahtev.getResenje(),"Resenje.pdf");
             createJsonFromRdf(zahtev.getBrojPrijaveZiga());
         } catch (Exception e) {
             throw new RuntimeException(e);

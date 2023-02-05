@@ -189,6 +189,7 @@ public class PatentService {
             zahtevZaPriznanjePatenta.setResenje(mapper.parseResenje(resenje));
             zahtevZaPriznanjePatenta.getPopunjavaZavod().setBrojPrijave("P-" + zahtevZaPriznanjePatenta.getPopunjavaZavod().getBrojPrijave());
             save(zahtevZaPriznanjePatenta);
+            izvestajService.getResnjePdf(zahtevZaPriznanjePatenta.getResenje(),"Resenje.pdf");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
