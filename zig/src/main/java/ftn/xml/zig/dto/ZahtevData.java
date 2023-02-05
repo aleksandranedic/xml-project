@@ -1,27 +1,38 @@
 package ftn.xml.zig.dto;
 
 import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
 @Setter
 public class ZahtevData {
+
     private String status;
     private String datum;
     private String brojPrijave;
     private String html;
+    private List<Prilog> prilozi = new ArrayList<>();
 
-    public ZahtevData(ZahtevZaPriznanjeZiga zahtevZaPriznanjeZiga) {
-        try{
-            this.status=zahtevZaPriznanjeZiga.getResenje().getStatus();
-        }catch (Exception e){
-            this.status="";
+    public void addPrilog(String putanja, String naziv) {
+        if (putanja != null) {
+            prilozi.add( new Prilog(putanja, naziv));
         }
-        this.datum= String.valueOf(zahtevZaPriznanjeZiga.getDatumPodnosenja());
-        this.brojPrijave=zahtevZaPriznanjeZiga.getBrojPrijaveZiga();
-        this.html="";
     }
+
+    @Setter
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Prilog {
+        private String putanja;
+        private String naslov;
+    }
+
 }

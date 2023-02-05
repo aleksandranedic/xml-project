@@ -73,7 +73,10 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
             } else if (surnamePodnosilac.current!.classList.contains('flex') && (!podnosilac.info.ime || !podnosilac.info.prezime)) {
                 toast.error("Morate popuniti sve podatke o podnosiocu.")
                 return false;
-            } 
+            } if (!/^.+[@].+[.].+$/.test(podnosilac.kontakt.eposta)) {
+                toast.error("Email mora biti u formatu username@domain.com.")
+                return false;
+            }
         } 
         if (Punomocnik.validate(punomocnik)) {
             if (surnamePunomocnik.current!.classList.contains('hidden') && !punomocnik.info.ime) {
@@ -94,7 +97,11 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
         } else if (!Punomocnik.isEmpty(punomocnik)) {
             toast.error("Morate popuniti sve podatke o punomoćniku ukoliko on postoji.")
             return false;
-        } if (!informacijeOZigu.vrstaB && !informacijeOZigu.drugaVrstaB) {
+        } if (punomocnik.kontakt.eposta !== '' && !/^.+[@].+[.].+$/.test(punomocnik.kontakt.eposta)) {
+            toast.error("Email mora biti u formatu username@domain.com.")
+            return false;
+        }
+        if (!informacijeOZigu.vrstaB && !informacijeOZigu.drugaVrstaB) {
             toast.error("Morate popuniti infromaciju o vrsti žiga.")
             return false;
         } if (!informacijeOZigu.boje) {

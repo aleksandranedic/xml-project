@@ -27,7 +27,20 @@ public class ZahtevDataMapper {
         zahtevData.setBrojPrijave(zahtev.getBrojPrijaveZiga());
 
         zahtevData.setHtml(zigService.getHtmlString(zahtev.getBrojPrijaveZiga()));
+        addPrilozi(zahtev, zahtevData);
         return zahtevData;
     }
 
+    private static ZahtevData addPrilozi(ZahtevZaPriznanjeZiga zahtev, ZahtevData zahtevData) {
+        ZahtevZaPriznanjeZiga.PriloziUzZahtev priloziUzZahtev = zahtev.getPriloziUzZahtev();
+        if (priloziUzZahtev != null) {
+            zahtevData.addPrilog(priloziUzZahtev.getPrimerakZnaka(), "Izgled znaka");
+            zahtevData.addPrilog(priloziUzZahtev.getSpisakRobeIUsluga(), "Spisak robe i usluga");
+            zahtevData.addPrilog(priloziUzZahtev.getPunomocje(), "Punomocje");
+            zahtevData.addPrilog(priloziUzZahtev.getOpstiAkt(), "Opsti akt");
+            zahtevData.addPrilog(priloziUzZahtev.getDokazOPravuPrvenstva(), "Dokaz o pravu prvenstva");
+            zahtevData.addPrilog(priloziUzZahtev.getDokazOUplatiTakse(), "Dokaz o uplati takse");
+        }
+        return zahtevData;
+    }
 }
