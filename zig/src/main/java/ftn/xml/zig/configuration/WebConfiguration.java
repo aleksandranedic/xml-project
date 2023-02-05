@@ -23,6 +23,8 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/data/prilozi");
+                .addResourceLocations("classpath:/static/")
+                .addResourceLocations("classpath:/data/files")
+                .addResourceLocations("classpath:/data/files/qr");
     }
 }

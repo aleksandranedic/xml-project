@@ -43,27 +43,31 @@ public class ZahtevMapper {
         return zahtevZaPriznanjeZiga;
     }
 
-    private final Path qrLocation = Paths.get("src/main/resources/data/qr/");
-    private final String showZahtevHTMLEndPoint = "http://localhost:8080/zig/html/";
+    private final Path qrLocationFolder = Paths.get("src/main/resources/data/files/qr/");
+    private final Path qrLocationTargetFolder = Paths.get("target/classes/data/files/qr/");
+    private final String showZahtevHTMLEndPoint = "http://localhost:8000/zig/html/";
     public String generateQR(String brojPrijaveZiga){
         String httpBrojPrijaveZiga = brojPrijaveZiga.replace('/', '-');
         String fileNameBrojPrijaveZiga = brojPrijaveZiga.replace('/', '_').concat("_").concat("QR");
         String filename = null;
         try {
             filename = fileNameBrojPrijaveZiga + ".jpg";
-            File file = new File(qrLocation + filename);
+            File file = new File(qrLocationFolder.resolve(filename).toString());
+            File fileTarget = new File(qrLocationTargetFolder.resolve(filename).toString());
             ByteArrayOutputStream stream = QRCode
                     .from(showZahtevHTMLEndPoint + httpBrojPrijaveZiga)
                     .withSize(250, 250)
                     .stream();
             FileOutputStream fos = new FileOutputStream(file);
             stream.writeTo(fos);
+            FileOutputStream tos = new FileOutputStream(fileTarget);
+            stream.writeTo(tos);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            return filename;
+            return "http://localhost:8000/qr/" + filename;
         }
     }
 
