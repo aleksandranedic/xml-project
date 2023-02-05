@@ -69,15 +69,11 @@
                     border-top:1px solid darkgrey;
                     }
                     .green-cell {
-                    background-color:#3e87bc;
-                    color:white;
                     font-family:sans-serif;
                     padding:5px;
                     font-weight:bold;
                     }
                     .light-green-cell {
-                    background-color:#80C883;
-                    color:white;
                     font-family:sans-serif;
                     font-weight:bold;
                     }

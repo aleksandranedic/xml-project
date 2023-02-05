@@ -3,7 +3,6 @@ import Zahtevi from "../zahtevi/Zahtevi";
 import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
 import {Prilog, ZahtevData} from "../types";
-import {toast, ToastContainer} from 'react-toastify';
 export function PatentRequests() {
 
     const [patentZahtevi, setPatentZahtevi] = useState<ZahtevData[]>([]);
