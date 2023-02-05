@@ -1,10 +1,10 @@
 import { createContext } from "react";
-import { ZahtevZaPriznanjePatenta } from "../components/patent/types";
+import {ZahtevData} from "../components/types";
 
 interface PatentZahtevContextType {
-  patentZahtevi: ZahtevZaPriznanjePatenta[];
+  patentZahtevi: ZahtevData[];
   setPatentZahtevi: React.Dispatch<
-    React.SetStateAction<ZahtevZaPriznanjePatenta[]>
+    React.SetStateAction<ZahtevData[]>
   >;
 }
 

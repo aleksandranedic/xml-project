@@ -1,9 +1,9 @@
 import { createContext } from "react";
-import { ZahtevZaPriznanjeZiga } from "../components/zig/types";
+import {ZahtevData} from "../components/types";
 
 interface ZigZahtevContextType {
-  zigZahtevi: ZahtevZaPriznanjeZiga[];
-  setZigZahtevi: React.Dispatch<React.SetStateAction<ZahtevZaPriznanjeZiga[]>>;
+  zigZahtevi: ZahtevData[];
+  setZigZahtevi: React.Dispatch<React.SetStateAction<ZahtevData[]>>;
 }
 
 const ZigContext = createContext<ZigZahtevContextType>({

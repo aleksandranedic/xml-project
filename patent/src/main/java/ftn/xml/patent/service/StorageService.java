@@ -14,12 +14,13 @@ import java.util.regex.Pattern;
 @Service
 public class StorageService {
     private final Path rootLocation = Paths.get("src/main/resources/data/files");
+    private final Path targetLocation = Paths.get("target/classes/data/files");
 
     public String storeFile(MultipartFile file) {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         fileName = fileName.replace(" ", "_");
         Path filePath = this.rootLocation.resolve(fileName);
-
+        Path targetPath = this.targetLocation.resolve(fileName);
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + fileName);
@@ -32,9 +33,11 @@ public class StorageService {
             while (Files.exists(filePath)) {
                 fileName = fileName.split(Pattern.quote("."))[0] + "_copy" + "." + fileName.split(Pattern.quote("."))[1];
                 filePath = this.rootLocation.resolve(fileName);
+                targetPath = this.targetLocation.resolve(fileName);
             }
 
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (FileAlreadyExistsException e) {
 
         } catch (IOException e) {

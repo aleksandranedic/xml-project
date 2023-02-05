@@ -1,13 +1,13 @@
 import Search from "../../page/Search";
 import RequestTypeContext from "../../store/request-type-context";
 import {useState} from "react";
-import { ZahtevZaPriznanjePatenta } from "./types";
 import PatentContext from "../../store/patent-zahtevi-context";
 import Zahtevi from "../zahtevi/Zahtevi";
+import {ZahtevData} from "../types";
 
 const SearchPatent: React.FunctionComponent = () => {
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("patent");
-    const [patentZahtevi, setPatentZahtevi] = useState<ZahtevZaPriznanjePatenta[]>([]);
+    const [patentZahtevi, setPatentZahtevi] = useState<ZahtevData[]>([]);
     return (
         <RequestTypeContext.Provider value={{type, setType}}>
             <PatentContext.Provider value={{patentZahtevi, setPatentZahtevi}}>

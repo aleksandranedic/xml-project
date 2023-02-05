@@ -4,13 +4,10 @@ import RequestTypeContext from "../store/request-type-context";
 import axios from "axios";
 import {toast} from "react-toastify";
 import PatentContext from "../store/patent-zahtevi-context";
-import {ZahtevZaPriznanjePatenta} from "../components/patent/types";
 import ZigContext from "../store/zig-zahtevi-context";
-import {ZahtevZaPriznanjeZiga} from "../components/zig/types";
 import AutorskaContext from "../store/autorska-zahtevi-context";
-import {ZahtevZaPriznanjeAutorska} from "../components/autorska/types";
+import {ZahtevData} from "../components/types";
 import convert from "xml-js";
-
 
 enum Operator {
     EQUALS = '=',
@@ -31,12 +28,7 @@ interface Params {
 
 const AdvancedSearch: React.FunctionComponent = () => {
 
-    const initialSearchParam = {
-        logicalOperator: LogicalOperator.I,
-        meta: "Broj_prijave",
-        operator: Operator.EQUALS,
-        value: ''
-    };
+    const initialSearchParam = {logicalOperator: LogicalOperator.I ,meta: "Broj_prijave", operator: Operator.EQUALS, value:''};
     const [searchParams, setSearchParams] = useState<Params[]>([initialSearchParam]);
     const {type} = useContext(RequestTypeContext);
     const {setPatentZahtevi} = useContext(PatentContext);
@@ -44,7 +36,6 @@ const AdvancedSearch: React.FunctionComponent = () => {
     const {setAutorskaZahtevi} = useContext(AutorskaContext);
 
     const allParams = getAllParams()
-
     function getAllParams() {
         if (type === "patent") {
             return [
@@ -159,14 +150,9 @@ const AdvancedSearch: React.FunctionComponent = () => {
             console.log("AAAAAAAAAAA")
 
             switch (type) {
-                case 'patent':
-                    setPatentZahtevi([new ZahtevZaPriznanjePatenta()]);
-                    break;
-                case 'zig':
-                    setZigZahtevi([new ZahtevZaPriznanjeZiga()]);
-                    break;
-                case 'autor':
-                    setAutorskaZahtevi([new ZahtevZaPriznanjeAutorska()]);
+                case 'patent': setPatentZahtevi([new ZahtevData()]); break;
+                case 'zig': setZigZahtevi([new ZahtevData()]); break;
+                case 'autor': setAutorskaZahtevi([new ZahtevData()]);
             }
         }).catch(() => {
             toast.error("Greška pri pretrazi.")

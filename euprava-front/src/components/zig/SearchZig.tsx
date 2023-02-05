@@ -1,13 +1,13 @@
 import Search from "../../page/Search";
 import {useState} from "react";
 import RequestTypeContext from "../../store/request-type-context";
-import { ZahtevZaPriznanjeZiga } from "./types";
 import ZigContext from "../../store/zig-zahtevi-context";
 import Zahtevi from "../zahtevi/Zahtevi";
+import {ZahtevData} from "../types";
 
 const SearchZig: React.FunctionComponent = () => {
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("zig");
-    const [zigZahtevi, setZigZahtevi] = useState<ZahtevZaPriznanjeZiga[]>([]);
+    const [zigZahtevi, setZigZahtevi] = useState<ZahtevData[]>([]);
     return (
         <RequestTypeContext.Provider value={{type, setType}}>
             <ZigContext.Provider value={{zigZahtevi, setZigZahtevi}}>
