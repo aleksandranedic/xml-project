@@ -5,6 +5,9 @@ import {Xml} from "react-xml-editor/lib/src/types";
 import "../../css/xonomy.css"
 import {useParams} from "react-router-dom";
 import axios from "axios";
+import convert from "xml-js";
+import {Pronalazac, PrvobitnaPrijava, Punomocnik, RanijaPrijava} from "./types";
+import {Adresa} from "../types";
 
 const docSpec = {
     elements: {
@@ -129,7 +132,7 @@ export default function PatentRichEdit() {
             if (this.ref.current) {
 
                 const builder = new Builder({});
-                const xml = this.ref.current.getXml();
+                const xml:Xml|undefined = this.ref.current.getXml();
 
                 if (xml) {
 
@@ -137,11 +140,75 @@ export default function PatentRichEdit() {
                         xml: builder.buildObject(xml),
                     });
 
-                    axios.put("http://localhost:8002/patent/rich/update", xml, {
-                        headers: {
-                            "Content-Type": "application/xml",
-                            Accept: "application/xml",
-                        }
+                    const convert = require("xml-js");
+                    const jsonData = convert.xml2js(builder.buildObject(xml), {
+                        compact: true,
+                        alwaysChildren: true,
+                    });
+                    let json = jsonData.ZahtevZaPriznanjePatenta;
+
+
+                    let dto: any = {};
+
+                    // dto.nacinDostavljanja = dostavljanje.pisano ? "pisano" : "elektornski";
+                    dto.nazivNaSrpskom = json.popunjavaPodnosioc.nazivNaSrpskom;
+                    dto.nazivNaEngleskom = json.popunjavaPodnosioc.nazivNaEngleskom;
+                    //
+                    // dto.podnosilac = {
+                    //     info: {...podnosilac.info},
+                    //     adresa: {...podnosilac.adresa},
+                    //     kontakt: {eposta: user?.email, telefon: podnosilac.kontakt.telefon, faks: podnosilac.kontakt.faks}
+                    // }
+                    //
+                    // dto.prilozi = await getPrilozi();
+                    //
+                    // if (pronalazaciNavedeni) {
+                    //     let dodatiPronalazaci = []
+                    //     for (let pronalazac of pronalazaci) {
+                    //         if (Pronalazac.validate(pronalazac)) {
+                    //             dodatiPronalazaci.push({"Lice": pronalazac})
+                    //         }
+                    //     }
+                    //     if (dodatiPronalazaci.length > 0) {
+                    //         dto.pronalazaci = dodatiPronalazaci;
+                    //     }
+                    // }
+                    //
+                    // if (PrvobitnaPrijava.isFull(prvobitnaPrijava)) {
+                    //     dto.prvobitnaPrijava = prvobitnaPrijava;
+                    // }
+                    //
+                    // let dodateRanijePrijave = []
+                    //
+                    // for (let ranijaPrijava of ranijePrijave) {
+                    //     if (RanijaPrijava.isFull(ranijaPrijava)) {
+                    //         dodateRanijePrijave.push({"RanijaPrijava": ranijaPrijava})
+                    //     }
+                    // }
+                    // if (dodateRanijePrijave.length > 0) {
+                    //     dto.ranijePrijave = dodateRanijePrijave;
+                    // }
+                    //
+                    // if (Adresa.validate(dostavljanje) && dostavljanje.pisano) {
+                    //     dto.adresaZaDostavljanje = {
+                    //         ulica: dostavljanje.ulica,
+                    //         grad: dostavljanje.grad,
+                    //         broj: dostavljanje.broj,
+                    //         drzava: dostavljanje.drzava,
+                    //         postanskiBroj: dostavljanje.postanskiBroj
+                    //     }
+                    // }
+                    //
+                    // if (Punomocnik.isFull(punomocnik)) {
+                    //     dto.punomocnik = punomocnik;
+                    // }
+
+
+
+                    console.log(json);
+
+                    axios.put("http://localhost:8002/patent/rich/update", json, {
+
                     }).then(result => {
                         console.log(result);
                     })
