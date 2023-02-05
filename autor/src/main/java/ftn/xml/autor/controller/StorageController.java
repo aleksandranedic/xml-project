@@ -20,7 +20,6 @@ public class StorageController {
     @PostMapping("/upload")
     public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file) {
         String fileName = storageService.storeFile(file);
-
-        return ResponseEntity.ok().body("http://localhost:8002/prilozi/" + fileName);
+        return ResponseEntity.ok().body("http://localhost:8003/prilozi/" + fileName);
     }
 }

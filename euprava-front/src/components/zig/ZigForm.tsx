@@ -1,8 +1,9 @@
 import {useRef, useState, useContext} from 'react';
 import UserContext from '../../store/user-context';
 import { InformacijeOZigu, PlaceneTakse, Podnosilac, PrilozeniDokumenti, Punomocnik, VrstaA, VrstaB } from './types';
-import {Lice} from "../types";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
+import axios from 'axios';
+import { Adresa, Info, Kontakt } from '../types';
 
 interface ZigFormProps {
     
@@ -31,7 +32,7 @@ const nicanskaKlasifikacija = (informacijeOZigu: InformacijeOZigu, setInformacij
     return <ul className=" text-sm grid grid-cols-12 gap-1">{rows}</ul>;
 }
 const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
-    const { user, setUser } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
     const namePodnosilac:React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
     const surnamePodnosilac: React.RefObject<HTMLInputElement> = useRef<HTMLInputElement>(null);
@@ -41,6 +42,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
 
     const [punomocnik, setPunomocnik] = useState<Punomocnik>(new Punomocnik());
     const [podnosilac, setPodnosilac] = useState<Podnosilac>(new Podnosilac());
+    podnosilac.kontakt.eposta = user!.email;
     const [informacijeOZigu, setInformacijeOZigu] = useState<InformacijeOZigu>(new InformacijeOZigu());
     const [placeneTakse, setPlaceneTakse] = useState<PlaceneTakse>(new PlaceneTakse());
     const [prilozeniDokumenti, setPrilozeniDokumenti] = useState<PrilozeniDokumenti>(new PrilozeniDokumenti());
@@ -64,24 +66,204 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
         if (!Podnosilac.validate(podnosilac)) {
             toast.error("Morate popuniti sve podatke o podnosiocu.")
             return false;
+        } else {
+            if (surnamePodnosilac.current!.classList.contains('hidden') && !podnosilac.info.ime) {
+                toast.error("Morate popuniti sve podatke o podnosiocu.")
+                return false;
+            } else if (surnamePodnosilac.current!.classList.contains('flex') && (!podnosilac.info.ime || !podnosilac.info.prezime)) {
+                toast.error("Morate popuniti sve podatke o podnosiocu.")
+                return false;
+            } 
+        } 
+        if (Punomocnik.validate(punomocnik)) {
+            if (surnamePunomocnik.current!.classList.contains('hidden') && !punomocnik.info.ime) {
+                toast.error("Morate popuniti sve podatke o punomoćniku ukoliko on postoji.")
+                return false;
+            } else if (surnamePunomocnik.current!.classList.contains('flex') && (!punomocnik.info.ime || !punomocnik.info.prezime)) {
+                toast.error("Morate popuniti sve podatke o punomoćniku ukoliko on postoji.")
+                return false;
+            } 
+        } else if (Punomocnik.isEmpty(punomocnik)) {
+            if (surnamePunomocnik.current!.classList.contains('hidden') && punomocnik.info.ime) {
+                toast.error("Morate popuniti sve podatke o punomoćniku ukoliko on postoji.")
+                return false;
+            } else if (surnamePunomocnik.current!.classList.contains('flex') && (punomocnik.info.ime || punomocnik.info.prezime)) {
+                toast.error("Morate popuniti sve podatke o punomoćniku ukoliko on postoji.")
+                return false;
+            } 
+        } else if (!Punomocnik.isEmpty(punomocnik)) {
+            toast.error("Morate popuniti sve podatke o punomoćniku ukoliko on postoji.")
+            return false;
+        } if (!informacijeOZigu.vrstaB && !informacijeOZigu.drugaVrstaB) {
+            toast.error("Morate popuniti infromaciju o vrsti žiga.")
+            return false;
+        } if (!informacijeOZigu.boje) {
+            toast.error("Morate popuniti infromaciju bojama žiga.")
+            return false;
+        } if (informacijeOZigu.klasifikacija.length === 0) {
+            toast.error("Morate oznčiti brojeve klase roba i usluga prema Ničanskoj klasifikaciji.")
+            return false;
+        } if (!PlaceneTakse.validate(placeneTakse)) {
+            toast.error("Morate popuniti informacije o plaćenim taksama.")
+            return false;
+        } if (!prilozeniDokumenti.izgledZnaka) {
+            toast.error("Morate postaviti fotografiju izgleda znaka.")
+            return false;
+        } if (!prilozeniDokumenti.spisakRobeIUsluga) {
+            toast.error("Morate postaviti prilog spiska robe i usluga sa oznakom klase i punim nazivom.")
+            return false;
+        } if (!prilozeniDokumenti.uplataTakse) {
+            toast.error("Morate postaviti dokaz o uplati takse.")
+            return false;
+        } if (!prilozeniDokumenti.pravoPrvenstva && informacijeOZigu.pravo) {
+            toast.error("Morate postaviti dokaz o pravu prvenstva.")
+            return false;
+        } if (prilozeniDokumenti.pravoPrvenstva && !informacijeOZigu.pravo) {
+            toast.error("Morate popuniti informacije o zatraženom pravu prvenstva i osnov ukoliko podnosite dokaz o pravu prvenstva.")
+            return false;
         }
-        if (!Punomocnik.validate(punomocnik)) {
-            toast.error("Morate popuniti sve podatke o punomćniku.")
+         return true;
         }
-
-        if (!PlaceneTakse.validate(placeneTakse)) {
-            toast.error("Morate popuniti naziv takse.")
-        }
-
-
-
-        return true;
-    }
     
-    const onSubmit = (e: any) => {
+    const loadAdresa = (adresa: Adresa) => {
+        return {
+            Ulica: adresa.ulica,
+            Broj: adresa.broj,
+            Postanski_broj: adresa.postanskiBroj,
+            Grad: adresa.grad,
+            Drzava: adresa.drzava
+        }
+    }
+    const loadKontakt = (kontakt: Kontakt) => {
+        return {
+            Email: kontakt.eposta,
+            Faks: kontakt.faks,
+            Telefon: kontakt.telefon
+        }
+    }
+
+    const loadInfo = (info: Info, type: string) => {
+        if (type === 'punomocnik') {
+            if (info.ime && surnamePunomocnik.current!.classList.contains('hidden')) return {Ime : info.ime}
+            return {Ime: info.ime, Prezime: info.prezime}
+        }
+        if (info.ime && surnamePodnosilac.current!.classList.contains('hidden')) return {Ime : info.ime}
+            return {Ime: info.ime, Prezime: info.prezime}
+    }
+
+    const loadZigInfo = () => {
+        return {
+            Vrsta: {Tip_a : informacijeOZigu.vrstaA, Tip_b: informacijeOZigu.vrstaB ? informacijeOZigu.vrstaB : informacijeOZigu.drugaVrstaB},
+            Naznacenje_boje: informacijeOZigu.boje,
+            Transliteracija_znaka: informacijeOZigu.transliteracija,
+            Prevod_znaka: informacijeOZigu.prevod,
+            Opis_znaka: informacijeOZigu.opis,
+        }
+    }
+
+    const loadPlaceneTakse = () => {
+        return {
+            Osnovna_taksa: placeneTakse.osnovna,
+            Za_klasa: {Naziv_klase: placeneTakse.naziv, Suma: placeneTakse.zaKlasa},
+            Za_graficko_resenje: placeneTakse.grafickoResenje,
+            Ukupno: placeneTakse.ukupno
+        }
+    }
+
+    const loadKlasa = () => {
+        const obj = []
+        obj.push({klasaRobeIUslaga: informacijeOZigu.klasifikacija})
+        return obj;
+    }
+    const loadPopunjavaPodnosilac = () => {
+        return {
+            Podnosilac: {Adresa:loadAdresa(podnosilac.adresa), Kontakt: loadKontakt(podnosilac.kontakt), ...loadInfo(podnosilac.info, 'podnosilac')},
+            Punomocnik: Punomocnik.validate(punomocnik) ? {Adresa:loadAdresa(punomocnik.adresa), Kontakt: loadKontakt(punomocnik.kontakt), ...loadInfo(punomocnik.info, 'punomocnik')} : null,
+            Zig: {...loadZigInfo()},
+            Dodatne_informacije: {klasa: loadKlasa(), zatrazenoPravoPrvenstaIOsnov: informacijeOZigu.pravo},
+            Placene_takse: {...loadPlaceneTakse()}
+        }
+        
+    }
+
+    const createDto =  (prilozi: any) => {
+        return {
+            Zahtev: {
+                ...loadPopunjavaPodnosilac(),
+                Prilozi: prilozi
+            }
+        }
+    }
+
+    const uploadFile = async (file: File): Promise<string> => {
+        let formData = new FormData();
+        formData.append('file', file);
+        try {
+            const result = await axios.post('http://localhost:8000/upload', formData, {headers: {'Content-Type': 'multipart/form-data'}})
+            return result.data;
+        } catch {
+            return '';
+        }
+    }
+
+    const uploadFiles = async () => {
+        let valid = true;
+        const izgledZnakaPath : string = await uploadFile(prilozeniDokumenti.izgledZnaka![0])
+        const placeneTaksePath : string = await uploadFile(prilozeniDokumenti.uplataTakse![0])
+        const spisakRobeIUslugaPath : string = await uploadFile(prilozeniDokumenti.spisakRobeIUsluga![0])
+        let punomocjePath = '';
+        let opstiAktPath = '';
+        let pravoPrvenstvaPath = '';
+        if (prilozeniDokumenti.punomocje) {
+            punomocjePath = await uploadFile(prilozeniDokumenti.punomocje![0])
+            if (punomocjePath === '') valid = false;
+        }
+        if (prilozeniDokumenti.opstiAkt) {
+            opstiAktPath = await uploadFile(prilozeniDokumenti.opstiAkt![0])
+            if (opstiAktPath === '') valid = false;
+        }
+        if (prilozeniDokumenti.pravoPrvenstva) {
+            pravoPrvenstvaPath = await uploadFile(prilozeniDokumenti.pravoPrvenstva![0])
+            if (pravoPrvenstvaPath === '') valid = false;
+        }
+
+        if (!valid || izgledZnakaPath === '' || placeneTaksePath === '' || spisakRobeIUslugaPath === '') 
+            return null;
+        
+        return {
+            Primerak_znaka: izgledZnakaPath,
+            Spisak_robe_i_usluga: spisakRobeIUslugaPath,
+            Punomocje: punomocjePath,
+            Opsti_akt: opstiAktPath,
+            Dokaz_o_pravu_prvenstva: pravoPrvenstvaPath,
+            Dokaz_o_uplati_takse: placeneTaksePath
+        }
+    }
+
+    const onSubmit = async (e: any) => {
         e.preventDefault()
-        //validacija
-        //cuvanje
+        if (validate()) {
+            const files = await uploadFiles();
+            if (!files) return;
+            const dto = createDto(files);
+            const xml2js = require("xml2js");
+            const builder = new xml2js.Builder();
+            let xml = builder.buildObject(dto);
+
+            console.log(dto)
+            try{
+                const result = await axios.post("http://localhost:8000/zig/create", xml, {
+                    headers: {
+                      "Content-Type": "application/xml",
+                    },
+                });
+                console.log(result);
+                toast.success(result.data)
+            } catch (e: any) {
+                console.log(e);
+                toast.error(e.message)
+            }
+        }
     }
 
     return ( 
@@ -125,7 +307,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Poštanski broj</p>
-                                <input type="text"  name="postanskiBroj" className='w-full' value={podnosilac.adresa.postanskiBroj} onChange = {e => setPodnosilac({...podnosilac, adresa:{...podnosilac.adresa, postanskiBroj:e.target.value}})}/>
+                                <input type="number"  name="postanskiBroj" className='w-full' value={podnosilac.adresa.postanskiBroj} onChange = {e => setPodnosilac({...podnosilac, adresa:{...podnosilac.adresa, postanskiBroj:e.target.value}})}/>
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Grad</p>
@@ -145,7 +327,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Email</p>
-                                <input type="text" name="email" className='w-full' value={user!.email}/>
+                                <input type="text" name="email" className='w-full' value={podnosilac.kontakt.eposta}/>
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Faks</p>
@@ -189,7 +371,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Poštanski broj</p>
-                                <input type="text" name="postanskiBroj-punomocnik" className='w-full' value={punomocnik.adresa.postanskiBroj} onChange = {e => setPunomocnik({...punomocnik, adresa:{...punomocnik.adresa, postanskiBroj:e.target.value}})}/>
+                                <input type="number" name="postanskiBroj-punomocnik" className='w-full' value={punomocnik.adresa.postanskiBroj} onChange = {e => setPunomocnik({...punomocnik, adresa:{...punomocnik.adresa, postanskiBroj:e.target.value}})}/>
                             </div>
                             <div className='flex-col gap-1 items-start'>
                                 <p className='font-light text-sm'>Grad</p>
@@ -287,14 +469,14 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                                         <div className="flex items-center justify-center w-full">
                                             <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50  hover:bg-gray-100 ">
                                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                    {informacijeOZigu.izgledZnaka && informacijeOZigu.izgledZnaka.length > 0 && (
-                                                        <img src={URL.createObjectURL(informacijeOZigu.izgledZnaka[0])} alt="img" className="w-28 h-28 mb-3" />
+                                                    {prilozeniDokumenti.izgledZnaka && prilozeniDokumenti.izgledZnaka.length > 0 && (
+                                                        <img src={URL.createObjectURL(prilozeniDokumenti.izgledZnaka[0])} alt="img" className="w-28 h-28 mb-3" />
                                                     )}
                                                     <svg aria-hidden="true" className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                                                     <p className="mb-2 text-sm text-gray-500 "><span className="font-semibold">Click to upload</span> or drag and drop</p>
                                                     <p className="text-xs text-gray-500 ">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                                                 </div>
-                                                <input id="dropzone-file" type="file" className="hidden" onChange={e => setInformacijeOZigu({...informacijeOZigu, izgledZnaka:e.target.files as FileList})} />
+                                                <input id="dropzone-file" type="file" size={10485760} accept="image/png, image/jpeg, image/jpg" className="hidden" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, izgledZnaka:e.target.files as FileList})} />
                                             </label>
                                         </div> 
                                     </div>
@@ -360,31 +542,23 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                     <div className="form-input-container">
                         <div className="flex justify-between w-full items-center">
                             <p>Spisak robe i usluga:</p>
-                            <input type="file" name='spisak-robe'  className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, spisakRobeIUsluga:e.target.files as FileList})}/>
+                            <input type="file" name='spisak-robe'  className="!border-none" size={10485760} onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, spisakRobeIUsluga:e.target.files as FileList})}/>
                         </div>
                         <div className="flex justify-between w-full items-center">
-                            <p>Punomocje:</p>
-                            <input type="file" name='punomocje-fajl'  className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, punomocje:e.target.files as FileList})}/>
-                        </div>
-                        <div className="flex justify-between w-full items-center">
-                            <p>Generalno punomocje:</p>
-                            <input type="file" name='generalno-punomocje-fajl' className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, generalnoPunomocje:e.target.files as FileList})}/>
-                        </div>
-                        <div className="flex justify-between w-full items-center">
-                            <p>Punomocje naknadno dostavljeno:</p>
-                            <input type="file" name='naknadno-punomocje-fajl' className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, punomocjeNaknadnoDostavljeno:e.target.files as FileList})}/>
+                            <p>Punomoćje:</p>
+                            <input type="file" name='punomocje-fajl'  className="!border-none" size={10485760} onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, punomocje:e.target.files as FileList})}/>
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Opsti akt:</p>
-                            <input type="file" name='opsti-akt-fajl' className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, opstiAkt:e.target.files as FileList})}/>
+                            <input type="file" name='opsti-akt-fajl' className="!border-none" size={10485760} onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, opstiAkt:e.target.files as FileList})}/>
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Dokaz o pravu prvenstva:</p>
-                            <input type="file" name='dokaz-o-pravu-prvenstva-fajl' className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, pravoPrvenstva:e.target.files as FileList})}/>
+                            <input type="file" name='dokaz-o-pravu-prvenstva-fajl' size={10485760} className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, pravoPrvenstva:e.target.files as FileList})}/>
                         </div>
                         <div className="flex justify-between w-full items-center">
                             <p>Dokaz o uplati takse:</p>
-                            <input type="file" name='dokaz-o-uplati-takse-fajl' className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, uplataTakse:e.target.files as FileList})}/>
+                            <input type="file" name='dokaz-o-uplati-takse-fajl' size={10485760} className="!border-none" onChange={e => setPrilozeniDokumenti({...prilozeniDokumenti, uplataTakse:e.target.files as FileList})}/>
                         </div>
                     </div>
                 </div>
@@ -392,6 +566,7 @@ const ZigForm: React.FunctionComponent<ZigFormProps> = () => {
                 <button onClick={e => onSubmit(e)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded w-fit self-center mt-10 text-lg">Pošalji</button>
                 
             </form>
+            <ToastContainer position="top-center" draggable={false}/>
         </div>
      );
 }

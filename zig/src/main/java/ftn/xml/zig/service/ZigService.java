@@ -1,7 +1,9 @@
 package ftn.xml.zig.service;
 
 import ftn.xml.zig.dto.Zahtev;
+import ftn.xml.zig.dto.ZahtevData;
 import ftn.xml.zig.dto.ZahtevMapper;
+import ftn.xml.zig.model.ZahtevZaPriznanjeZiga;
 import ftn.xml.zig.repository.RdfRepository;
 import ftn.xml.zig.repository.ZigRepository;
 import ftn.xml.zig.utils.SchemaValidationEventHandler;
@@ -20,6 +22,8 @@ import java.io.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.xmldb.api.base.XMLDBException;
@@ -29,6 +33,7 @@ public class ZigService {
 
     public static final String CONTEXT_PATH = "ftn.xml.zig.model";
     private static final String SCHEMA_PATH = "./src/main/resources/data/xsd/zig_schema.xsd";
+    private static final String FILE_FOLDER = "./src/main/resources/data/files/";
     private final ZigRepository repository;
     private final RdfRepository rdfRepository;
     private final Unmarshaller unmarshaller;
@@ -36,11 +41,14 @@ public class ZigService {
 
     private final ZahtevMapper mapper;
 
+    private final TransformationService trasformationService;
+
     @Autowired
-    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper) throws SAXException, JAXBException {
+    public ZigService(ZigRepository repository, RdfRepository rdfRepository, ZahtevMapper mapper, TransformationService trasformationService) throws SAXException, JAXBException {
         this.repository = repository;
         this.rdfRepository = rdfRepository;
         this.mapper = mapper;
+        this.trasformationService = trasformationService;
 
         JAXBContext context = JAXBContext.newInstance(CONTEXT_PATH);
 
@@ -64,6 +72,14 @@ public class ZigService {
 
     public void unmarshall() throws JAXBException {
         unmarshall("./src/main/resources/data/xml/p-1.xml");
+    }
+
+    public String getPdf(String brojPrijave) throws JAXBException {
+        return trasformationService.toPDF(marshal(getZahtev(brojPrijave)), brojPrijave + ".pdf");
+    }
+
+    public String getHtml(String brojPrijave) throws JAXBException {
+        return trasformationService.toXHTML(marshal(getZahtev(brojPrijave)), brojPrijave + ".html");
     }
 
     public ZahtevZaPriznanjeZiga unmarshall(String path) throws JAXBException{
@@ -111,5 +127,55 @@ public class ZigService {
 
     public void save(Zahtev zahtev) throws Exception {
         save(mapper.parseZahtev(zahtev));
+    }
+    public String getHtmlString(String brojPrijave) {
+
+        String filePath = FILE_FOLDER + brojPrijave + ".html";
+
+        String content;
+        File file = new File(filePath);
+        if (file.exists() && file.isFile()) {
+            try {
+                content = Files.readString(file.toPath(), Charset.defaultCharset());
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        } else {
+            try {
+                getHtml(brojPrijave);
+
+            } catch (JAXBException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+            return getHtmlString(brojPrijave);
+        }
+        return content;
+    }
+    public List<ZahtevZaPriznanjeZiga> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
+        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
+            try {
+                zahtevZaIntelektualnuSvojinu.getResenje();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        });
+        //TODO:Filtriraj da li ima resenje
+        return list;
+    }
+
+    public List<ZahtevZaPriznanjeZiga> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaPriznanjeZiga> list = repository.retrieveAll();
+        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
+            try {
+                zahtevZaIntelektualnuSvojinu.getResenje();
+                return false;
+            } catch (Exception e) {
+                return true;
+            }
+        });
+        //TODO:Filtriraj da nema resenje
+        return list;
     }
 }
