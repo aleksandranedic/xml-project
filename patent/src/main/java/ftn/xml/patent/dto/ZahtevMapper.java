@@ -2,8 +2,7 @@ package ftn.xml.patent.dto;
 
 import ftn.xml.patent.model.*;
 import ftn.xml.patent.repository.PatentRepository;
-import ftn.xml.patent.service.PatentService;
-import ftn.xml.patent.utils.DateUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xmldb.api.base.XMLDBException;
@@ -53,28 +52,30 @@ public class ZahtevMapper {
         zahtevZaPriznanjePatenta.setPopunjavaZavod(getPopunjavaZavod());
         ZahtevZaPriznanjePatenta.PriloziUzZahtev priloziUzZahtev = new ZahtevZaPriznanjePatenta.PriloziUzZahtev();
 
-        if (zahtev.getPrilozi().getApstrakt() != null) {
-            priloziUzZahtev.setApstrakt(zahtev.getPrilozi().getApstrakt());
-        }
-        if (zahtev.getPrilozi().getPrvobitnaPrijava() != null) {
-            priloziUzZahtev.setPrvaPrijava(zahtev.getPrilozi().getPrvobitnaPrijava());
-        }
-        if (zahtev.getPrilozi().getRanijePrijave() != null) {
-            for (String prijava: zahtev.getPrilozi().getRanijePrijave()) {
-                priloziUzZahtev.getRanijaPrijava().add(prijava);
+        if (zahtev.getPrilozi() != null) {
+            if (zahtev.getPrilozi().getApstrakt() != null) {
+                priloziUzZahtev.setApstrakt(zahtev.getPrilozi().getApstrakt());
             }
-        }
-        if (zahtev.getPrilozi().getIzjavaOSticanjuPrava() != null) {
-            priloziUzZahtev.setIzjavaOOsnovuSticanjaPravaNaPodnosenjePrijave(zahtev.getPrilozi().getIzjavaOSticanjuPrava());
-        }
-        if (zahtev.getPrilozi().getIzjavaPronalazaca() != null) {
-            priloziUzZahtev.setIzjavaPronalazacaDaNeZeliDaBudeNaveden(zahtev.getPrilozi().getIzjavaPronalazaca());
-        }
-        if (zahtev.getPrilozi().getOpis() != null) {
-            priloziUzZahtev.setOpisPronalaska(zahtev.getPrilozi().getOpis());
-        }
-        if (zahtev.getPrilozi().getNacrt() != null) {
-            priloziUzZahtev.setNacrtNaKojiSePozivaOpis(zahtev.getPrilozi().getNacrt());
+            if (zahtev.getPrilozi().getPrvobitnaPrijava() != null) {
+                priloziUzZahtev.setPrvaPrijava(zahtev.getPrilozi().getPrvobitnaPrijava());
+            }
+            if (zahtev.getPrilozi().getRanijePrijave() != null) {
+                for (String prijava: zahtev.getPrilozi().getRanijePrijave()) {
+                    priloziUzZahtev.getRanijaPrijava().add(prijava);
+                }
+            }
+            if (zahtev.getPrilozi().getIzjavaOSticanjuPrava() != null) {
+                priloziUzZahtev.setIzjavaOOsnovuSticanjaPravaNaPodnosenjePrijave(zahtev.getPrilozi().getIzjavaOSticanjuPrava());
+            }
+            if (zahtev.getPrilozi().getIzjavaPronalazaca() != null) {
+                priloziUzZahtev.setIzjavaPronalazacaDaNeZeliDaBudeNaveden(zahtev.getPrilozi().getIzjavaPronalazaca());
+            }
+            if (zahtev.getPrilozi().getOpis() != null) {
+                priloziUzZahtev.setOpisPronalaska(zahtev.getPrilozi().getOpis());
+            }
+            if (zahtev.getPrilozi().getNacrt() != null) {
+                priloziUzZahtev.setNacrtNaKojiSePozivaOpis(zahtev.getPrilozi().getNacrt());
+            }
         }
 
         zahtevZaPriznanjePatenta.setPriloziUzZahtev(priloziUzZahtev);
