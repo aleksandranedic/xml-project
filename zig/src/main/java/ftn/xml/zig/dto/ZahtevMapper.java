@@ -9,6 +9,7 @@ import org.xmldb.api.base.XMLDBException;
 
 import java.sql.Timestamp;
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.*;
@@ -19,11 +20,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class ZahtevMapper {
@@ -79,10 +76,13 @@ public class ZahtevMapper {
     }
 
     private static XMLGregorianCalendar parseToXMLGregorianCalendar(Date date) throws DatatypeConfigurationException {
-        GregorianCalendar cal = new GregorianCalendar();
-        cal.setTime(date);
+        //GregorianCalendar cal = new GregorianCalendar();
+       // cal.setTime(date);
 
-        return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+        GregorianCalendar call = new GregorianCalendar();
+        call.setTime(new Date());
+        XMLGregorianCalendar xmlDate = DatatypeFactory.newInstance().newXMLGregorianCalendarDate(call.get(Calendar.YEAR), call.get(Calendar.MONTH)+1, call.get(Calendar.DAY_OF_MONTH), DatatypeConstants.FIELD_UNDEFINED);
+        return xmlDate;
     }
 
     private static ZahtevZaPriznanjeZiga.PriloziUzZahtev getPriloziUzZahtev(PriloziDTO priloziDTO) {
