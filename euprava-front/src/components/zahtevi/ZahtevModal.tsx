@@ -3,7 +3,7 @@ import UserContext, {Role} from "../../store/user-context";
 import {Prilog, Status, ZahtevData} from "../types";
 import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
-import {toast} from "react-toastify";
+import {toast, ToastContainer} from "react-toastify";
 import ZahtevButton from "./ZahtevButton";
 
 interface ZahtevModalProps {
@@ -61,9 +61,9 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                 compact: true,
                 alwaysChildren: true,
             });
-            toast.success(response.data)
+            toast.success("Rešenje uspešno kreirano")
         }).catch(() => {
-            toast.error("Greška pri pretrazi.")
+            toast.error("Greška.")
         })
 
 
@@ -158,6 +158,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
                             </div>
                         </div>
                     </div>
+                    <ToastContainer position="top-center" draggable={false}/>
                     <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
                 </>
             }

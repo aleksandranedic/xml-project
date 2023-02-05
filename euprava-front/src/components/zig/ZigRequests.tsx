@@ -4,6 +4,7 @@ import RequestTypeContext from "../../store/request-type-context";
 import axios from "axios";
 import {Prilog, ZahtevData} from "../types";
 import userContext, { Role } from "../../store/user-context";
+import { toast, ToastContainer } from "react-toastify";
 
 export function ZigRequests() {
 
@@ -76,8 +77,39 @@ export function ZigRequests() {
     }, [])
 
 
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
+
+    const onCreateReport = () => {
+        if (fromDate === '') {
+            toast.error('Unesite pocetni datum');
+            return;
+        }
+        if (toDate === '') {
+            toast.error('Unesite krajnji datum');
+            return;
+        } 
+        //
+    }
+
     return (
         <RequestTypeContext.Provider value={{type, setType, port: "8000"}}>
+            {user!.role === Role.WORKER && 
+            <>
+            <div className="flex w-full gap-3 mt-10 items-center justify-around">
+                <div className="flex gap-2">
+                    <p className="font-light">Pocetni datum</p>
+                    <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}/>
+                </div>
+                <div className="flex gap-2">
+                    <p className="font-light">Pocetni datum</p>
+                    <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}/>
+                </div>
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-6 py-2 rounded w-fit self-center" onClick = {e => onCreateReport()}>Kreiraj izvestaj</button>
+                <ToastContainer position="top-center" draggable={false}/>
+            </div>
+            </>
+            }
             {zigZahtevi.length === 0 && <p className="flex w-full justify-center text-xl mt-5">Korisnik nema nijedan razrešen zahtev.</p>}
             <Zahtevi zahtevi={zigZahtevi}/>
         </RequestTypeContext.Provider>
