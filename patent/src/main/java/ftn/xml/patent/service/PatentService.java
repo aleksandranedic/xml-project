@@ -173,12 +173,28 @@ public class PatentService {
 
     public List<ZahtevZaPriznanjePatenta> getAllResolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
+        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
+            try {
+                zahtevZaIntelektualnuSvojinu.getResenje();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        });
         //TODO:Filtriraj da li ima resenje
         return list;
     }
 
     public List<ZahtevZaPriznanjePatenta> getAllUnresolved() throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
+        list.stream().filter(zahtevZaIntelektualnuSvojinu -> {
+            try {
+                zahtevZaIntelektualnuSvojinu.getResenje();
+                return false;
+            } catch (Exception e) {
+                return true;
+            }
+        });
         //TODO:Filtriraj da nema resenje
         return list;
     }
