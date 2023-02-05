@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction, useContext} from "react";
+import {Dispatch, SetStateAction, useContext, useRef} from "react";
 import UserContext, {Role} from "../../store/user-context";
 import {Prilog, ZahtevData} from "../types";
 import RequestTypeContext from "../../store/request-type-context";
@@ -17,7 +17,7 @@ const ZahtevBody: React.FunctionComponent<{ zahtev: ZahtevData }> = ({zahtev}) =
 const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showModal, setShowModal}) => {
     const {user} = useContext(UserContext);
 
-    const {type} = useContext(RequestTypeContext);
+    const {type, port} = useContext(RequestTypeContext);
 
     const setType = () => {
 
@@ -32,27 +32,7 @@ const ZahtevModal: React.FunctionComponent<ZahtevModalProps> = ({zahtev, showMod
     }
 
     const leaveReview = (status: string) => {
-        let port;
-        let path;
-
-        switch (type) {
-            case 'patent': {
-                port = "8002";
-                path = "patent";
-                break;
-            }
-
-            case 'zig': {
-                port = "8000"
-                path = "zig"
-                break;
-            }
-            case 'autor': {
-                port = "8003"
-                path = "autor"
-                break;
-            }
-        }
+        let path = type;
 
 
         let ResenjeDto = {
@@ -174,6 +154,36 @@ interface PrilogCardProps {
 
 function PrilogCard(props: PrilogCardProps) {
     const {prilog} = props;
+    const {type, port} = useContext(RequestTypeContext);
+
+    const linkRef = useRef<HTMLAnchorElement>(null);
+    const downloadFile = async () => {
+        try {
+            let strings = prilog.putanja.split("/");
+            let fileName:string | undefined = strings.at(strings.length-1);
+
+            const response = await axios.get(`http://localhost:${port}/download/${fileName}`, {
+                responseType: 'blob',
+            });
+
+            const file = new Blob([response.data], { type: 'application/pdf' });
+            const fileUrl = URL.createObjectURL(file);
+
+            if (linkRef.current) {
+                linkRef.current!.href = fileUrl;
+                if (fileName) {
+                    linkRef.current.setAttribute('download', fileName);
+                }
+                linkRef.current!.click();
+            }
+
+            URL.revokeObjectURL(fileUrl);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     return (
 
         <div
@@ -185,9 +195,15 @@ function PrilogCard(props: PrilogCardProps) {
                        className="inline-flex items-center px-4 py-2  text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200"
                     >Pregledaj
                     </a>
-                    <a href={prilog.putanja} download={prilog.naslov.replace(" ", "_") + ".pdf"}
-                       className="inline-flex items-center px-4 py-2  text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200"
-                    >Preuzmi</a>
+
+                    <div>
+                        <button onClick={downloadFile}
+                                className="inline-flex items-center px-4 py-2  text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200"
+                        >
+                            Preuzmi
+                        </button>
+                        <a ref={linkRef} style={{ display: 'none' }} />
+                    </div>
                 </div>
             </div>
         </div>

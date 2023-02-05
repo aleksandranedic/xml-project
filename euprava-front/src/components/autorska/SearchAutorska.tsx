@@ -8,9 +8,9 @@ import {ZahtevData} from "../types";
 const SearchAutorska: React.FunctionComponent = () => {
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("autor");
     const [autorskaZahtevi, setAutorskaZahtevi] = useState<ZahtevData[]>([]);
-
+    const port = "8003";
     return (
-        <RequestTypeContext.Provider value={{type, setType}}>
+        <RequestTypeContext.Provider value={{type, setType, port}}>
             <AutorskaContext.Provider value={{autorskaZahtevi, setAutorskaZahtevi}}>
                 <div className="p-8 h-fit">
                     <Search/>

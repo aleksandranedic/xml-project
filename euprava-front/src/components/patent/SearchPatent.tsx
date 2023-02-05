@@ -8,8 +8,10 @@ import {ZahtevData} from "../types";
 const SearchPatent: React.FunctionComponent = () => {
     const [type, setType] = useState<"patent" | "autor" | "zig" | null>("patent");
     const [patentZahtevi, setPatentZahtevi] = useState<ZahtevData[]>([]);
+    const port = "8002";
+
     return (
-        <RequestTypeContext.Provider value={{type, setType}}>
+        <RequestTypeContext.Provider value={{type, setType, port}}>
             <PatentContext.Provider value={{patentZahtevi, setPatentZahtevi}}>
                 <div className="p-8 h-full">
                     <Search/>
