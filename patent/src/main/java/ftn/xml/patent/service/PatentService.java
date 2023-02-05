@@ -1,9 +1,6 @@
 package ftn.xml.patent.service;
 
-import ftn.xml.patent.dto.Metadata;
-import ftn.xml.patent.dto.Resenje;
-import ftn.xml.patent.dto.Zahtev;
-import ftn.xml.patent.dto.ZahtevMapper;
+import ftn.xml.patent.dto.*;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.model.izvestaj.Izvestaj;
 import ftn.xml.patent.repository.PatentRepository;
@@ -24,12 +21,17 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.TransformerException;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -222,7 +224,7 @@ public class PatentService {
         izvestaj.setBrojOdobrenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(startDate, endDate, "Odobreno").size()));
         izvestaj.setBrojOdbijenihZahteva(String.valueOf(repository.retrieveAllWithResenjeStatus(startDate, endDate, "Odbijeno").size()));
         izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", startDate, endDate));
-        return izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + startDate + "_" + endDate + ".pdf");
+        return "http://localhost:8002/"+izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + startDate + "_" + endDate + ".pdf");
     }
 
     public void createJsonFromRdf(String brojPrijave) throws IOException {
@@ -251,5 +253,51 @@ public class PatentService {
         outputStream.flush();
         outputStream.close();
         query.close();
+    }
+
+    public String createIzvestaj(DateRangeDto dateRange) throws JAXBException, XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Izvestaj izvestaj = new Izvestaj();
+        izvestaj.setBrojPodnetihZahteva(String.valueOf(retrieveAllInDateRange(dateRange).size()));
+        izvestaj.setBrojOdobrenihZahteva(String.valueOf(getAllApprovedRequestInDateRange(dateRange, "Odobren").size()));
+        izvestaj.setBrojOdbijenihZahteva(String.valueOf(getAllApprovedRequestInDateRange(dateRange, "Odbijen").size()));
+        izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", dateRange.getStartDate(), dateRange.getEndDate()));
+        return izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + dateRange.getStartDate() + "_" + dateRange.getEndDate() + ".pdf");
+
+    }
+
+    public List<ZahtevZaPriznanjePatenta> getAllApprovedRequestInDateRange(DateRangeDto dateRange, String status) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaPriznanjePatenta> list = retrieveAllInDateRange(dateRange);
+        List<ZahtevZaPriznanjePatenta> list1 = new ArrayList<>();
+        for (ZahtevZaPriznanjePatenta zahtev : list) {
+            if (zahtev.getResenje() == null) {
+                continue;
+            } else {
+                if (zahtev.getResenje().getStatus().equals(status)) {
+                    list1.add(zahtev);
+                }
+            }
+        }
+        return list1;
+    }
+
+
+    public List<ZahtevZaPriznanjePatenta> retrieveAllInDateRange(DateRangeDto dateRangeDto) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        List<ZahtevZaPriznanjePatenta> list = repository.retrieveAll();
+        List<ZahtevZaPriznanjePatenta> list1 = new ArrayList<>();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate start = LocalDate.parse(dateRangeDto.getStartDate(), dateTimeFormatter);
+        LocalDate end = LocalDate.parse(dateRangeDto.getEndDate(), dateTimeFormatter);
+        for (ZahtevZaPriznanjePatenta intelektualnuSvojinu : list) {
+            LocalDate datumPodnosenja = convertGregorianToLocalDateTime(intelektualnuSvojinu.getPopunjavaZavod().getDatumPrijema());
+            if (start.isBefore(datumPodnosenja) && end.isAfter(datumPodnosenja)) {
+                list1.add(intelektualnuSvojinu);
+            }
+        }
+        return list1;
+    }
+
+    public LocalDate convertGregorianToLocalDateTime(XMLGregorianCalendar xgc) {
+        ZonedDateTime utcZoned = xgc.toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneId.of("UTC"));
+        return utcZoned.toLocalDate();
     }
 }

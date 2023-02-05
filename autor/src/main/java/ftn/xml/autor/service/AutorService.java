@@ -249,13 +249,13 @@ public class AutorService {
     }
 
 
-    public void createIzvestaj(DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
+    public String createIzvestaj(DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
         Izvestaj izvestaj = new Izvestaj();
         izvestaj.setBrojPodnetihZahteva(String.valueOf(retrieveAllInDateRange(dateRange).size()));
         izvestaj.setBrojOdobrenihZahteva(String.valueOf(getAllApprovedRequestInDateRange(dateRange, "Odobren").size()));
         izvestaj.setBrojOdbijenihZahteva(String.valueOf(getAllApprovedRequestInDateRange(dateRange, "Odbijen").size()));
         izvestaj.setNaslov(String.format("Izveštaj o broju zahteva za priznanje patenta u periodu od %s do %s", dateRange.getStartDate(), dateRange.getEndDate()));
-        izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + dateRange.getStartDate() + "_" + dateRange.getEndDate() + ".pdf");
+        return "http://localhost:8003/" + izvestajService.getIzvestajPdf(izvestaj, "Patent_Izvestaj_" + dateRange.getStartDate() + "_" + dateRange.getEndDate() + ".pdf");
     }
 
     public List<ZahtevZaIntelektualnuSvojinu> getAllApprovedRequestInDateRange(DateRangeDto dateRange, String status) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException {

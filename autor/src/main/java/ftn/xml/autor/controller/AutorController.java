@@ -112,8 +112,8 @@ public class AutorController {
         this.service.createRdfFromRdf(brojPrijave);
     }
 
-    @PostMapping(path = "/izvestaj")
-    public void getIzvestaj(@RequestBody DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
-        this.service.createIzvestaj(dateRange);
+    @PostMapping(path = "/izvestaj", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    public String getIzvestaj(@RequestBody DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
+        return this.service.createIzvestaj(dateRange);
     }
 }

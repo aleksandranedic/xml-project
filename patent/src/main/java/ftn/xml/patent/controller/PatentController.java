@@ -1,9 +1,6 @@
 package ftn.xml.patent.controller;
 
-import ftn.xml.patent.dto.Resenje;
-import ftn.xml.patent.dto.Zahtev;
-import ftn.xml.patent.dto.ZahtevData;
-import ftn.xml.patent.dto.ZahtevDataMapper;
+import ftn.xml.patent.dto.*;
 import ftn.xml.patent.model.ZahtevZaPriznanjePatenta;
 import ftn.xml.patent.service.PatentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +110,7 @@ public class PatentController {
         }
     }
 
-    @GetMapping("/izvestaj")
+    @GetMapping(value = "/izvestaj", produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_XML_VALUE)
     public String getIzvestaj(@RequestParam("start") String startDate, @RequestParam("end") String endDate) {
         try {
             return service.getIzvestajPdf(startDate, endDate);
@@ -133,4 +130,8 @@ public class PatentController {
         this.service.createRdfFromRdf(brojPrijave);
     }
 
+    @PostMapping(path = "/izvestaj")
+    public void getIzvestaj(@RequestBody DateRangeDto dateRange) throws XMLDBException, ClassNotFoundException, InstantiationException, IllegalAccessException, JAXBException {
+        this.service.createIzvestaj(dateRange);
+    }
 }
